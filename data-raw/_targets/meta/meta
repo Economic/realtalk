@@ -1,0 +1,17 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+chain_to_base|function|48b18db8fd204295|||||||||||||||
+cpi_u_data|stem|17a061fbf5c69c68|7bb51fd20c18ab0e|fb28dc3fc46aafcd|885956013|data-raw/processed/cpi_u_monthly_nsa.csv*data/cpi_u_monthly_nsa.rda*data-raw/processed/cpi_u_monthly_sa.csv*data/cpi_u_monthly_sa.rda*data-raw/processed/cpi_u_annual.csv*data/cpi_u_annual.rda|t19502.1254314199s|b103bcf70d71ca62|34203|file|local|vector|||0.401||
+cpi_u_nsa_raw|stem|756c6627c1b859cc|e34b555d479b5a00|ef46db3751d8e999|858804559|data-raw/raw/cpi_u_nsa.csv|t19501.7283590279s|45ea897a49cf977b|15198|file|local|vector|||0||
+cpi_u_rs_data|stem|5a2ef4b73868ff68|a941926fb7e0bd7d|94bda43401c365af|-1447764003|data-raw/processed/cpi_u_rs_monthly_nsa.csv*data/cpi_u_rs_monthly_nsa.rda*data-raw/processed/cpi_u_rs_annual.csv*data/cpi_u_rs_annual.rda|t19502.1235930061s|d30671ff25f2fb0b|9966|file|local|vector|||0.096||
+cpi_u_rs_extended_data|stem|5f90a3915bbec716|057ff0fc470f053d|3b0511306071bb81|293640984|data-raw/processed/cpi_u_rs_extended_monthly_nsa.csv*data/cpi_u_rs_extended_monthly_nsa.rda*data-raw/processed/cpi_u_rs_extended_annual.csv*data/cpi_u_rs_extended_annual.rda|t19502.1692643637s|bb14a1df94e76e2b|25948|file|local|vector|||0.308||
+cpi_u_rs_raw|stem|1b0eea9acea1efe2|8bad1a526e943a8d|ef46db3751d8e999|1304405932|data-raw/raw/r-cpi-u-rs-allitems.csv|t19501.7040321124s|5c3f98de51f3f7f4|3707|file|local|vector|||0.001||
+cpi_u_sa_raw|stem|9ec0f30edf9168f7|f0ea844931886a6f|ef46db3751d8e999|-1079473402|data-raw/raw/cpi_u_sa.csv|t19501.7290776317s|cc10785eec475293|13792|file|local|vector|||0||
+cpi_u_x1_data|stem|d0483e6952c9e2e3|9fd1df278943a58f|96420d81a253fa99|-1100190470|data-raw/processed/cpi_u_x1_monthly_nsa.csv*data/cpi_u_x1_monthly_nsa.rda*data-raw/processed/cpi_u_x1_annual.csv*data/cpi_u_x1_annual.rda|t19502.1235918024s|c53696d592274be2|3662|file|local|vector|||0.312||
+cpi_u_x1_raw|stem|4e0daa290b7edc4f|3d250995c5429d1e|ef46db3751d8e999|-1376522484|data-raw/raw/cpi_u_x1.csv|t19501.7038452612s|f275366976080db9|1124|file|local|vector|||0||
+create_cpi_u|function|0d4e458ff8deeceb|||||||||||||||
+create_cpi_u_rs|function|e45704014f292359|||||||||||||||
+create_cpi_u_rs_extended|function|39ec489af1153efa|||||||||||||||
+create_cpi_u_x1|function|cfefd155eb3be143|||||||||||||||
+read_cpi_u|function|9c8050336a0c818a|||||||||||||||
+read_cpi_u_rs|function|80eff8b1cea26118|||||||||||||||
+read_cpi_u_x1|function|bb05be58eb3d38e5|||||||||||||||
