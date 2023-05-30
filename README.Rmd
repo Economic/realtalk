@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-realtalk makes it easy to use common US price indexes in your data analysis.
+realtalk makes it easy to use common US price indexes in R.
 
 ```{r, fig.width = 10, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
