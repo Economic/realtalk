@@ -1,0 +1,41 @@
+#' Consumer Price Index for Urban Consumers Research Series (CPI-U-X1) data
+#'
+#' Monthly or annual CPI-U-X1 price indexes
+#'
+#' @docType data
+#' @name cpi_u_x1
+#' @keywords datasets
+#'
+#' @format The data frame `cpi_u_x1_monthly_nsa` contains the
+#' not seasonally adjusted monthly price index levels of the CPI-U-X1
+#' from January 1967 through December 1982. It has three columns:
+#' \describe{
+#'   \item{year}{numeric year}
+#'   \item{month}{numeric calendar month (1-12)}
+#'   \item{cpi_u_x1}{value of the CPI-U-X1 price index}
+#' }
+#'
+#' The data frame `cpi_u_x1_annual` contains the annual average
+#' price index level of the CPI-U-X1. It has two columns:
+#' \describe{
+#'   \item{year}{numeric year}
+#'   \item{cpi_u_x1}{value of the CPI-U-X1 price index}
+#' }
+#'
+#' @source Emailed spreadsheet from the US Bureau of Labor Statistics
+#' @seealso [`cpi_u_rs_extended_monthly_nsa`] and [`cpi_u_extended_rs_annual`]
+#' for an extended version of the CPI-U-RS, using the [`cpi_u`] and [`cpi_u_x1`]
+#' which is more consistent over time than the CPI-U and incorporates more recent
+#' improvements to the CPI-U into the entire time series.
+#' @examples
+#' cpi_u_x1_annual
+
+#' @rdname cpi_u_x1
+#' @format NULL
+"cpi_u_x1_monthly_nsa"
+
+#' @rdname cpi_u_x1
+#' @format NULL
+"cpi_u_x1_annual"
+
+

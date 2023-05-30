@@ -1,0 +1,93 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%",
+  dev.args = list(png  = list(type = "cairo")),
+  fig.asp = 0.7
+)
+
+# library(hexSticker)
+# sticker(imgurl, package="realtalk", p_size=0, s_x=1, s_y=0.9, s_width=1, h_fill="#ffffff", h_color="#6f6c65", filename="inst/figures/imgfile.png")
+```
+
+# realtalk <a href="https://economic.github.io/realtalk/"><img src="man/figures/logo.png" align="right" width="120" /></a>
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+realtalk makes it easy to use common US price indexes in your data analysis.
+
+```{r, fig.width = 10, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(realtalk)
+
+color1 <- "#22A884"
+color2 <- "#414487"
+colors <- c(color1, color2)
+
+cpi_u_rs_annual %>% 
+  inner_join(pce_annual, by = "year") %>% 
+  pivot_longer(-year) %>% 
+  arrange(name, year) %>% 
+  mutate(value = value / lag(value) - 1, .by = name) %>% 
+  ggplot(aes(x = year, y = value, color = name)) +
+  geom_line() + 
+  geom_point() + 
+  scale_color_manual(values = colors) +
+  scale_y_continuous(
+    labels = scales::label_percent(), 
+    breaks = seq(0, 0.1, 0.02)
+  ) +
+  scale_x_continuous(breaks = seq(1940, 2020, 10)) +
+  expand_limits(y = -0.013) +
+  labs(x = NULL, y = NULL, title = "Annual price inflation in the United States: PCE vs CPI-U-RS") +
+  annotate(
+    "text",
+    label = "PCE",
+    y = 0.015,
+    x = 2005, 
+    color = color2
+  ) +
+    annotate(
+    "text",
+    label = "CPI-U-RS",
+    y = 0.045,
+    x = 2005, 
+    color = color1
+  ) +
+  hrbrthemes::theme_ipsum() + 
+  theme(
+    legend.position = "none"
+  )
+```
+
+## Loading the data
+`realtalk` is mostly a data package and includes several datasets of common US
+price indexes, like the CPI-U-RS
+```{r}
+library(realtalk)
+cpi_u_rs_annual
+```
+
+You can see what datasets are available by loading `available_price_indexes`:
+```{r}
+available_price_indexes
+```
+The `package_data_name` column contains the internal name of each dataset:
+```{r}
+pce_monthly_sa
+```
+
+## Installation
+``` r
+# install.packages("devtools")
+devtools::install_github("Economic/realtalk")
+```

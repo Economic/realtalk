@@ -1,4 +1,7 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+.Random.seed|object|c3fee9b0d3c30ce6|||||||||||||||
+available_data|stem|cd8b440cbe69451d|88ad8318fc7fc6ba|9e8df291bb7df184|809520470|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t19507.6989022971s|02a8accc0915289e|1110|file|local|vector|||0.312||
+catalog_data|function|8cf28b1363634e89|||||||||||||||
 chain_to_base|function|48b18db8fd204295|||||||||||||||
 cpi_u_data|stem|17a061fbf5c69c68|7bb51fd20c18ab0e|fb28dc3fc46aafcd|885956013|data-raw/processed/cpi_u_monthly_nsa.csv*data/cpi_u_monthly_nsa.rda*data-raw/processed/cpi_u_monthly_sa.csv*data/cpi_u_monthly_sa.rda*data-raw/processed/cpi_u_annual.csv*data/cpi_u_annual.rda|t19502.1254314199s|b103bcf70d71ca62|34203|file|local|vector|||0.401||
 cpi_u_nsa_raw|stem|756c6627c1b859cc|e34b555d479b5a00|ef46db3751d8e999|858804559|data-raw/raw/cpi_u_nsa.csv|t19501.7283590279s|45ea897a49cf977b|15198|file|local|vector|||0||
@@ -12,6 +15,12 @@ create_cpi_u|function|0d4e458ff8deeceb|||||||||||||||
 create_cpi_u_rs|function|e45704014f292359|||||||||||||||
 create_cpi_u_rs_extended|function|39ec489af1153efa|||||||||||||||
 create_cpi_u_x1|function|cfefd155eb3be143|||||||||||||||
+create_pce|function|9731e1ecb49daa8f|||||||||||||||
+pce_annual_raw|stem|524ae8197520d6a1|3627f407131bf5db|ef46db3751d8e999|-442290875|data-raw/raw/pce_annual.csv|t19507.6398639464s|fc4b69ad84fd3074|1136|file|local|vector|||0||
+pce_data|stem|42a43b59ebd09113|848fe18134809ae4|f0ac3817a7857ad2|-413027527|data-raw/processed/pce_monthly_sa.csv*data/pce_monthly_sa.rda*data-raw/processed/pce_annual.csv*data/pce_annual.rda|t19507.6473244077s|812a9553eb30ec56|17201|file|local|vector|||0.329||
+pce_monthly_raw|stem|5b11d2011fbf6d02|42fa36a11308370d|ef46db3751d8e999|-151634827|data-raw/raw/pce_monthly_sa.csv|t19507.6395743661s|6d9ce0686a2a601e|11644|file|local|vector|||0||
 read_cpi_u|function|9c8050336a0c818a|||||||||||||||
 read_cpi_u_rs|function|80eff8b1cea26118|||||||||||||||
 read_cpi_u_x1|function|bb05be58eb3d38e5|||||||||||||||
+single_dataset_info|function|3431a3277e72c14f|||||||||||||||
+summarize_datasets|function|46a1b1f8628d89e5|||||||||||||||

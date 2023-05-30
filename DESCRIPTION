@@ -1,15 +1,19 @@
 Package: realtalk
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Price index data for the US economy
+Version: 0.2.0
+Authors@R: c(
+    person("Ben", "Zipperer", , "bzipperer@epi.org", role = c("aut", "cre")),
+    person("Economic Policy Institute", role = c("cph", "fnd"))
+  )
+Description: Data and tools to use US price index data like the CPI.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 2.10)
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
 URL: https://economic.github.io/realtalk/
+Imports: 
+    tibble

@@ -1,4 +1,26 @@
 url: https://economic.github.io/realtalk/
 template:
+  package: preferably
   bootstrap: 5
+
+navbar:
+  right:
+   - icon: fa-github
+     href: https://github.com/economic/realtalk
+
+reference:
+  - title: "Datasets"
+    desc: >
+      Included datasets.
+    contents:
+      - cpi_u
+      - cpi_u_rs
+      - cpi_u_rs_extended
+      - cpi_u_x1
+      - pce
+  - title: "Documentation"
+    desc: >
+      Tibbles documenting the data.
+    contents:
+      - available_price_indexes
 
