@@ -37,6 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
           install.packages("pkgdown", type = "binary")
           remotes::install_github("amirmasoudabdol/preferably", type = "source")
