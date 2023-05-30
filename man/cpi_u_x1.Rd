@@ -5,7 +5,7 @@
 \alias{cpi_u_x1}
 \alias{cpi_u_x1_monthly_nsa}
 \alias{cpi_u_x1_annual}
-\title{Consumer Price Index for Urban Consumers Research Series (CPI-U-X1) data}
+\title{Experimental Consumer Price Index for Urban Consumers X1 (CPI-U-X1) data}
 \format{
 The data frame \code{cpi_u_x1_monthly_nsa} contains the
 not seasonally adjusted monthly price index levels of the CPI-U-X1
@@ -38,7 +38,7 @@ Monthly or annual CPI-U-X1 price indexes
 cpi_u_x1_annual
 }
 \seealso{
-\code{\link{cpi_u_rs_extended_monthly_nsa}} and \code{\link{cpi_u_extended_rs_annual}}
+\code{\link[=cpi_u_rs_extended]{cpi_u_rs_extended_monthly_nsa}} and \code{\link[=cpi_u_rs_extended]{cpi_u_extended_rs_annual}}
 for an extended version of the CPI-U-RS, using the \code{\link{cpi_u}} and \code{\link{cpi_u_x1}}
 which is more consistent over time than the CPI-U and incorporates more recent
 improvements to the CPI-U into the entire time series.

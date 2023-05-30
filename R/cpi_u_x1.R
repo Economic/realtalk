@@ -1,4 +1,4 @@
-#' Consumer Price Index for Urban Consumers Research Series (CPI-U-X1) data
+#' Experimental Consumer Price Index for Urban Consumers X1 (CPI-U-X1) data
 #'
 #' Monthly or annual CPI-U-X1 price indexes
 #'
@@ -23,7 +23,7 @@
 #' }
 #'
 #' @source Emailed spreadsheet from the US Bureau of Labor Statistics
-#' @seealso [`cpi_u_rs_extended_monthly_nsa`] and [`cpi_u_extended_rs_annual`]
+#' @seealso [`cpi_u_rs_extended_monthly_nsa`][cpi_u_rs_extended] and [`cpi_u_extended_rs_annual`][cpi_u_rs_extended]
 #' for an extended version of the CPI-U-RS, using the [`cpi_u`] and [`cpi_u_x1`]
 #' which is more consistent over time than the CPI-U and incorporates more recent
 #' improvements to the CPI-U into the entire time series.

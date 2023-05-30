@@ -31,7 +31,7 @@
 #' @source The U.S. Census Bureau also uses a similar combination of
 #' price indexes to extend the CPI-U-RS: <https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html>.
 #' @examples
-#' cpi_u_rs_annual_extended
+#' cpi_u_rs_extended_annual
 
 #' @rdname cpi_u_rs_extended
 #' @format NULL

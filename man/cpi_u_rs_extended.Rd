@@ -42,6 +42,6 @@ The monthly or annual CPI-U-RS series extended to 1937 through
 the present, based on CPI-U-RS, CPI-U, and CPI-U-X1.
 }
 \examples{
-cpi_u_rs_annual_extended
+cpi_u_rs_extended_annual
 }
 \keyword{datasets}
