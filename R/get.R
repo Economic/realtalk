@@ -4,6 +4,8 @@
 #' @param frequency "monthly" or "annual"
 #' @param seasonal "NSA" or "SA" for monthly data
 #'
+#' @importFrom rlang abort
+#'
 #' @return A tibble with the requested price index
 #' @export
 #'
@@ -25,9 +27,11 @@ get_price_index <- function(index_name, frequency, seasonal = NULL) {
     valid_name <- paste0(index_name, frequency, seasonal)
   }
 
+  main_list <- realtalk::available_price_indexes
+
   available <- subset(
-    available_price_indexes,
-    valid_name == gsub("[[:punct:]]", "", package_data_name)
+    main_list,
+    valid_name == gsub("[[:punct:]]", "", main_list$package_data_name)
   )
 
   if (nrow(available) != 1) {

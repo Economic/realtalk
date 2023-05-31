@@ -17,4 +17,6 @@ RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 URL: https://economic.github.io/realtalk/
 Imports: 
-    tibble
+    rlang,
+    tibble,
+    utils
