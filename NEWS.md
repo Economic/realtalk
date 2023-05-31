@@ -1,3 +1,7 @@
+# realtalk 0.2.1
+
+* Added `get_price_index()`
+
 # realtalk 0.2.0
 
 * Actually made the package sort of useful and documented data.

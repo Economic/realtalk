@@ -3,7 +3,7 @@ catalog_data <- function(...) {
   available_price_indexes <- map_chr(args, rlang::as_string) %>%
     map(summarize_datasets) %>%
     list_rbind %>%
-    arrange(data_source, frequency, seasonal)
+    arrange(index_name, frequency, seasonal)
 
   ### OUTPUT
   available_csv <- "data-raw/processed/available_price_indexes.csv"
@@ -30,8 +30,12 @@ single_dataset_info <- function(x) {
   file <- load(x)
   data <- get(file)
 
-  data_source <- str_replace(file, "_monthly.*", "")
-  data_source <- str_replace(data_source, "_annual.*", "")
+  index_name <- file %>%
+    str_replace("_monthly.*", "") %>%
+    str_replace("_annual.*", "") %>%
+    str_replace_all("_", "-") %>%
+    str_to_upper() %>%
+    str_replace("-EXTENDED", ", extended")
 
   monthly <- str_extract(file, "monthly")
   annual <- str_extract(file, "annual")
@@ -61,8 +65,8 @@ single_dataset_info <- function(x) {
     pull(max_date)
 
   documented_data <- tribble(
-    ~data_source, ~frequency, ~seasonal, ~min_date, ~max_date, ~package_data_name,
-    data_source, frequency, seasonal, min_date, max_date, file
+    ~index_name, ~frequency, ~seasonal, ~min_date, ~max_date, ~package_data_name,
+    index_name, frequency, seasonal, min_date, max_date, file
   )
 
   documented_data

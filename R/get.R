@@ -1,0 +1,49 @@
+#' Get price index series as a data frame
+#'
+#' @param index_name Name of the price index, as specified by index name in [`available_price_indexes`]
+#' @param frequency "monthly" or "annual"
+#' @param seasonal "NSA" or "SA" for monthly data
+#'
+#' @return A tibble with the requested price index
+#' @export
+#'
+#' @examples
+#' get_price_index("CPI-U-RS", "monthly", "NSA")
+get_price_index <- function(index_name, frequency, seasonal = NULL) {
+  index_name <- tolower(index_name)
+  index_name <- gsub("[[:punct:]]", "", index_name)
+  index_name <- gsub(" ", "", index_name)
+
+  if (!is.null(seasonal)) {
+    seasonal <- tolower(seasonal)
+  }
+
+  if (is.null(seasonal)) {
+    valid_name <- paste0(index_name, frequency)
+  }
+  else {
+    valid_name <- paste0(index_name, frequency, seasonal)
+  }
+
+  available <- subset(
+    available_price_indexes,
+    valid_name == gsub("[[:punct:]]", "", package_data_name)
+  )
+
+  if (nrow(available) != 1) {
+    rlang::abort(
+      "Specified index_name in get_price_index() does not uniquely match entry in available_price_indexes"
+    )
+  }
+  else {
+    get(available[["package_data_name"]])
+  }
+}
+
+price_inflate_annual <- function(variable, index, year_base) {
+
+}
+
+price_inflate_monthly <- function(variable, index, year_base, month_base, seasonal) {
+
+}

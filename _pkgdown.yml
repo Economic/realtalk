@@ -23,4 +23,9 @@ reference:
       Tibbles documenting the data.
     contents:
       - available_price_indexes
+  - title: "Functions"
+    desc: >
+      Package functions.
+    contents:
+      - get_price_index
 
