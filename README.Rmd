@@ -85,6 +85,10 @@ The `package_data_name` column contains the internal name of each dataset:
 ```{r}
 pce_monthly_sa
 ```
+You can also use `get_price_index()`:
+```{r}
+get_price_index("PCE", "monthly", "SA")
+```
 
 ## Installation
 ``` r
