@@ -13,7 +13,7 @@ realtalk makes it easy to use common US price indexes in R.
 ## Loading the data
 
 `realtalk` is mostly a data package and includes several datasets of
-common US price indexes, like the CPI-U-RS
+common US price indexes, like the CPI-U-RS:
 
 ``` r
 library(realtalk)

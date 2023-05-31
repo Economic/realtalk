@@ -71,7 +71,7 @@ cpi_u_rs_annual %>%
 
 ## Loading the data
 `realtalk` is mostly a data package and includes several datasets of common US
-price indexes, like the CPI-U-RS
+price indexes, like the CPI-U-RS:
 ```{r}
 library(realtalk)
 cpi_u_rs_annual
