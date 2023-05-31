@@ -123,22 +123,39 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">available_price_indexes</span></span>
 <span><span class="co">#&gt; # A tibble: 11 × 6</span></span>
-<span><span class="co">#&gt;    data_source       frequency seasonal min_date max_date package_data_name     </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                 </span></span>
-<span><span class="co">#&gt;  1 cpi_u             annual    &lt;NA&gt;     1937     2023     cpi_u_annual          </span></span>
-<span><span class="co">#&gt;  2 cpi_u             monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa     </span></span>
-<span><span class="co">#&gt;  3 cpi_u             monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa      </span></span>
-<span><span class="co">#&gt;  4 cpi_u_rs          annual    &lt;NA&gt;     1978     2022     cpi_u_rs_annual       </span></span>
-<span><span class="co">#&gt;  5 cpi_u_rs          monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa  </span></span>
-<span><span class="co">#&gt;  6 cpi_u_rs_extended annual    &lt;NA&gt;     1937     2022     cpi_u_rs_extended_ann…</span></span>
-<span><span class="co">#&gt;  7 cpi_u_rs_extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mon…</span></span>
-<span><span class="co">#&gt;  8 cpi_u_x1          annual    &lt;NA&gt;     1967     1982     cpi_u_x1_annual       </span></span>
-<span><span class="co">#&gt;  9 cpi_u_x1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  </span></span>
-<span><span class="co">#&gt; 10 pce               annual    &lt;NA&gt;     1929     2022     pce_annual            </span></span>
-<span><span class="co">#&gt; 11 pce               monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa</span></span></code></pre></div>
+<span><span class="co">#&gt;    index_name         frequency seasonal min_date max_date package_data_name    </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;              &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                </span></span>
+<span><span class="co">#&gt;  1 CPI-U              annual    &lt;NA&gt;     1937     2023     cpi_u_annual         </span></span>
+<span><span class="co">#&gt;  2 CPI-U              monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa    </span></span>
+<span><span class="co">#&gt;  3 CPI-U              monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa     </span></span>
+<span><span class="co">#&gt;  4 CPI-U-RS           annual    &lt;NA&gt;     1978     2022     cpi_u_rs_annual      </span></span>
+<span><span class="co">#&gt;  5 CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa </span></span>
+<span><span class="co">#&gt;  6 CPI-U-RS, extended annual    &lt;NA&gt;     1937     2022     cpi_u_rs_extended_an…</span></span>
+<span><span class="co">#&gt;  7 CPI-U-RS, extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mo…</span></span>
+<span><span class="co">#&gt;  8 CPI-U-X1           annual    &lt;NA&gt;     1967     1982     cpi_u_x1_annual      </span></span>
+<span><span class="co">#&gt;  9 CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa </span></span>
+<span><span class="co">#&gt; 10 PCE                annual    &lt;NA&gt;     1929     2022     pce_annual           </span></span>
+<span><span class="co">#&gt; 11 PCE                monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa</span></span></code></pre></div>
 <p>The <code>package_data_name</code> column contains the internal name of each dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pce_monthly_sa</span></span>
+<span><span class="co">#&gt; # A tibble: 772 × 3</span></span>
+<span><span class="co">#&gt;     year month   pce</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1  1959     1  16.0</span></span>
+<span><span class="co">#&gt;  2  1959     2  16.1</span></span>
+<span><span class="co">#&gt;  3  1959     3  16.1</span></span>
+<span><span class="co">#&gt;  4  1959     4  16.1</span></span>
+<span><span class="co">#&gt;  5  1959     5  16.1</span></span>
+<span><span class="co">#&gt;  6  1959     6  16.2</span></span>
+<span><span class="co">#&gt;  7  1959     7  16.2</span></span>
+<span><span class="co">#&gt;  8  1959     8  16.2</span></span>
+<span><span class="co">#&gt;  9  1959     9  16.3</span></span>
+<span><span class="co">#&gt; 10  1959    10  16.3</span></span>
+<span><span class="co">#&gt; # ℹ 762 more rows</span></span></code></pre></div>
+<p>You can also use <code><a href="reference/get_price_index.html">get_price_index()</a></code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/get_price_index.html">get_price_index</a></span><span class="op">(</span><span class="st">"PCE"</span>, <span class="st">"monthly"</span>, <span class="st">"SA"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 772 × 3</span></span>
 <span><span class="co">#&gt;     year month   pce</span></span>
 <span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
@@ -157,7 +174,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Economic/realtalk"</span><span class="op">)</span></span></code></pre></div>
 </div>
