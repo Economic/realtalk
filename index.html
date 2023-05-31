@@ -50,7 +50,7 @@
     
     <a class="navbar-brand me-2" href="index.html">realtalk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@
 </div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>realtalk makes it easy to use common US price indexes in your data analysis.</p>
+<p>realtalk makes it easy to use common US price indexes in R.</p>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
 <div class="section level2">
 <h2 id="loading-the-data">Loading the data<a class="anchor" aria-label="anchor" href="#loading-the-data"></a>
@@ -125,17 +125,17 @@
 <span><span class="co">#&gt; # A tibble: 11 × 6</span></span>
 <span><span class="co">#&gt;    data_source       frequency seasonal min_date max_date package_data_name     </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                 </span></span>
-<span><span class="co">#&gt;  1 cpi_u             monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa     </span></span>
-<span><span class="co">#&gt;  2 cpi_u             monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa      </span></span>
-<span><span class="co">#&gt;  3 cpi_u             annual    &lt;NA&gt;     1937     2023     cpi_u_annual          </span></span>
-<span><span class="co">#&gt;  4 cpi_u_x1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  </span></span>
-<span><span class="co">#&gt;  5 cpi_u_x1          annual    &lt;NA&gt;     1967     1982     cpi_u_x1_annual       </span></span>
-<span><span class="co">#&gt;  6 cpi_u_rs          monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa  </span></span>
-<span><span class="co">#&gt;  7 cpi_u_rs          annual    &lt;NA&gt;     1978     2022     cpi_u_rs_annual       </span></span>
-<span><span class="co">#&gt;  8 cpi_u_rs_extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mon…</span></span>
-<span><span class="co">#&gt;  9 cpi_u_rs_extended annual    &lt;NA&gt;     1937     2022     cpi_u_rs_extended_ann…</span></span>
-<span><span class="co">#&gt; 10 pce               monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa        </span></span>
-<span><span class="co">#&gt; 11 pce               annual    &lt;NA&gt;     1929     2022     pce_annual</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 cpi_u             annual    &lt;NA&gt;     1937     2023     cpi_u_annual          </span></span>
+<span><span class="co">#&gt;  2 cpi_u             monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa     </span></span>
+<span><span class="co">#&gt;  3 cpi_u             monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa      </span></span>
+<span><span class="co">#&gt;  4 cpi_u_rs          annual    &lt;NA&gt;     1978     2022     cpi_u_rs_annual       </span></span>
+<span><span class="co">#&gt;  5 cpi_u_rs          monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa  </span></span>
+<span><span class="co">#&gt;  6 cpi_u_rs_extended annual    &lt;NA&gt;     1937     2022     cpi_u_rs_extended_ann…</span></span>
+<span><span class="co">#&gt;  7 cpi_u_rs_extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mon…</span></span>
+<span><span class="co">#&gt;  8 cpi_u_x1          annual    &lt;NA&gt;     1967     1982     cpi_u_x1_annual       </span></span>
+<span><span class="co">#&gt;  9 cpi_u_x1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  </span></span>
+<span><span class="co">#&gt; 10 pce               annual    &lt;NA&gt;     1929     2022     pce_annual            </span></span>
+<span><span class="co">#&gt; 11 pce               monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa</span></span></code></pre></div>
 <p>The <code>package_data_name</code> column contains the internal name of each dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pce_monthly_sa</span></span>

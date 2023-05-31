@@ -22,7 +22,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">realtalk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,19 +99,19 @@ available from the <code>realtalk package</code>. It has six columns:</p><dl><dt
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">available_price_indexes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 11 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    data_source       frequency seasonal min_date max_date package_data_name     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> cpi_u             annual    <span style="color: #BB0000;">NA</span>       1937     2023     cpi_u_annual          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> cpi_u             monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> cpi_u             monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> cpi_u_rs          annual    <span style="color: #BB0000;">NA</span>       1978     2022     cpi_u_rs_annual       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> cpi_u_rs          monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> cpi_u_rs_extended annual    <span style="color: #BB0000;">NA</span>       1937     2022     cpi_u_rs_extended_ann…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> cpi_u_rs_extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mon…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> cpi_u_x1          annual    <span style="color: #BB0000;">NA</span>       1967     1982     cpi_u_x1_annual       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> cpi_u_x1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> pce               annual    <span style="color: #BB0000;">NA</span>       1929     2022     pce_annual            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> pce               monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    index_name         frequency seasonal min_date max_date package_data_name    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> CPI-U              annual    <span style="color: #BB0000;">NA</span>       1937     2023     cpi_u_annual         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CPI-U              monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> CPI-U              monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> CPI-U-RS           annual    <span style="color: #BB0000;">NA</span>       1978     2022     cpi_u_rs_annual      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> CPI-U-RS, extended annual    <span style="color: #BB0000;">NA</span>       1937     2022     cpi_u_rs_extended_an…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> CPI-U-RS, extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> CPI-U-X1           annual    <span style="color: #BB0000;">NA</span>       1967     1982     cpi_u_x1_annual      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> PCE                annual    <span style="color: #BB0000;">NA</span>       1929     2022     pce_annual           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> PCE                monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa       </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -34,9 +34,15 @@
     <loc>https://economic.github.io/realtalk/reference/cpi_u_x1.html</loc>
   </url>
   <url>
+    <loc>https://economic.github.io/realtalk/reference/get_price_index.html</loc>
+  </url>
+  <url>
     <loc>https://economic.github.io/realtalk/reference/index.html</loc>
   </url>
   <url>
     <loc>https://economic.github.io/realtalk/reference/pce.html</loc>
+  </url>
+  <url>
+    <loc>https://economic.github.io/realtalk/reference/realtalk-package.html</loc>
   </url>
 </urlset>
