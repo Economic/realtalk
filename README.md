@@ -39,20 +39,22 @@ You can see what datasets are available by loading
 
 ``` r
 available_price_indexes
-#> # A tibble: 11 × 6
+#> # A tibble: 13 × 6
 #>    index_name         frequency seasonal min_date max_date package_data_name    
 #>    <chr>              <chr>     <chr>    <chr>    <chr>    <chr>                
-#>  1 CPI-U              annual    <NA>     1937     2023     cpi_u_annual         
-#>  2 CPI-U              monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa    
-#>  3 CPI-U              monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa     
-#>  4 CPI-U-RS           annual    <NA>     1978     2022     cpi_u_rs_annual      
-#>  5 CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa 
-#>  6 CPI-U-RS, extended annual    <NA>     1937     2022     cpi_u_rs_extended_an…
-#>  7 CPI-U-RS, extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mo…
-#>  8 CPI-U-X1           annual    <NA>     1967     1982     cpi_u_x1_annual      
-#>  9 CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa 
-#> 10 PCE                annual    <NA>     1929     2022     pce_annual           
-#> 11 PCE                monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa
+#>  1 C-CPI-U            annual    <NA>     2000     2023     c_cpi_u_annual       
+#>  2 C-CPI-U            monthly   NSA      Dec 1999 Apr 2023 c_cpi_u_monthly_nsa  
+#>  3 CPI-U              annual    <NA>     1937     2023     cpi_u_annual         
+#>  4 CPI-U              monthly   NSA      Jan 1937 Apr 2023 cpi_u_monthly_nsa    
+#>  5 CPI-U              monthly   SA       Jan 1947 Apr 2023 cpi_u_monthly_sa     
+#>  6 CPI-U-RS           annual    <NA>     1978     2022     cpi_u_rs_annual      
+#>  7 CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa 
+#>  8 CPI-U-RS, extended annual    <NA>     1937     2022     cpi_u_rs_extended_an…
+#>  9 CPI-U-RS, extended monthly   NSA      Jan 1937 Apr 2023 cpi_u_rs_extended_mo…
+#> 10 CPI-U-X1           annual    <NA>     1967     1982     cpi_u_x1_annual      
+#> 11 CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa 
+#> 12 PCE                annual    <NA>     1929     2022     pce_annual           
+#> 13 PCE                monthly   SA       Jan 1959 Apr 2023 pce_monthly_sa
 ```
 
 The `package_data_name` column contains the internal name of each

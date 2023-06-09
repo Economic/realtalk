@@ -1,6 +1,8 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
 .Random.seed|object|c3fee9b0d3c30ce6|||||||||||||||
-available_data|stem|50b7a2d80b763f7c|88ad8318fc7fc6ba|7e6af4843951b434|809520470|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t19508.0442892957s|75fbf42179b53f38|1140|file|local|vector|||0.315||
+available_data|stem|64c8cb86bb5c09e4|ac7afaffe970a2cd|d1bcd5e33e88dc9e|809520470|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t19517.7641785591s|f8164ec5cf0f51a1|1251|file|local|vector|||0.135||
+c_cpi_u_data|stem|c0bd60be114a1d1f|ef29f0276f2970db|6307aa22f41e740a|8331075|data-raw/processed/c_cpi_u_monthly_nsa.csv*data/c_cpi_u_monthly_nsa.rda*data-raw/processed/c_cpi_u_annual.csv*data/c_cpi_u_annual.rda|t19517.7641768462s|e0bed91ca35cefed|6461|file|local|vector|||0.299||
+c_cpi_u_raw|stem|cb4d8ad3b61f26f4|3bb5a9038ade54be|ef46db3751d8e999|1717309700|data-raw/raw/c_cpi_u_nsa.csv|t19517.758831174s|bc080e945f90a83b|4588|file|local|vector|||0||
 catalog_data|function|8c37b34d307e5f37|||||||||||||||
 chain_to_base|function|48b18db8fd204295|||||||||||||||
 cpi_u_data|stem|17a061fbf5c69c68|7bb51fd20c18ab0e|fb28dc3fc46aafcd|885956013|data-raw/processed/cpi_u_monthly_nsa.csv*data/cpi_u_monthly_nsa.rda*data-raw/processed/cpi_u_monthly_sa.csv*data/cpi_u_monthly_sa.rda*data-raw/processed/cpi_u_annual.csv*data/cpi_u_annual.rda|t19502.1254314199s|b103bcf70d71ca62|34203|file|local|vector|||0.401||
@@ -11,6 +13,7 @@ cpi_u_rs_raw|stem|1b0eea9acea1efe2|8bad1a526e943a8d|ef46db3751d8e999|1304405932|
 cpi_u_sa_raw|stem|9ec0f30edf9168f7|f0ea844931886a6f|ef46db3751d8e999|-1079473402|data-raw/raw/cpi_u_sa.csv|t19501.7290776317s|cc10785eec475293|13792|file|local|vector|||0||
 cpi_u_x1_data|stem|d0483e6952c9e2e3|9fd1df278943a58f|96420d81a253fa99|-1100190470|data-raw/processed/cpi_u_x1_monthly_nsa.csv*data/cpi_u_x1_monthly_nsa.rda*data-raw/processed/cpi_u_x1_annual.csv*data/cpi_u_x1_annual.rda|t19502.1235918024s|c53696d592274be2|3662|file|local|vector|||0.312||
 cpi_u_x1_raw|stem|4e0daa290b7edc4f|3d250995c5429d1e|ef46db3751d8e999|-1376522484|data-raw/raw/cpi_u_x1.csv|t19501.7038452612s|f275366976080db9|1124|file|local|vector|||0||
+create_c_cpi_u|function|4c8bfce5f44abbae|||||||||||||||
 create_cpi_u|function|0d4e458ff8deeceb|||||||||||||||
 create_cpi_u_rs|function|e45704014f292359|||||||||||||||
 create_cpi_u_rs_extended|function|39ec489af1153efa|||||||||||||||
@@ -19,6 +22,7 @@ create_pce|function|9731e1ecb49daa8f|||||||||||||||
 pce_annual_raw|stem|524ae8197520d6a1|3627f407131bf5db|ef46db3751d8e999|-442290875|data-raw/raw/pce_annual.csv|t19507.6398639464s|fc4b69ad84fd3074|1136|file|local|vector|||0||
 pce_data|stem|42a43b59ebd09113|848fe18134809ae4|f0ac3817a7857ad2|-413027527|data-raw/processed/pce_monthly_sa.csv*data/pce_monthly_sa.rda*data-raw/processed/pce_annual.csv*data/pce_annual.rda|t19507.6473244077s|812a9553eb30ec56|17201|file|local|vector|||0.329||
 pce_monthly_raw|stem|5b11d2011fbf6d02|42fa36a11308370d|ef46db3751d8e999|-151634827|data-raw/raw/pce_monthly_sa.csv|t19507.6395743661s|6d9ce0686a2a601e|11644|file|local|vector|||0||
+read_c_cpi_u|function|2f6a7a36003f55e8|||||||||||||||
 read_cpi_u|function|9c8050336a0c818a|||||||||||||||
 read_cpi_u_rs|function|80eff8b1cea26118|||||||||||||||
 read_cpi_u_x1|function|bb05be58eb3d38e5|||||||||||||||

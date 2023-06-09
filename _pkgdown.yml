@@ -14,6 +14,7 @@ reference:
       Included datasets.
     contents:
       - cpi_u
+      - c_cpi_u
       - cpi_u_rs
       - cpi_u_rs_extended
       - cpi_u_x1

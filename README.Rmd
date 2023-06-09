@@ -28,6 +28,7 @@ realtalk makes it easy to use common US price indexes in R.
 ```{r, fig.width = 10, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(realtalk)
+library(gt)
 
 color1 <- "#22A884"
 color2 <- "#414487"

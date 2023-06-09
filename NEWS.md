@@ -1,3 +1,6 @@
+# realtalk 0.2.2
+* Added Chained CPI-U (C-CPI-U)
+
 # realtalk 0.2.1
 
 * Added `get_price_index()`
