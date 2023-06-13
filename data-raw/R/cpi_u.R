@@ -1,5 +1,5 @@
-# # CPI-U-NSA from BLS, available 1937+
-# # CPI-U-SA from BLS, available 1947+
+# CPI-U-NSA from BLS, available 1937+
+# CPI-U-SA from BLS, available 1947+
 # BLS_API_KEY <- Sys.getenv("BLS_API_KEY")
 #
 # blsR::get_series_table(
@@ -59,6 +59,7 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
   annual_rda <- "data/cpi_u_annual.rda"
 
   cpi_u_annual <- cpi_u_monthly_nsa %>%
+    filter(year <= 2022) %>%
     summarize(cpi_u = mean(cpi_u), .by = year) %>%
     mutate(cpi_u = round(cpi_u, digits = 1)) %>%
     arrange(year)

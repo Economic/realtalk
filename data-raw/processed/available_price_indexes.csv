@@ -1,13 +1,13 @@
 index_name,frequency,seasonal,min_date,max_date,package_data_name
-C-CPI-U,annual,NA,2000,2023,c_cpi_u_annual
-C-CPI-U,monthly,NSA,Dec 1999,Apr 2023,c_cpi_u_monthly_nsa
-CPI-U,annual,NA,1937,2023,cpi_u_annual
-CPI-U,monthly,NSA,Jan 1937,Apr 2023,cpi_u_monthly_nsa
-CPI-U,monthly,SA,Jan 1947,Apr 2023,cpi_u_monthly_sa
+C-CPI-U,annual,NA,2000,2022,c_cpi_u_annual
+C-CPI-U,monthly,NSA,Dec 1999,May 2023,c_cpi_u_monthly_nsa
+CPI-U,annual,NA,1937,2022,cpi_u_annual
+CPI-U,monthly,NSA,Jan 1937,May 2023,cpi_u_monthly_nsa
+CPI-U,monthly,SA,Jan 1947,May 2023,cpi_u_monthly_sa
 CPI-U-RS,annual,NA,1978,2022,cpi_u_rs_annual
 CPI-U-RS,monthly,NSA,Dec 1977,Dec 2022,cpi_u_rs_monthly_nsa
 "CPI-U-RS, extended",annual,NA,1937,2022,cpi_u_rs_extended_annual
-"CPI-U-RS, extended",monthly,NSA,Jan 1937,Apr 2023,cpi_u_rs_extended_monthly_nsa
+"CPI-U-RS, extended",monthly,NSA,Jan 1937,May 2023,cpi_u_rs_extended_monthly_nsa
 CPI-U-X1,annual,NA,1967,1982,cpi_u_x1_annual
 CPI-U-X1,monthly,NSA,Jan 1967,Dec 1982,cpi_u_x1_monthly_nsa
 PCE,annual,NA,1929,2022,pce_annual
