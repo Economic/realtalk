@@ -25,6 +25,9 @@
     <loc>https://economic.github.io/realtalk/reference/c_cpi_u.html</loc>
   </url>
   <url>
+    <loc>https://economic.github.io/realtalk/reference/c_cpi_u_extended.html</loc>
+  </url>
+  <url>
     <loc>https://economic.github.io/realtalk/reference/cpi_u.html</loc>
   </url>
   <url>
@@ -47,5 +50,8 @@
   </url>
   <url>
     <loc>https://economic.github.io/realtalk/reference/realtalk-package.html</loc>
+  </url>
+  <url>
+    <loc>https://economic.github.io/realtalk/reference/us_minimum_wage.html</loc>
   </url>
 </urlset>
