@@ -1,4 +1,7 @@
 # # C-CPI-U-NSA from BLS, available 1999m12+
+# library(tidyverse)
+# library(blsR)
+#
 # BLS_API_KEY <- Sys.getenv("BLS_API_KEY")
 #
 # blsR::get_series_table(

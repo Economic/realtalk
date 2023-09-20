@@ -25,11 +25,12 @@
 #' price index level of the extended CPI-U-RS. It has two columns:
 #' \describe{
 #'   \item{year}{numeric year}
-#'   \item{pce}{value of the PCE price index}
+#'   \item{pce}{value of the CPI-U-RS extended price index}
 #' }
 #'
-#' @source The U.S. Census Bureau also uses a similar combination of
-#' price indexes to extend the CPI-U-RS: <https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html>.
+#' @source The U.S. Census Bureau previously used a similar combination of
+#' price indexes to extend the CPI-U-RS. Now it uses the methodology
+#' similar to that described by the extended Chained CPI-U [`c_cpi_u_annual`][c_cpi_u_extended].
 #' @examples
 #' cpi_u_rs_extended_annual
 

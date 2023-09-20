@@ -1,5 +1,5 @@
 read_cpi_u_rs <- function(csv) {
-  read_csv(csv) %>%
+  read_csv(csv, show_col_types = FALSE) %>%
     rename_all(tolower) %>%
     select(-avg) %>%
     pivot_longer(-year, names_to = "month", values_to = "cpi_u_rs") %>%

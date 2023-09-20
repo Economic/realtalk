@@ -59,21 +59,3 @@ create_cpi_u_rs_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data) {
   output <- c(output_monthly, output_annual)
   output
 }
-
-
-chain_to_base <- function(data, series_to_chain, base_series, base_date) {
-  # root value of new base series
-  base_series_0 <- data %>%
-    filter(date == ym(base_date)) %>%
-    pull({{base_series}})
-
-  # root value of old series to be chained
-  series_to_chain_0 <- data %>%
-    filter(date == ym(base_date)) %>%
-    pull({{series_to_chain}})
-
-  # chain the series
-  data %>%
-    mutate({{series_to_chain}} := {{series_to_chain}} / series_to_chain_0) %>%
-    mutate({{series_to_chain}} := {{series_to_chain}} * base_series_0)
-}

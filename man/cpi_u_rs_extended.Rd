@@ -25,12 +25,13 @@ The data frame \verb{cpi_u_rs_extended annual} contains the annual
 price index level of the extended CPI-U-RS. It has two columns:
 \describe{
 \item{year}{numeric year}
-\item{pce}{value of the PCE price index}
+\item{pce}{value of the CPI-U-RS extended price index}
 }
 }
 \source{
-The U.S. Census Bureau also uses a similar combination of
-price indexes to extend the CPI-U-RS: \url{https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html}.
+The U.S. Census Bureau previously used a similar combination of
+price indexes to extend the CPI-U-RS. Now it uses the methodology
+similar to that described by the extended Chained CPI-U \code{\link[=c_cpi_u_extended]{c_cpi_u_annual}}.
 }
 \usage{
 cpi_u_rs_extended_monthly_nsa

@@ -1,7 +1,7 @@
 Package: realtalk
 Type: Package
 Title: Price index data for the US economy
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: c(
     person("Ben", "Zipperer", , "bzipperer@epi.org", role = c("aut", "cre")),
     person("Economic Policy Institute", role = c("cph", "fnd"))

@@ -1,5 +1,9 @@
-# CPI-U-NSA from BLS, available 1937+
-# CPI-U-SA from BLS, available 1947+
+# # CPI-U-NSA from BLS, available 1937+
+# # CPI-U-SA from BLS, available 1947+
+#
+# library(tidyverse)
+# library(blsR)
+#
 # BLS_API_KEY <- Sys.getenv("BLS_API_KEY")
 #
 # blsR::get_series_table(
@@ -21,7 +25,7 @@
 #   write_csv("data-raw/raw/cpi_u_sa.csv")
 
 read_cpi_u <- function(csv) {
-  read_csv(csv) %>%
+  read_csv(csv, show_col_types = FALSE) %>%
     mutate(month = as.numeric(str_sub(period, 2, 3))) %>%
     filter(month %in% 1:12) %>%
     select(year, month, cpi_u = value) %>%

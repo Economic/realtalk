@@ -13,6 +13,7 @@ tar_plan(
   tar_file(cpi_u_rs_raw, "data-raw/raw/r-cpi-u-rs-allitems.csv"),
   tar_file(pce_monthly_raw, "data-raw/raw/pce_monthly_sa.csv"),
   tar_file(pce_annual_raw, "data-raw/raw/pce_annual.csv"),
+  tar_file(us_minimum_wage_raw, "data-raw/raw/us_minimum_wage.csv"),
 
   # final data: csv and package data
   tar_file(cpi_u_x1_data, create_cpi_u_x1(cpi_u_x1_raw)),
@@ -22,12 +23,17 @@ tar_plan(
   tar_file(cpi_u_rs_extended_data, create_cpi_u_rs_extended(
     cpi_u_data, cpi_u_x1_data, cpi_u_rs_data
   )),
+  tar_file(c_cpi_u_extended_data, create_c_cpi_u_extended(
+    cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_cpi_u_data
+  )),
   tar_file(pce_data, create_pce(pce_monthly_raw, pce_annual_raw)),
+  tar_file(mw_data, create_fed_mw(us_minimum_wage_raw)),
 
   # all available data
   tar_file(available_data, catalog_data(
     cpi_u_data,
     c_cpi_u_data,
+    c_cpi_u_extended_data,
     cpi_u_x1_data,
     cpi_u_rs_data,
     cpi_u_rs_extended_data,

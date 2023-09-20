@@ -1,5 +1,5 @@
-# PCE, monthly available 1959+
-# PCE, annual available 1929+
+# # PCE, monthly available 1959+
+# # PCE, annual available 1929+
 # BEA_API_KEY <- Sys.getenv("BEA_API_KEY")
 # beaSpecs <- list(
 #   'UserID' = BEA_API_KEY ,
@@ -36,7 +36,7 @@ create_pce <- function(raw_monthly_csv, raw_annual_csv) {
   monthly_sa_csv <- "data-raw/processed/pce_monthly_sa.csv"
   monthly_sa_rda <- "data/pce_monthly_sa.rda"
 
-  pce_monthly_sa <- read_csv(raw_monthly_csv) %>%
+  pce_monthly_sa <- read_csv(raw_monthly_csv, show_col_types = FALSE) %>%
     mutate(
       date = ym(time_period),
       year = year(date),
@@ -56,7 +56,7 @@ create_pce <- function(raw_monthly_csv, raw_annual_csv) {
   annual_csv <- "data-raw/processed/pce_annual.csv"
   annual_rda <- "data/pce_annual.rda"
 
-  pce_annual <- read_csv(raw_annual_csv) %>%
+  pce_annual <- read_csv(raw_annual_csv, show_col_types = FALSE) %>%
     select(year = time_period, pce = data_value)
 
   pce_annual %>%
