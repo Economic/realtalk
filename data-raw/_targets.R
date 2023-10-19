@@ -1,19 +1,22 @@
 ## Load your packages, e.g. library(targets).
 source("data-raw/packages.R")
 
+## Globals
+download_date <- ymd("2023-10-19")
+
 ## Functions
 lapply(list.files("./data-raw/R", full.names = TRUE), source)
 
 tar_plan(
-  # raw data
-  tar_file(cpi_u_x1_raw, "data-raw/raw/cpi_u_x1.csv"),
-  tar_file(cpi_u_sa_raw, "data-raw/raw/cpi_u_sa.csv"),
-  tar_file(cpi_u_nsa_raw, "data-raw/raw/cpi_u_nsa.csv"),
-  tar_file(c_cpi_u_raw, "data-raw/raw/c_cpi_u_nsa.csv"),
-  tar_file(cpi_u_rs_raw, "data-raw/raw/r-cpi-u-rs-allitems.csv"),
-  tar_file(pce_monthly_raw, "data-raw/raw/pce_monthly_sa.csv"),
-  tar_file(pce_annual_raw, "data-raw/raw/pce_annual.csv"),
+  # raw data files
   tar_file(us_minimum_wage_raw, "data-raw/raw/us_minimum_wage.csv"),
+  tar_file(cpi_u_x1_raw, "data-raw/raw/cpi_u_x1.csv"),
+  tar_file(cpi_u_rs_raw, "data-raw/raw/r-cpi-u-rs-allitems.csv"),
+  tar_file(cpi_u_sa_raw, fetch_cpi_u_sa(download_date)),
+  tar_file(cpi_u_nsa_raw, fetch_cpi_u_nsa(download_date)),
+  tar_file(c_cpi_u_raw, fetch_c_cpi_u(download_date)),
+  tar_file(pce_monthly_raw, fetch_pce_monthly_sa(download_date)),
+  tar_file(pce_annual_raw, fetch_pce_annual(download_date)),
 
   # final data: csv and package data
   tar_file(cpi_u_x1_data, create_cpi_u_x1(cpi_u_x1_raw)),
@@ -27,7 +30,8 @@ tar_plan(
     cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_cpi_u_data
   )),
   tar_file(pce_data, create_pce(pce_monthly_raw, pce_annual_raw)),
-  tar_file(mw_data, create_fed_mw(us_minimum_wage_raw)),
+  tar_target(fed_mw_monthly_data, create_fed_mw_monthly(us_minimum_wage_raw)),
+  tar_file(fed_mw_annual_data, create_fed_mw_annual(fed_mw_monthly_data)),
 
   # all available data
   tar_file(available_data, catalog_data(

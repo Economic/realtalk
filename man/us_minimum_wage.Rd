@@ -3,25 +3,39 @@
 \docType{data}
 \name{us_minimum_wage}
 \alias{us_minimum_wage}
+\alias{us_minimum_wage_monthly}
+\alias{us_minimum_wage_annual}
 \title{Example nominal US federal minimum wage data}
 \format{
-The data frame \code{us_minimum_wage} contains the
-nominal value of the US federal minimum wage since 1938. It has two columns:
+The data frame \code{us_minimum_wage_annual} contains the
+nominal value of the annual US federal minimum wage since 1938.
+It has two columns:
 \describe{
 \item{year}{numeric year}
 \item{minimum_wage}{maximum value of the US federal minimum wage that year}
+}
+
+The data frame \code{us_minimum_wage_monthly} contains the
+nominal value of the monthly US federal minimum wage since 1938.
+It has three columns:
+\describe{
+\item{year}{numeric year}
+\item{year}{numeric month}
+\item{minimum_wage}{maximum value of the US federal minimum wage that month}
 }
 }
 \source{
 \href{https://www.dol.gov/agencies/whd/minimum-wage/history/chart}{US Department of Labor}
 }
 \usage{
-us_minimum_wage
+us_minimum_wage_monthly
+
+us_minimum_wage_annual
 }
 \description{
 Example nominal US federal minimum wage data
 }
 \examples{
-us_minimum_wage
+us_minimum_wage_monthly
 }
 \keyword{datasets}

@@ -1,18 +1,3 @@
-# # C-CPI-U-NSA from BLS, available 1999m12+
-# library(tidyverse)
-# library(blsR)
-#
-# BLS_API_KEY <- Sys.getenv("BLS_API_KEY")
-#
-# blsR::get_series_table(
-#   "SUUR0000SA0",
-#   BLS_API_KEY,
-#   start_year = 1999,
-#   end_year = 2023
-# ) %>%
-#   select(year, period, value) %>%
-#   write_csv("data-raw/raw/c_cpi_u_nsa.csv")
-
 read_c_cpi_u <- function(csv) {
   read_csv(csv, show_col_types = FALSE) %>%
     mutate(month = as.numeric(str_sub(period, 2, 3))) %>%
