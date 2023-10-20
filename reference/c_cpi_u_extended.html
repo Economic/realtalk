@@ -24,7 +24,7 @@ the present, based on CPI-U-RS, CPI-U, and CPI-U-X1."><meta property="og:image" 
     
     <a class="navbar-brand me-2" href="../index.html">realtalk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,8 @@ the present, based on CPI-U-RS, CPI-U, and CPI-U-X1.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">c_cpi_u_extended_monthly_nsa</span></span>
 <span></span>
+<span><span class="va">c_cpi_u_extended_monthly_sa</span></span>
+<span></span>
 <span><span class="va">c_cpi_u_extended_annual</span></span></code></pre></div>
     </div>
 
@@ -81,9 +83,10 @@ the present, based on CPI-U-RS, CPI-U, and CPI-U-X1.</p>
 and extends it retroactively by chaining it to the
 CPI-U-RS (1978-1999), CPI-U-X1 (1967-1977),
 and CPI-U (1966 and before).</p>
-<p>The data frame <code>c_cpi_u_extended_monthly_nsa</code> contains
-non-seasonally adjusted price index levels of the extended C-CPI-U.
-It has three columns:</p><dl><dt>year</dt>
+<p>The data frames <code>c_cpi_u_extended_monthly_nsa</code> and
+<code>c_cpi_u_extended_monthly_sa</code> contain, respectively, the
+not-seasonally and seasonally adjusted price index levels of the
+extended C-CPI-U. They have three columns:</p><dl><dt>year</dt>
 <dd><p>numeric year</p></dd>
 
 <dt>month</dt>
@@ -104,8 +107,13 @@ price index level of the extended C-CPI-U. It has two columns:</p><dl><dt>year</
 </dl></div>
     <div class="section level2">
     <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
-    <p>The U.S. Census Bureau currently uses a similar combination of
-price indexes to extend the CPI-U-RS and CPI-U: <a href="https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html" class="external-link">https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html</a>.</p>
+    <p>The seasonal adjustment in <code>cpi_u_rs_extended_monthly_sa</code> is simply
+a multiplication of the non-seasonally adjusted
+<code>cpi_u_rs_extended_monthly_nsa</code> values by the ratio of the
+<code><a href="cpi_u.html">cpi_u_monthly_sa</a></code> to <code><a href="cpi_u.html">cpi_u_monthly_nsa</a></code>.</p>
+<p>For annual statistics, the U.S. Census Bureau currently uses a similar
+combination of price indexes to extend the CPI-U-RS and CPI-U:
+<a href="https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html" class="external-link">https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html</a>.</p>
     </div>
 
     <div class="section level2">
