@@ -1,3 +1,6 @@
+# realtalk 0.4.0
+* added seasonally adjusted versions of extended Chained CPI-U and extended CPI-U-RS
+
 # realtalk 0.3.0
 * updated CPI series through September 2023
 * added example data: separate annual and monthly series

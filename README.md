@@ -39,24 +39,26 @@ You can see what datasets are available by loading
 
 ``` r
 available_price_indexes
-#> # A tibble: 15 × 6
+#> # A tibble: 17 × 6
 #>    index_name         frequency seasonal min_date max_date package_data_name    
 #>    <chr>              <chr>     <chr>    <chr>    <chr>    <chr>                
 #>  1 C-CPI-U            annual    <NA>     2000     2022     c_cpi_u_annual       
-#>  2 C-CPI-U            monthly   NSA      Dec 1999 Aug 2023 c_cpi_u_monthly_nsa  
+#>  2 C-CPI-U            monthly   NSA      Dec 1999 Sep 2023 c_cpi_u_monthly_nsa  
 #>  3 C-CPI-U, extended  annual    <NA>     1937     2022     c_cpi_u_extended_ann…
-#>  4 C-CPI-U, extended  monthly   NSA      Jan 1937 Aug 2023 c_cpi_u_extended_mon…
-#>  5 CPI-U              annual    <NA>     1937     2022     cpi_u_annual         
-#>  6 CPI-U              monthly   NSA      Jan 1937 Aug 2023 cpi_u_monthly_nsa    
-#>  7 CPI-U              monthly   SA       Jan 1947 Aug 2023 cpi_u_monthly_sa     
-#>  8 CPI-U-RS           annual    <NA>     1978     2022     cpi_u_rs_annual      
-#>  9 CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa 
-#> 10 CPI-U-RS, extended annual    <NA>     1937     2022     cpi_u_rs_extended_an…
-#> 11 CPI-U-RS, extended monthly   NSA      Jan 1937 Aug 2023 cpi_u_rs_extended_mo…
-#> 12 CPI-U-X1           annual    <NA>     1967     1982     cpi_u_x1_annual      
-#> 13 CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa 
-#> 14 PCE                annual    <NA>     1929     2022     pce_annual           
-#> 15 PCE                monthly   SA       Jan 1959 Jul 2023 pce_monthly_sa
+#>  4 C-CPI-U, extended  monthly   NSA      Jan 1937 Sep 2023 c_cpi_u_extended_mon…
+#>  5 C-CPI-U, extended  monthly   SA       Jan 1947 Sep 2023 c_cpi_u_extended_mon…
+#>  6 CPI-U              annual    <NA>     1937     2022     cpi_u_annual         
+#>  7 CPI-U              monthly   NSA      Jan 1937 Sep 2023 cpi_u_monthly_nsa    
+#>  8 CPI-U              monthly   SA       Jan 1947 Sep 2023 cpi_u_monthly_sa     
+#>  9 CPI-U-RS           annual    <NA>     1978     2022     cpi_u_rs_annual      
+#> 10 CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa 
+#> 11 CPI-U-RS, extended annual    <NA>     1937     2022     cpi_u_rs_extended_an…
+#> 12 CPI-U-RS, extended monthly   NSA      Jan 1937 Sep 2023 cpi_u_rs_extended_mo…
+#> 13 CPI-U-RS, extended monthly   SA       Jan 1947 Sep 2023 cpi_u_rs_extended_mo…
+#> 14 CPI-U-X1           annual    <NA>     1967     1982     cpi_u_x1_annual      
+#> 15 CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa 
+#> 16 PCE                annual    <NA>     1929     2022     pce_annual           
+#> 17 PCE                monthly   SA       Jan 1959 Aug 2023 pce_monthly_sa
 ```
 
 The `package_data_name` column contains the internal name of each
@@ -64,40 +66,40 @@ dataset:
 
 ``` r
 pce_monthly_sa
-#> # A tibble: 775 × 3
+#> # A tibble: 776 × 3
 #>     year month   pce
 #>    <dbl> <dbl> <dbl>
-#>  1  1959     1  16.0
-#>  2  1959     2  16.1
-#>  3  1959     3  16.1
-#>  4  1959     4  16.1
-#>  5  1959     5  16.1
-#>  6  1959     6  16.2
-#>  7  1959     7  16.2
-#>  8  1959     8  16.2
-#>  9  1959     9  16.3
-#> 10  1959    10  16.3
-#> # ℹ 765 more rows
+#>  1  1959     1  15.2
+#>  2  1959     2  15.2
+#>  3  1959     3  15.2
+#>  4  1959     4  15.2
+#>  5  1959     5  15.2
+#>  6  1959     6  15.3
+#>  7  1959     7  15.3
+#>  8  1959     8  15.3
+#>  9  1959     9  15.4
+#> 10  1959    10  15.4
+#> # ℹ 766 more rows
 ```
 
 You can also use `get_price_index()`:
 
 ``` r
 get_price_index("PCE", "monthly", "SA")
-#> # A tibble: 775 × 3
+#> # A tibble: 776 × 3
 #>     year month   pce
 #>    <dbl> <dbl> <dbl>
-#>  1  1959     1  16.0
-#>  2  1959     2  16.1
-#>  3  1959     3  16.1
-#>  4  1959     4  16.1
-#>  5  1959     5  16.1
-#>  6  1959     6  16.2
-#>  7  1959     7  16.2
-#>  8  1959     8  16.2
-#>  9  1959     9  16.3
-#> 10  1959    10  16.3
-#> # ℹ 765 more rows
+#>  1  1959     1  15.2
+#>  2  1959     2  15.2
+#>  3  1959     3  15.2
+#>  4  1959     4  15.2
+#>  5  1959     5  15.2
+#>  6  1959     6  15.3
+#>  7  1959     7  15.3
+#>  8  1959     8  15.3
+#>  9  1959     9  15.4
+#> 10  1959    10  15.4
+#> # ℹ 766 more rows
 ```
 
 ## Installation

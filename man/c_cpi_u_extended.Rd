@@ -4,6 +4,7 @@
 \name{c_cpi_u_extended}
 \alias{c_cpi_u_extended}
 \alias{c_cpi_u_extended_monthly_nsa}
+\alias{c_cpi_u_extended_monthly_sa}
 \alias{c_cpi_u_extended_annual}
 \title{Extended Chained Chained Consumer Price Index for Urban Consumers (C-CPI-U)}
 \format{
@@ -12,9 +13,10 @@ and extends it retroactively by chaining it to the
 CPI-U-RS (1978-1999), CPI-U-X1 (1967-1977),
 and CPI-U (1966 and before).
 
-The data frame \code{c_cpi_u_extended_monthly_nsa} contains
-non-seasonally adjusted price index levels of the extended C-CPI-U.
-It has three columns:
+The data frames \code{c_cpi_u_extended_monthly_nsa} and
+\code{c_cpi_u_extended_monthly_sa} contain, respectively, the
+not-seasonally and seasonally adjusted price index levels of the
+extended C-CPI-U. They have three columns:
 \describe{
 \item{year}{numeric year}
 \item{month}{numeric calendar month (1-12)}
@@ -29,11 +31,19 @@ price index level of the extended C-CPI-U. It has two columns:
 }
 }
 \source{
-The U.S. Census Bureau currently uses a similar combination of
-price indexes to extend the CPI-U-RS and CPI-U: \url{https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html}.
+The seasonal adjustment in \code{cpi_u_rs_extended_monthly_sa} is simply
+a multiplication of the non-seasonally adjusted
+\code{cpi_u_rs_extended_monthly_nsa} values by the ratio of the
+\code{\link[=cpi_u]{cpi_u_monthly_sa}} to \code{\link[=cpi_u]{cpi_u_monthly_nsa}}.
+
+For annual statistics, the U.S. Census Bureau currently uses a similar
+combination of price indexes to extend the CPI-U-RS and CPI-U:
+\url{https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html}.
 }
 \usage{
 c_cpi_u_extended_monthly_nsa
+
+c_cpi_u_extended_monthly_sa
 
 c_cpi_u_extended_annual
 }

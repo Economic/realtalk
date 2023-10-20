@@ -1,6 +1,8 @@
 create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_cpi_u_data) {
-  cpi_u_path <- tar_read(cpi_u_data) %>%
+  cpi_u_nsa_path <- tar_read(cpi_u_data) %>%
     str_subset("cpi_u_monthly_nsa.rda")
+  cpi_u_sa_path <- tar_read(cpi_u_data) %>%
+    str_subset("cpi_u_monthly_sa.rda")
   cpi_u_x1_path <- tar_read(cpi_u_x1_data) %>%
     str_subset("cpi_u_x1_monthly_nsa.rda")
   cpi_u_rs_path <- tar_read(cpi_u_rs_data) %>%
@@ -8,7 +10,8 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   c_cpi_u_path <- tar_read(c_cpi_u_data) %>%
     str_subset("c_cpi_u_monthly_nsa.rda")
 
-  load(cpi_u_path)
+  load(cpi_u_nsa_path)
+  load(cpi_u_sa_path)
   load(cpi_u_x1_path)
   load(cpi_u_rs_path)
   load(c_cpi_u_path)
@@ -16,6 +19,8 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   ### MONTHLY
   monthly_nsa_csv <- "data-raw/processed/c_cpi_u_extended_monthly_nsa.csv"
   monthly_nsa_rda <- "data/c_cpi_u_extended_monthly_nsa.rda"
+  monthly_sa_csv <- "data-raw/processed/c_cpi_u_extended_monthly_sa.csv"
+  monthly_sa_rda <- "data/c_cpi_u_extended_monthly_sa.rda"
 
   c_cpi_u_extended_monthly_nsa <- cpi_u_monthly_nsa %>%
     full_join(cpi_u_x1_monthly_nsa, by = c("year", "month")) %>%
@@ -35,12 +40,31 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
     )) %>%
     select(year, month, c_cpi_u_extended = value)
 
+  c_cpi_u_extended_monthly_sa <- cpi_u_monthly_nsa %>%
+    rename(cpi_u_nsa = cpi_u) %>%
+    inner_join(cpi_u_monthly_sa, by = c("year", "month")) %>%
+    rename(cpi_u_sa = cpi_u) %>%
+    inner_join(c_cpi_u_extended_monthly_nsa, by = c("year", "month")) %>%
+    mutate(date = ym(paste(year, month))) %>%
+    mutate(sa_factor = cpi_u_sa / cpi_u_nsa) %>%
+    mutate(c_cpi_u_extended = c_cpi_u_extended * sa_factor) %>%
+    select(year, month, c_cpi_u_extended)
+
   c_cpi_u_extended_monthly_nsa %>%
     write_csv(monthly_nsa_csv)
 
-  usethis::use_data(c_cpi_u_extended_monthly_nsa, overwrite = TRUE)
+  c_cpi_u_extended_monthly_sa %>%
+    write_csv(monthly_sa_csv)
 
-  output_monthly <- c(monthly_nsa_csv, monthly_nsa_rda)
+  usethis::use_data(c_cpi_u_extended_monthly_nsa, overwrite = TRUE)
+  usethis::use_data(c_cpi_u_extended_monthly_sa, overwrite = TRUE)
+
+  output_monthly <- c(
+    monthly_nsa_csv,
+    monthly_nsa_rda,
+    monthly_sa_csv,
+    monthly_sa_rda
+  )
 
   ### ANNUAL
   annual_csv <- "data-raw/processed/c_cpi_u_extended_annual.csv"
