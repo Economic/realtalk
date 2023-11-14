@@ -8,7 +8,7 @@
 \alias{c_cpi_u_extended_annual}
 \title{Extended Chained Chained Consumer Price Index for Urban Consumers (C-CPI-U)}
 \format{
-The extended C-CPI-U series uses the 1978-2000 CPI-U-RS
+The extended C-CPI-U series uses the C-CPI-U since 2000
 and extends it retroactively by chaining it to the
 CPI-U-RS (1978-1999), CPI-U-X1 (1967-1977),
 and CPI-U (1966 and before).

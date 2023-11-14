@@ -10,6 +10,7 @@ fetch_c_cpi_u <- function(download_date) {
     start_year = 1999,
     end_year = 2023
   ) %>%
+    suppressMessages() %>%
     select(year, period, value) %>%
     write_csv(c_cpi_u_file_path)
 
@@ -28,6 +29,7 @@ fetch_cpi_u_sa <- function(download_date) {
     start_year = 1947,
     end_year = 2023
   ) %>%
+    suppressMessages() %>%
     select(year, period, value) %>%
     write_csv(cpi_u_sa_file_path)
 
@@ -46,6 +48,7 @@ fetch_cpi_u_nsa <- function(download_date) {
     start_year = 1937,
     end_year = 2023
   ) %>%
+    suppressMessages() %>%
     select(year, period, value) %>%
     write_csv(cpi_u_nsa_file_path)
 

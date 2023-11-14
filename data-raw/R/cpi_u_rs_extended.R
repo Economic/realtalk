@@ -34,7 +34,9 @@ create_cpi_u_rs_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data) {
       date >= ym("1978m1") & date <= ym("2022m12") ~ cpi_u_rs,
       date >= ym("2023m1") ~ cpi_u_late
     )) %>%
-    select(year, month, cpi_u_rs_extended = value)
+    select(year, month, cpi_u_rs_extended = value) %>%
+    mutate(cpi_u_rs_extended = round(cpi_u_rs_extended, digits = 1)) %>%
+    arrange(year, month)
 
   cpi_u_rs_extended_monthly_sa <- cpi_u_monthly_nsa %>%
     rename(cpi_u_nsa = cpi_u) %>%
@@ -44,7 +46,9 @@ create_cpi_u_rs_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data) {
     mutate(date = ym(paste(year, month))) %>%
     mutate(sa_factor = cpi_u_sa / cpi_u_nsa) %>%
     mutate(cpi_u_rs_extended = cpi_u_rs_extended * sa_factor) %>%
-    select(year, month, cpi_u_rs_extended)
+    select(year, month, cpi_u_rs_extended) %>%
+    mutate(cpi_u_rs_extended = round(cpi_u_rs_extended, digits = 1)) %>%
+    arrange(year, month)
 
   cpi_u_rs_extended_monthly_nsa %>%
     write_csv(monthly_nsa_csv)

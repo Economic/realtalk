@@ -7,7 +7,7 @@
 #' @name c_cpi_u_extended
 #' @keywords datasets
 #'
-#' @format The extended C-CPI-U series uses the 1978-2000 CPI-U-RS
+#' @format The extended C-CPI-U series uses the C-CPI-U since 2000
 #' and extends it retroactively by chaining it to the
 #' CPI-U-RS (1978-1999), CPI-U-X1 (1967-1977),
 #' and CPI-U (1966 and before).

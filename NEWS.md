@@ -1,3 +1,7 @@
+# realtalk 0.5.0
+* updated series through October 2023 when avilable
+* rounded monthly extended Chained CPI-U and extended CPI-U-RS to one digit
+
 # realtalk 0.4.0
 * added seasonally adjusted versions of extended Chained CPI-U and extended CPI-U-RS
 

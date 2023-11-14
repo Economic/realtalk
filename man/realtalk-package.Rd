@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Data and tools to use US price index data like the CPI.
+Makes it easy to use US price index data like the CPI.
 }
 \seealso{
 Useful links:
