@@ -8,7 +8,8 @@
 
 realtalk makes it easy to use common US price indexes in R.
 
-<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-2-1.png"
+style="width:100.0%" />
 
 ## Loading the data
 
