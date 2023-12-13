@@ -8,3 +8,5 @@
 ^\.github$
 ^LICENSE\.md$
 ^README\.Rmd$
+^altdoc$
+^_quarto$
