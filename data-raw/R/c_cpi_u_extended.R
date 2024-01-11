@@ -75,7 +75,7 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   annual_rda <- "data/c_cpi_u_extended_annual.rda"
 
   c_cpi_u_extended_annual <- c_cpi_u_extended_monthly_nsa %>%
-    filter(year <= 2022) %>%
+    filter(year <= 2023) %>%
     summarize(c_cpi_u_extended = mean(c_cpi_u_extended), .by = year) %>%
     mutate(c_cpi_u_extended = round(c_cpi_u_extended, digits = 1)) %>%
     arrange(year)

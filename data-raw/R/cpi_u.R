@@ -37,7 +37,9 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
   annual_rda <- "data/cpi_u_annual.rda"
 
   cpi_u_annual <- cpi_u_monthly_nsa %>%
-    filter(year <= 2022) %>%
+    # only annualize data where 12 months of values exist
+    mutate(month_count = sum(!is.na(month)), .by = year) %>%
+    filter(month_count == 12) %>%
     summarize(cpi_u = mean(cpi_u), .by = year) %>%
     mutate(cpi_u = round(cpi_u, digits = 1)) %>%
     arrange(year)

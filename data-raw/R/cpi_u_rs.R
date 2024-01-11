@@ -29,8 +29,9 @@ create_cpi_u_rs <- function(raw_csv) {
   annual_rda <- "data/cpi_u_rs_annual.rda"
 
   cpi_u_rs_annual <- cpi_u_rs_monthly_nsa %>%
-    # first full year of data = 1978
-    filter(year >= 1978) %>%
+    # only annualize data where 12 months of values exist
+    mutate(month_count = sum(!is.na(month)), .by = year) %>%
+    filter(month_count == 12) %>%
     summarize(cpi_u_rs = mean(cpi_u_rs), .by = year) %>%
     mutate(cpi_u_rs = round(cpi_u_rs, digits = 1)) %>%
     arrange(year)
