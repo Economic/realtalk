@@ -50,7 +50,7 @@
     
     <a class="navbar-brand me-2" href="index.html">realtalk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,26 +126,26 @@
 <span><span class="co">#&gt;    index_name         frequency seasonal min_date max_date package_data_name    </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;              &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                </span></span>
 <span><span class="co">#&gt;  1 C-CPI-U            annual    &lt;NA&gt;     2000     2023     c_cpi_u_annual       </span></span>
-<span><span class="co">#&gt;  2 C-CPI-U            monthly   NSA      Dec 1999 Dec 2023 c_cpi_u_monthly_nsa  </span></span>
+<span><span class="co">#&gt;  2 C-CPI-U            monthly   NSA      Dec 1999 Jan 2024 c_cpi_u_monthly_nsa  </span></span>
 <span><span class="co">#&gt;  3 C-CPI-U, extended  annual    &lt;NA&gt;     1937     2023     c_cpi_u_extended_ann…</span></span>
-<span><span class="co">#&gt;  4 C-CPI-U, extended  monthly   NSA      Jan 1937 Dec 2023 c_cpi_u_extended_mon…</span></span>
-<span><span class="co">#&gt;  5 C-CPI-U, extended  monthly   SA       Jan 1947 Dec 2023 c_cpi_u_extended_mon…</span></span>
+<span><span class="co">#&gt;  4 C-CPI-U, extended  monthly   NSA      Jan 1937 Jan 2024 c_cpi_u_extended_mon…</span></span>
+<span><span class="co">#&gt;  5 C-CPI-U, extended  monthly   SA       Jan 1947 Jan 2024 c_cpi_u_extended_mon…</span></span>
 <span><span class="co">#&gt;  6 CPI-U              annual    &lt;NA&gt;     1937     2023     cpi_u_annual         </span></span>
-<span><span class="co">#&gt;  7 CPI-U              monthly   NSA      Jan 1937 Dec 2023 cpi_u_monthly_nsa    </span></span>
-<span><span class="co">#&gt;  8 CPI-U              monthly   SA       Jan 1947 Dec 2023 cpi_u_monthly_sa     </span></span>
+<span><span class="co">#&gt;  7 CPI-U              monthly   NSA      Jan 1937 Jan 2024 cpi_u_monthly_nsa    </span></span>
+<span><span class="co">#&gt;  8 CPI-U              monthly   SA       Jan 1947 Jan 2024 cpi_u_monthly_sa     </span></span>
 <span><span class="co">#&gt;  9 CPI-U-RS           annual    &lt;NA&gt;     1978     2022     cpi_u_rs_annual      </span></span>
 <span><span class="co">#&gt; 10 CPI-U-RS           monthly   NSA      Dec 1977 Dec 2022 cpi_u_rs_monthly_nsa </span></span>
 <span><span class="co">#&gt; 11 CPI-U-RS, extended annual    &lt;NA&gt;     1937     2023     cpi_u_rs_extended_an…</span></span>
-<span><span class="co">#&gt; 12 CPI-U-RS, extended monthly   NSA      Jan 1937 Dec 2023 cpi_u_rs_extended_mo…</span></span>
-<span><span class="co">#&gt; 13 CPI-U-RS, extended monthly   SA       Jan 1947 Dec 2023 cpi_u_rs_extended_mo…</span></span>
+<span><span class="co">#&gt; 12 CPI-U-RS, extended monthly   NSA      Jan 1937 Jan 2024 cpi_u_rs_extended_mo…</span></span>
+<span><span class="co">#&gt; 13 CPI-U-RS, extended monthly   SA       Jan 1947 Jan 2024 cpi_u_rs_extended_mo…</span></span>
 <span><span class="co">#&gt; 14 CPI-U-X1           annual    &lt;NA&gt;     1967     1982     cpi_u_x1_annual      </span></span>
 <span><span class="co">#&gt; 15 CPI-U-X1           monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa </span></span>
-<span><span class="co">#&gt; 16 PCE                annual    &lt;NA&gt;     1929     2022     pce_annual           </span></span>
-<span><span class="co">#&gt; 17 PCE                monthly   SA       Jan 1959 Nov 2023 pce_monthly_sa</span></span></code></pre></div>
+<span><span class="co">#&gt; 16 PCE                annual    &lt;NA&gt;     1929     2023     pce_annual           </span></span>
+<span><span class="co">#&gt; 17 PCE                monthly   SA       Jan 1959 Dec 2023 pce_monthly_sa</span></span></code></pre></div>
 <p>The <code>package_data_name</code> column contains the internal name of each dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pce_monthly_sa</span></span>
-<span><span class="co">#&gt; # A tibble: 779 × 3</span></span>
+<span><span class="co">#&gt; # A tibble: 780 × 3</span></span>
 <span><span class="co">#&gt;     year month   pce</span></span>
 <span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1  1959     1  15.2</span></span>
@@ -158,11 +158,11 @@
 <span><span class="co">#&gt;  8  1959     8  15.3</span></span>
 <span><span class="co">#&gt;  9  1959     9  15.4</span></span>
 <span><span class="co">#&gt; 10  1959    10  15.4</span></span>
-<span><span class="co">#&gt; # ℹ 769 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 770 more rows</span></span></code></pre></div>
 <p>You can also use <code><a href="reference/get_price_index.html">get_price_index()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_price_index.html">get_price_index</a></span><span class="op">(</span><span class="st">"PCE"</span>, <span class="st">"monthly"</span>, <span class="st">"SA"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 779 × 3</span></span>
+<span><span class="co">#&gt; # A tibble: 780 × 3</span></span>
 <span><span class="co">#&gt;     year month   pce</span></span>
 <span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1  1959     1  15.2</span></span>
@@ -175,7 +175,7 @@
 <span><span class="co">#&gt;  8  1959     8  15.3</span></span>
 <span><span class="co">#&gt;  9  1959     9  15.4</span></span>
 <span><span class="co">#&gt; 10  1959    10  15.4</span></span>
-<span><span class="co">#&gt; # ℹ 769 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 770 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
