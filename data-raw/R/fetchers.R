@@ -8,7 +8,7 @@ fetch_c_cpi_u <- function(download_date) {
     "SUUR0000SA0",
     BLS_API_KEY,
     start_year = 1999,
-    end_year = 2023
+    end_year = 2024
   ) %>%
     suppressMessages() %>%
     select(year, period, value) %>%
@@ -27,7 +27,7 @@ fetch_cpi_u_sa <- function(download_date) {
     "CUSR0000SA0",
     BLS_API_KEY,
     start_year = 1947,
-    end_year = 2023
+    end_year = 2024
   ) %>%
     suppressMessages() %>%
     select(year, period, value) %>%
@@ -46,7 +46,7 @@ fetch_cpi_u_nsa <- function(download_date) {
     "CUUR0000SA0",
     BLS_API_KEY,
     start_year = 1937,
-    end_year = 2023
+    end_year = 2024
   ) %>%
     suppressMessages() %>%
     select(year, period, value) %>%
