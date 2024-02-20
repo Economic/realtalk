@@ -27,11 +27,11 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
     full_join(cpi_u_rs_monthly_nsa, by = c("year", "month")) %>%
     full_join(c_cpi_u_monthly_nsa, by = c("year", "month")) %>%
     mutate(date = ym(paste(year, month))) %>%
+    mutate(cpi_u_late = if_else(date >= ym("1999m12"), c_cpi_u, NA)) %>%
+    chain_to_base(cpi_u_rs, cpi_u_late, "1999m12") %>%
     chain_to_base(cpi_u_x1, cpi_u_rs, "1977m12") %>%
     mutate(cpi_u_early = if_else(date <= ym("1967m1"), cpi_u, NA)) %>%
     chain_to_base(cpi_u_early, cpi_u_x1, "1967m1") %>%
-    mutate(cpi_u_late = if_else(date >= ym("1999m12"), c_cpi_u, NA)) %>%
-    chain_to_base(cpi_u_late, cpi_u_rs, "1999m12") %>%
     mutate(value = case_when(
       date <= ym("1966m12") ~ cpi_u_early,
       date >= ym("1967m1") & date <= ym("1977m12") ~ cpi_u_x1,

@@ -1,3 +1,6 @@
+## Version 0.9.0
+* modified C-CPI-U extended so that it matches original C-CPI-U index base
+
 ## Version 0.8.0
 * updated series through January 2024 when available
 
