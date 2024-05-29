@@ -19,7 +19,7 @@
 #' \describe{
 #'   \item{year}{numeric year}
 #'   \item{month}{numeric calendar month (1-12)}
-#'   \item{pce}{value of the C-CPI-U extended price index}
+#'   \item{c_cpi_u_extended}{value of the C-CPI-U extended price index}
 #' }
 #'
 #' The data frames `c_cpi_u_extended_quarterly_nsa` and
@@ -28,14 +28,14 @@
 #' \describe{
 #'   \item{year}{numeric year}
 #'   \item{quarter}{numeric calendar quarter (1-4)}
-#'   \item{pce}{value of the C-CPI-U extended price index}
+#'   \item{c_cpi_u_extended}{value of the C-CPI-U extended price index}
 #' }
 #'
 #' The data frame `c_cpi_u_extended annual` contains the annual
 #' price index level of the extended C-CPI-U. It has two columns:
 #' \describe{
 #'   \item{year}{numeric year}
-#'   \item{pce}{value of the C-CPI-U extended price index}
+#'   \item{c_cpi_u_extended}{value of the C-CPI-U extended price index}
 #' }
 #'
 #' @source The seasonal adjustment in `c_cpi_u_extended_monthly_sa` is simply
