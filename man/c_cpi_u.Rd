@@ -17,7 +17,7 @@ Chained CPI-U (C-CPI-U). It has three columns:
 \item{c_cpi_u}{value of the C-CPI-U price index}
 }
 
-#' @format The data frame \code{c_cpi_u_quarterly_nsa}
+The data frame \code{c_cpi_u_quarterly_nsa}
 contains not-seasonally adjusted quarterly price index levels of the
 Chained CPI-U (C-CPI-U). It has three columns:
 \describe{
