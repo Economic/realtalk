@@ -38,9 +38,7 @@ Monthly or annual CPI-U-X1 price indexes
 cpi_u_x1_annual
 }
 \seealso{
-\code{\link[=cpi_u_rs_extended]{cpi_u_rs_extended_monthly_nsa}} and \code{\link[=cpi_u_rs_extended]{cpi_u_extended_rs_annual}}
-for an extended version of the CPI-U-RS, using the \code{\link{cpi_u}} and \code{\link{cpi_u_x1}}
-which is more consistent over time than the CPI-U and incorporates more recent
-improvements to the CPI-U into the entire time series.
+\code{\link[=c_cpi_u_extended]{c_cpi_u_extended_annual}} extends the
+CPI-U-X1 from 1937 to the present using the \code{\link{c_cpi_u}} and other series.
 }
 \keyword{datasets}

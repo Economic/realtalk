@@ -33,13 +33,16 @@ single_dataset_info <- function(x) {
   index_name <- file %>%
     str_replace("_monthly.*", "") %>%
     str_replace("_annual.*", "") %>%
+    str_replace("_quarterly.*", "") %>%
     str_replace_all("_", "-") %>%
     str_to_upper() %>%
     str_replace("-EXTENDED", ", extended")
 
   monthly <- str_extract(file, "monthly")
+  quarterly <- str_extract(file, "quarterly")
   annual <- str_extract(file, "annual")
   frequency <- ifelse(is.na(monthly), annual, monthly)
+  frequency <- ifelse(is.na(frequency), quarterly, frequency)
 
   seasonal <- str_extract(file, "_nsa|_sa") %>%
     str_replace("_", "") %>%
@@ -50,6 +53,13 @@ single_dataset_info <- function(x) {
       mutate(date = ym(paste(year, month))) %>%
       summarize(min_date = min(date), max_date = max(date)) %>%
       mutate(across(everything(), ~ format(.x, "%b %Y")))
+  }
+
+  if (frequency == "quarterly") {
+    dates <- data %>%
+      mutate(date = yq(paste(year, quarter))) %>%
+      summarize(min_date = min(date), max_date = max(date)) %>%
+      mutate(across(everything(), ~ paste0(year(.x), "q", quarter(.x))))
   }
 
   if (frequency == "annual") {

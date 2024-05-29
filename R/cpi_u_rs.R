@@ -25,10 +25,9 @@
 #' }
 #'
 #' @source <https://www.bls.gov/cpi/research-series/r-cpi-u-rs-home.htm>
-#' @seealso [`cpi_u_rs_extended_monthly_nsa`][cpi_u_rs] and [`cpi_u_extended_rs_annual`][cpi_u_rs]
-#' for an extended version of the CPI-U-RS, using the [`cpi_u`] and [`cpi_u_x1`]
-#' which is more consistent over time than the CPI-U and incorporates more recent
-#' improvements to the CPI-U into the entire time series.
+#' @seealso [`c_cpi_u_extended_annual`][`c_cpi_u_extended`] extends the
+#' CPI-U-RS from 1937 to the present using the [`c_cpi_u`] and other series.
+#'
 #' @examples
 #' cpi_u_rs_annual
 

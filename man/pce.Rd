@@ -4,14 +4,23 @@
 \name{pce}
 \alias{pce}
 \alias{pce_monthly_sa}
+\alias{pce_quarterly_sa}
 \alias{pce_annual}
 \title{Personal Consumption Expenditures (PCE) price index}
 \format{
-The data frame \code{pce_monthly_sa} contains seasonally adjusted
+The data frame \code{pce_monthly_sa} contains seasonally adjusted monthly
 price index levels of the PCE. It has three columns:
 \describe{
 \item{year}{numeric year}
 \item{month}{numeric calendar month (1-12)}
+\item{pce}{value of the PCE price index}
+}
+
+The data frame \code{pce_quarterly_sa} contains seasonally adjusted
+quarterly price index levels of the PCE. It has three columns:
+\describe{
+\item{year}{numeric year}
+\item{quarter}{numeric calendar quarter (1-3)}
 \item{pce}{value of the PCE price index}
 }
 
@@ -28,10 +37,12 @@ price index level of the PCE. It has two columns:
 \usage{
 pce_monthly_sa
 
+pce_quarterly_sa
+
 pce_annual
 }
 \description{
-Monthly or annual PCE price indexes
+Monthly, quarterly, or annual PCE price indexes
 }
 \examples{
 pce_annual

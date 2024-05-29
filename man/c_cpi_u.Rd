@@ -4,15 +4,25 @@
 \name{c_cpi_u}
 \alias{c_cpi_u}
 \alias{c_cpi_u_monthly_nsa}
+\alias{c_cpi_u_quarterly_nsa}
 \alias{c_cpi_u_annual}
 \title{Chained Consumer Price Index for Urban Consumers (C-CPI-U) data}
 \format{
 The data frame \code{c_cpi_u_monthly_nsa}
-contains not-seasonally adjusted price index levels of the
+contains not-seasonally adjusted monthly price index levels of the
 Chained CPI-U (C-CPI-U). It has three columns:
 \describe{
 \item{year}{numeric year}
 \item{month}{numeric calendar month (1-12)}
+\item{c_cpi_u}{value of the C-CPI-U price index}
+}
+
+#' @format The data frame \code{c_cpi_u_quarterly_nsa}
+contains not-seasonally adjusted quarterly price index levels of the
+Chained CPI-U (C-CPI-U). It has three columns:
+\describe{
+\item{year}{numeric year}
+\item{quarter}{numeric calendar quarter (1-4)}
 \item{c_cpi_u}{value of the C-CPI-U price index}
 }
 
@@ -24,15 +34,19 @@ price index level of the Chained CPI-U (C-CPI-U). It has two columns:
 }
 }
 \source{
-\url{https://www.bls.gov/cpi/}
+The monthly series \code{cpi_u_monthly_nsa} is taken from
+\url{https://www.bls.gov/cpi/}.
+The quarterly series \code{cpi_u_quarterly_nsa} series is the quarterly mean.
 }
 \usage{
 c_cpi_u_monthly_nsa
 
+c_cpi_u_quarterly_nsa
+
 c_cpi_u_annual
 }
 \description{
-Monthly or annual C-CPI-U price indexes
+Monthly, quarterly, or annual C-CPI-U price indexes
 }
 \examples{
 c_cpi_u_monthly_nsa

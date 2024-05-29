@@ -31,6 +31,48 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
     monthly_sa_rda
   )
 
+  ### QUARTERLY
+  quarterly_nsa_csv <- "data-raw/processed/cpi_u_quarterly_nsa.csv"
+  quarterly_nsa_rda <- "data/cpi_u_quarterly_nsa.rda"
+  quarterly_sa_csv <- "data-raw/processed/cpi_u_quarterly_sa.csv"
+  quarterly_sa_rda <- "data/cpi_u_quarterly_sa.rda"
+
+  cpi_u_quarterly_nsa <- cpi_u_monthly_nsa |>
+    mutate(quarter = quarter(month)) |>
+    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    filter(month_count == 3) %>%
+    summarize(
+      cpi_u = mean(cpi_u),
+      .by = c(year, quarter)
+    ) %>%
+    mutate(cpi_u = round(cpi_u, digits = 1)) %>%
+    arrange(year, quarter)
+
+  cpi_u_quarterly_sa <- cpi_u_monthly_sa |>
+    mutate(quarter = quarter(month)) |>
+    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    filter(month_count == 3) %>%
+    summarize(
+      cpi_u = mean(cpi_u),
+      .by = c(year, quarter)
+    ) %>%
+    mutate(cpi_u = round(cpi_u, digits = 1)) %>%
+    arrange(year, quarter)
+
+  cpi_u_quarterly_nsa %>%
+    write_csv(quarterly_nsa_csv)
+  cpi_u_quarterly_sa %>%
+    write_csv(quarterly_sa_csv)
+
+  usethis::use_data(cpi_u_quarterly_nsa, overwrite = TRUE)
+  usethis::use_data(cpi_u_quarterly_sa, overwrite = TRUE)
+
+  output_quarterly <- c(
+    quarterly_nsa_csv,
+    quarterly_nsa_rda,
+    quarterly_sa_csv,
+    quarterly_sa_rda
+  )
 
   ### ANNUAL
   annual_csv <- "data-raw/processed/cpi_u_annual.csv"
@@ -52,6 +94,6 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
   output_annual <- c(annual_csv, annual_rda)
 
   ### ALL FILENAMES
-  output <- c(output_monthly, output_annual)
+  output <- c(output_monthly, output_quarterly, output_annual)
   output
 }

@@ -14,4 +14,3 @@ chain_to_base <- function(data, series_to_chain, base_series, base_date) {
     mutate({{series_to_chain}} := {{series_to_chain}} / series_to_chain_0) %>%
     mutate({{series_to_chain}} := {{series_to_chain}} * base_series_0)
 }
-

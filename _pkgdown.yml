@@ -17,7 +17,6 @@ reference:
       - c_cpi_u
       - c_cpi_u_extended
       - cpi_u_rs
-      - cpi_u_rs_extended
       - cpi_u_x1
       - pce
       - us_minimum_wage

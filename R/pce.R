@@ -1,16 +1,24 @@
 #' Personal Consumption Expenditures (PCE) price index
 #'
-#' Monthly or annual PCE price indexes
+#' Monthly, quarterly, or annual PCE price indexes
 #'
 #' @docType data
 #' @name pce
 #' @keywords datasets
 #'
-#' @format The data frame `pce_monthly_sa` contains seasonally adjusted
+#' @format The data frame `pce_monthly_sa` contains seasonally adjusted monthly
 #' price index levels of the PCE. It has three columns:
 #' \describe{
 #'   \item{year}{numeric year}
 #'   \item{month}{numeric calendar month (1-12)}
+#'   \item{pce}{value of the PCE price index}
+#' }
+#'
+#' @format The data frame `pce_quarterly_sa` contains seasonally adjusted
+#' quarterly price index levels of the PCE. It has three columns:
+#' \describe{
+#'   \item{year}{numeric year}
+#'   \item{quarter}{numeric calendar quarter (1-3)}
 #'   \item{pce}{value of the PCE price index}
 #' }
 #'
@@ -28,6 +36,10 @@
 #' @rdname pce
 #' @format NULL
 "pce_monthly_sa"
+
+#' @rdname pce
+#' @format NULL
+"pce_quarterly_sa"
 
 #' @rdname pce
 #' @format NULL

@@ -23,7 +23,6 @@ create_cpi_u_rs <- function(raw_csv) {
 
   output_monthly <- c(monthly_nsa_csv, monthly_nsa_rda)
 
-
   ### ANNUAL
   annual_csv <- "data-raw/processed/cpi_u_rs_annual.csv"
   annual_rda <- "data/cpi_u_rs_annual.rda"

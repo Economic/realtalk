@@ -23,6 +23,31 @@ create_c_cpi_u <- function(raw_nsa_csv) {
     monthly_nsa_rda
   )
 
+  ### QUARTERLY
+  quarterly_nsa_csv <- "data-raw/processed/c_cpi_u_quarterly_nsa.csv"
+  quarterly_nsa_rda <- "data/c_cpi_u_quarterly_nsa.rda"
+
+  c_cpi_u_quarterly_nsa <- c_cpi_u_monthly_nsa |>
+    mutate(quarter = quarter(month)) |>
+    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    filter(month_count == 3) %>%
+    summarize(
+      c_cpi_u = mean(c_cpi_u),
+      .by = c(year, quarter)
+    ) %>%
+    mutate(c_cpi_u = round(c_cpi_u, digits = 1)) %>%
+    arrange(year, quarter)
+
+  c_cpi_u_quarterly_nsa %>%
+    write_csv(quarterly_nsa_csv)
+
+  usethis::use_data(c_cpi_u_quarterly_nsa, overwrite = TRUE)
+
+  output_quarterly <- c(
+    quarterly_nsa_csv,
+    quarterly_nsa_rda
+  )
+
 
   ### ANNUAL
   annual_csv <- "data-raw/processed/c_cpi_u_annual.csv"
@@ -44,6 +69,6 @@ create_c_cpi_u <- function(raw_nsa_csv) {
   output_annual <- c(annual_csv, annual_rda)
 
   ### ALL FILENAMES
-  output <- c(output_monthly, output_annual)
+  output <- c(output_monthly, output_quarterly, output_annual)
   output
 }

@@ -5,6 +5,8 @@
 \alias{cpi_u}
 \alias{cpi_u_monthly_nsa}
 \alias{cpi_u_monthly_sa}
+\alias{cpi_u_quarterly_nsa}
+\alias{cpi_u_quarterly_sa}
 \alias{cpi_u_annual}
 \title{Consumer Price Index for Urban Consumers (CPI-U) data}
 \format{
@@ -14,6 +16,15 @@ price index levels of the CPI-U. They have three columns:
 \describe{
 \item{year}{numeric year}
 \item{month}{numeric calendar month (1-12)}
+\item{cpi_u}{value of the CPI-U price index}
+}
+
+#' @format The data frames \code{cpi_u_quarterly_sa} and \code{cpi_u_quarterly_nsa}
+contain, respectively, seasonally adjusted or not seasonally adjusted quarterly
+price index levels of the CPI-U. They have three columns:
+\describe{
+\item{year}{numeric year}
+\item{quarter}{numeric calendar quarter (1-4)}
 \item{cpi_u}{value of the CPI-U price index}
 }
 
@@ -32,10 +43,14 @@ cpi_u_monthly_nsa
 
 cpi_u_monthly_sa
 
+cpi_u_quarterly_nsa
+
+cpi_u_quarterly_sa
+
 cpi_u_annual
 }
 \description{
-Monthly or annual CPI-U price indexes
+Monthly, quarterly, or annual CPI-U price indexes
 }
 \examples{
 cpi_u_monthly_nsa
@@ -44,6 +59,8 @@ cpi_u_monthly_nsa
 \code{\link[=cpi_u_rs]{cpi_u_rs_monthly_nsa}} and \code{\link[=cpi_u_rs]{cpi_u_rs_annual}}
 for the CPI-U-RS, an index that is more consistent over time than the CPI-U
 and incorporates more recent improvements to the CPI-U into the
-entire time series.
+entire time series. The quarterly \code{cpi_u_quarterly_nsa} and
+\code{cpi_u_quarterly_sa} series are the quarterly means of their
+respective monthly series.
 }
 \keyword{datasets}

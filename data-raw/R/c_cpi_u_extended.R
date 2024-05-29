@@ -70,6 +70,52 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
     monthly_sa_rda
   )
 
+  ### QUARTERLY
+  quarterly_nsa_csv <- "data-raw/processed/c_cpi_u_extended_quarterly_nsa.csv"
+  quarterly_nsa_rda <- "data/c_cpi_u_extended_quarterly_nsa.rda"
+  quarterly_sa_csv <- "data-raw/processed/c_cpi_u_extended_quaterly_sa.csv"
+  quarterly_sa_rda <- "data/c_cpi_u_extended_quarterly_sa.rda"
+
+  c_cpi_u_extended_quarterly_sa <- c_cpi_u_extended_monthly_sa |>
+    # only quarter-ize data where 3 months of values exist
+    mutate(quarter = quarter(month)) |>
+    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    filter(month_count == 3) %>%
+    summarize(
+      c_cpi_u_extended = mean(c_cpi_u_extended),
+      .by = c(year, quarter)
+    ) %>%
+    mutate(c_cpi_u_extended = round(c_cpi_u_extended, digits = 1)) %>%
+    arrange(year, quarter)
+
+  c_cpi_u_extended_quarterly_nsa <- c_cpi_u_extended_monthly_nsa |>
+    # only quarter-ize data where 3 months of values exist
+    mutate(quarter = quarter(month)) |>
+    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    filter(month_count == 3) %>%
+    summarize(
+      c_cpi_u_extended = mean(c_cpi_u_extended),
+      .by = c(year, quarter)
+    ) %>%
+    mutate(c_cpi_u_extended = round(c_cpi_u_extended, digits = 1)) %>%
+    arrange(year, quarter)
+
+  c_cpi_u_extended_quarterly_nsa %>%
+    write_csv(quarterly_nsa_csv)
+
+  c_cpi_u_extended_quarterly_sa %>%
+    write_csv(quarterly_sa_csv)
+
+  usethis::use_data(c_cpi_u_extended_quarterly_nsa, overwrite = TRUE)
+  usethis::use_data(c_cpi_u_extended_quarterly_sa, overwrite = TRUE)
+
+  output_quarterly <- c(
+    quarterly_nsa_csv,
+    quarterly_nsa_rda,
+    quarterly_sa_csv,
+    quarterly_sa_rda
+  )
+
   ### ANNUAL
   annual_csv <- "data-raw/processed/c_cpi_u_extended_annual.csv"
   annual_rda <- "data/c_cpi_u_extended_annual.rda"
@@ -90,6 +136,6 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   output_annual <- c(annual_csv, annual_rda)
 
   ### ALL FILENAMES
-  output <- c(output_monthly, output_annual)
+  output <- c(output_monthly, output_quarterly, output_annual)
   output
 }

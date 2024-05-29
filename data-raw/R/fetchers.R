@@ -106,5 +106,32 @@ fetch_pce_annual <- function(download_date) {
 
 }
 
+fetch_pce_quarterly_sa <- function(download_date) {
+  # PCE, quarterly available 1947+
+  BEA_API_KEY <- Sys.getenv("BEA_API_KEY")
+
+  pce_quarterly_sa_file_path <- "data-raw/raw/pce_quarterly_sa.csv"
+
+  beaSpecs <- list(
+    'UserID' = BEA_API_KEY ,
+    'Method' = 'GetData',
+    'datasetname' = 'NIPA',
+    'TableName' = 'T20304',
+    'Frequency' = 'Q',
+    'Year' = 'X'
+  )
+
+  bea.R::beaGet(beaSpecs, asWide = FALSE) %>%
+    as_tibble() %>%
+    janitor::clean_names() %>%
+    filter(line_number == 1) %>%
+    select(time_period, data_value) %>%
+    write_csv(pce_quarterly_sa_file_path)
+
+  pce_quarterly_sa_file_path
+}
+
+
+
 
 
