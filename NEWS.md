@@ -1,3 +1,6 @@
+## Version 0.12.0
+* updated series through May 2024 when available
+
 ## Version 0.11.0
 * added quarterly versions of CPI-U, C-CPI-U, extended C-CPI-U, and PCE 
 * updated series through April 2024 when available

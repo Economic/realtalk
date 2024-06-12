@@ -4,14 +4,14 @@
 \alias{get_price_index}
 \title{Get price index series as a data frame}
 \usage{
-get_price_index(index_name, frequency, seasonal = NULL)
+get_price_index(index_name, frequency, seasonal = NA)
 }
 \arguments{
 \item{index_name}{Name of the price index, as specified by index name in \code{\link{available_price_indexes}}}
 
 \item{frequency}{"monthly" or "annual"}
 
-\item{seasonal}{"NSA" or "SA" for monthly data}
+\item{seasonal}{"NSA" or "SA" for monthly data; NA (default) for annual}
 }
 \value{
 A tibble with the requested price index

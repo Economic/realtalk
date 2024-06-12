@@ -2,7 +2,7 @@
 #'
 #' @param index_name Name of the price index, as specified by index name in [`available_price_indexes`]
 #' @param frequency "monthly" or "annual"
-#' @param seasonal "NSA" or "SA" for monthly data
+#' @param seasonal "NSA" or "SA" for monthly data; NA (default) for annual
 #'
 #' @importFrom rlang abort
 #'
@@ -11,16 +11,16 @@
 #'
 #' @examples
 #' get_price_index("CPI-U-RS", "monthly", "NSA")
-get_price_index <- function(index_name, frequency, seasonal = NULL) {
+get_price_index <- function(index_name, frequency, seasonal = NA) {
   index_name <- tolower(index_name)
   index_name <- gsub("[[:punct:]]", "", index_name)
   index_name <- gsub(" ", "", index_name)
 
-  if (!is.null(seasonal)) {
+  if (!is.na(seasonal)) {
     seasonal <- tolower(seasonal)
   }
 
-  if (is.null(seasonal)) {
+  if (is.na(seasonal)) {
     valid_name <- paste0(index_name, frequency)
   }
   else {
