@@ -101,6 +101,5 @@ get_price_index("PCE", "monthly", "SA")
 
 ## Installation
 ``` r
-# install.packages("devtools")
-devtools::install_github("Economic/realtalk")
+install.packages('realtalk', repos = c('https://economic.r-universe.dev', 'https://cloud.r-project.org'))
 ```
