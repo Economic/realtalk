@@ -1,11 +1,12 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-.Random.seed|object|30b210488ffafdd6|||||||||||||||
-available_data|stem|c8b588568d32f195|74aa2659126c4ea1|1a01fe390356e069|-98316816|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t19977.561685417s|cbe36289148c407c|1793|file|local|vector|||0.174||
+.Random.seed|object|aaa2a350d0398627|||||||||||||||
+available_data|stem|91f29f5551cb3d60|74aa2659126c4ea1|0260ebd900537710|-98316816|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t19985.0815062221s|7946b2e4e5c94b1e|1545|file|local|vector|||0.147||
 c_cpi_u_data|stem|6ad350a2badb2e52|683c246f8e98c9b2|792f93beb8632bf0|1652930167|data-raw/processed/c_cpi_u_monthly_nsa.csv*data/c_cpi_u_monthly_nsa.rda*data-raw/processed/c_cpi_u_quarterly_nsa.csv*data/c_cpi_u_quarterly_nsa.rda*data-raw/processed/c_cpi_u_annual.csv*data/c_cpi_u_annual.rda|t19977.5616778707s|c136b9742d35b2ba|8695|file|local|vector|||0.131||
-c_cpi_u_extended_data|stem|8f6dcaef5a5f9ce5|7e91959e39fb3e6e|2cd6d5d779e62136|-781456742|data-raw/processed/c_cpi_u_extended_monthly_nsa.csv*data/c_cpi_u_extended_monthly_nsa.rda*data-raw/processed/c_cpi_u_extended_monthly_sa.csv*data/c_cpi_u_extended_monthly_sa.rda*data-raw/processed/c_cpi_u_extended_quarterly_nsa.csv*data/c_cpi_u_extended_quarterly_nsa.rda*data-raw/processed/c_cpi_u_extended_quaterly_sa.csv*data/c_cpi_u_extended_quarterly_sa.rda*data-raw/processed/c_cpi_u_extended_annual.csv*data/c_cpi_u_extended_annual.rda|t19977.5616833337s|89a41d67e99ccdc8|41724|file|local|vector|||0.291||
+c_cpi_u_extended_data|stem|28abf7fb65d8d7dc|7e91959e39fb3e6e|5b6ac689b00d4519|-781456742|data-raw/processed/c_cpi_u_extended_quarterly_nsa.csv*data/c_cpi_u_extended_quarterly_nsa.rda*data-raw/processed/c_cpi_u_extended_quaterly_sa.csv*data/c_cpi_u_extended_quarterly_sa.rda|t19985.0815044629s|5e70fb87ebe63746|10733|file|local|vector|||0.38||
 c_cpi_u_raw|stem|36efa28da3381475|b8dccdaf45747511|f3e85e074040f842|1190310224|data-raw/raw/c_cpi_u_nsa.csv|t19977.5615952325s|dab41193ea9946ab|4860|file|local|vector|||0.86||
 catalog_data|function|435f211649060670|||||||||||||||
 chain_to_base|function|8ee5c1ab1591c5b8|||||||||||||||
+chain_to_base_annual|function|f9361bfd4206dba6|||||||||||||||
 cpi_u_data|stem|3e1f378d0bdb0b65|e8e74356c2628d17|a98c8ee78695b77a|2023313701|data-raw/processed/cpi_u_monthly_nsa.csv*data/cpi_u_monthly_nsa.rda*data-raw/processed/cpi_u_monthly_sa.csv*data/cpi_u_monthly_sa.rda*data-raw/processed/cpi_u_quarterly_nsa.csv*data/cpi_u_quarterly_nsa.rda*data-raw/processed/cpi_u_quarterly_sa.csv*data/cpi_u_quarterly_sa.rda*data-raw/processed/cpi_u_annual.csv*data/cpi_u_annual.rda|t19977.5616799078s|d9db92b53256d459|45813|file|local|vector|||0.168||
 cpi_u_nsa_raw|stem|3cf860b3da4b7f41|203f1b1925cbab23|c0b28a969d3acd4d|-1324096073|data-raw/raw/cpi_u_nsa.csv|t19977.5616460654s|b0c5dc2aa7b00d26|15469|file|local|vector|||1.691||
 cpi_u_rs_data|stem|87ceee7a5f7251bb|85af6fbd26ac25c6|0864709e2a893520|-511071579|data-raw/processed/cpi_u_rs_monthly_nsa.csv*data/cpi_u_rs_monthly_nsa.rda*data-raw/processed/cpi_u_rs_annual.csv*data/cpi_u_rs_annual.rda|t19872.8033838811s|6ec47c17482e41ed|10211|file|local|vector|||0.074||
@@ -15,7 +16,7 @@ cpi_u_sa_raw|stem|de4218255a43abb2|32d9ca96981190f9|744b01ed9a52f41d|1451996581|
 cpi_u_x1_data|stem|1d72d172a6f6df9a|08595f3b49af6999|91c8798a92871f66|-185363300|data-raw/processed/cpi_u_x1_monthly_nsa.csv*data/cpi_u_x1_monthly_nsa.rda*data-raw/processed/cpi_u_x1_annual.csv*data/cpi_u_x1_annual.rda|t19872.7441930869s|72d61e112f5b008a|3675|file|local|vector|||0.086||
 cpi_u_x1_raw|stem|b9fc5ba5ac5c38cf|c629fd25f5590877|2c530c1562a7fbd1|-1149752450|data-raw/raw/cpi_u_x1.csv|t19649.5997515794s|3400c7708db5b591|1124|file|local|vector|||0||
 create_c_cpi_u|function|f549f701a7c3e12d|||||||||||||||
-create_c_cpi_u_extended|function|f5722b3518f0a23e|||||||||||||||
+create_c_cpi_u_extended|function|8833291d58e58846|||||||||||||||
 create_cpi_u|function|948f0ae9aa7c2fb5|||||||||||||||
 create_cpi_u_rs|function|a45d9a3c9dc1e167|||||||||||||||
 create_cpi_u_rs_extended|function|8af3ce27558ff667|||||||||||||||
