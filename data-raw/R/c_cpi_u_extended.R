@@ -188,5 +188,8 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
     quarterly_sa_rda
   )
 
+  ### ALL FILENAMES
+  output <- c(output_monthly, output_quarterly, output_annual)
+  output
 
 }
