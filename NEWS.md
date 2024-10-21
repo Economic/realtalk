@@ -1,3 +1,6 @@
+## Version 0.16.0
+* updated series through September 2024 when available
+
 ## Version 0.15.0
 * modified extended chained CPI calculation to prioritize annual averages, and then construct monthly and quarterly data.
 
