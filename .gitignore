@@ -5,3 +5,6 @@
 docs
 altdoc/freeze.rds
 ^_quarto$
+.vscode
+
+/.quarto/

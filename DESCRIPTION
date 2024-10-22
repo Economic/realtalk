@@ -1,7 +1,7 @@
 Package: realtalk
 Type: Package
 Title: Price index data for the US economy
-Version: 0.16.0
+Version: 0.16.1
 Authors@R: c(
     person("Ben", "Zipperer", , "bzipperer@epi.org", role = c("aut", "cre")),
     person("Economic Policy Institute", role = c("cph", "fnd"))
@@ -16,7 +16,3 @@ Config/Needs/website: preferably
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 URL: https://economic.github.io/realtalk/
-Imports: 
-    rlang,
-    tibble,
-    utils
