@@ -1,7 +1,4 @@
 url: https://economic.github.io/realtalk/
-template:
-  package: preferably
-  bootstrap: 5
 
 navbar:
   right:
