@@ -1,3 +1,6 @@
+## Version 0.17.0
+* updated series through October 2024 when available
+
 ## Version 0.16.1
 * remove irrelevant package dependencies
 
