@@ -2,7 +2,7 @@
 source("data-raw/packages.R")
 
 ## Globals
-download_date <- ymd("2024-12-11")
+download_date <- ymd("2025-01-26")
 
 ## Functions
 lapply(list.files("./data-raw/R", full.names = TRUE), source)
