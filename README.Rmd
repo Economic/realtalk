@@ -37,7 +37,7 @@ color_2 <- "#414487"
 colors <- c("real" = color_2, "nominal" = color_1)
 
 index_base = c_cpi_u_extended_annual |> 
-  filter(year == 2023) |> 
+  filter(year == 2024) |> 
   pull(c_cpi_u_extended)
 
 us_minimum_wage_annual |> 
@@ -56,7 +56,7 @@ us_minimum_wage_annual |>
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, 10)) +
   #expand_limits(y = -0.013) +
-  labs(x = NULL, y = NULL, title = "US national minimum wage, in nominal and real terms (2023$)") +
+  labs(x = NULL, y = NULL, title = "US national minimum wage, in nominal and real terms (2024$)") +
   annotate(
     "text",
     label = "Real minimum wage",
