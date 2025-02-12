@@ -1,3 +1,6 @@
+## Version 0.20.0
+* updated series through January 2025 when available
+
 ## Version 0.19.0
 * updated series through December 2024 when available
 
