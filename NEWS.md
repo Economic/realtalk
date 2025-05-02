@@ -1,3 +1,6 @@
+## Version 2025.5.2
+* updated PCE through March 2025
+
 ## Version 2025.4.10
 * updated series through March 2025 when available
 
