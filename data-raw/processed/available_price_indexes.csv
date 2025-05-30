@@ -17,5 +17,5 @@ CPI-U-RS,monthly,NSA,Dec 1977,Dec 2024,cpi_u_rs_monthly_nsa
 CPI-U-X1,annual,NA,1967,1982,cpi_u_x1_annual
 CPI-U-X1,monthly,NSA,Jan 1967,Dec 1982,cpi_u_x1_monthly_nsa
 PCE,annual,NA,1929,2024,pce_annual
-PCE,monthly,SA,Jan 1959,Mar 2025,pce_monthly_sa
+PCE,monthly,SA,Jan 1959,Apr 2025,pce_monthly_sa
 PCE,quarterly,SA,1947q1,2025q1,pce_quarterly_sa
