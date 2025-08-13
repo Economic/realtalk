@@ -1,15 +1,15 @@
 index_name,frequency,seasonal,min_date,max_date,package_data_name
 C-CPI-U,annual,NA,2000,2024,c_cpi_u_annual
-C-CPI-U,monthly,NSA,Dec 1999,Jun 2025,c_cpi_u_monthly_nsa
+C-CPI-U,monthly,NSA,Dec 1999,Jul 2025,c_cpi_u_monthly_nsa
 C-CPI-U,quarterly,NSA,2000q1,2025q2,c_cpi_u_quarterly_nsa
 "C-CPI-U, extended",annual,NA,1937,2024,c_cpi_u_extended_annual
-"C-CPI-U, extended",monthly,NSA,Jan 1937,Jun 2025,c_cpi_u_extended_monthly_nsa
-"C-CPI-U, extended",monthly,SA,Jan 1947,Jun 2025,c_cpi_u_extended_monthly_sa
+"C-CPI-U, extended",monthly,NSA,Jan 1937,Jul 2025,c_cpi_u_extended_monthly_nsa
+"C-CPI-U, extended",monthly,SA,Jan 1947,Jul 2025,c_cpi_u_extended_monthly_sa
 "C-CPI-U, extended",quarterly,NSA,1937q1,2025q2,c_cpi_u_extended_quarterly_nsa
 "C-CPI-U, extended",quarterly,SA,1947q1,2025q2,c_cpi_u_extended_quarterly_sa
 CPI-U,annual,NA,1937,2024,cpi_u_annual
-CPI-U,monthly,NSA,Jan 1937,Jun 2025,cpi_u_monthly_nsa
-CPI-U,monthly,SA,Jan 1947,Jun 2025,cpi_u_monthly_sa
+CPI-U,monthly,NSA,Jan 1937,Jul 2025,cpi_u_monthly_nsa
+CPI-U,monthly,SA,Jan 1947,Jul 2025,cpi_u_monthly_sa
 CPI-U,quarterly,NSA,1937q1,2025q2,cpi_u_quarterly_nsa
 CPI-U,quarterly,SA,1947q1,2025q2,cpi_u_quarterly_sa
 CPI-U-RS,annual,NA,1978,2024,cpi_u_rs_annual
@@ -17,5 +17,5 @@ CPI-U-RS,monthly,NSA,Dec 1977,Dec 2024,cpi_u_rs_monthly_nsa
 CPI-U-X1,annual,NA,1967,1982,cpi_u_x1_annual
 CPI-U-X1,monthly,NSA,Jan 1967,Dec 1982,cpi_u_x1_monthly_nsa
 PCE,annual,NA,1929,2024,pce_annual
-PCE,monthly,SA,Jan 1959,May 2025,pce_monthly_sa
-PCE,quarterly,SA,1947q1,2025q1,pce_quarterly_sa
+PCE,monthly,SA,Jan 1959,Jun 2025,pce_monthly_sa
+PCE,quarterly,SA,1947q1,2025q2,pce_quarterly_sa

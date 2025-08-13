@@ -1,3 +1,6 @@
+## Version 2025.8.12
+* update CPI-based data through July 2025 and PCE through June 2025
+
 ## Version 2025.7.15
 * update CPI-based data through June 2025 and PCE through May 2025
 
