@@ -1,3 +1,7 @@
+## Version 2025.12.18
+* update CPI-based data through November 2025 and PCE through September 2025
+* October CPI-based values are coded as NA
+
 ## Version 2025.10.24
 * update CPI-based data through September 2025 and PCE through August 2025
 
