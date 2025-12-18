@@ -2,6 +2,7 @@ read_c_cpi_u <- function(csv) {
   read_csv(csv, show_col_types = FALSE) %>%
     mutate(month = as.numeric(str_sub(period, 2, 3))) %>%
     filter(month %in% 1:12) %>%
+    mutate(value = as.numeric(value)) |>
     select(year, month, c_cpi_u = value) %>%
     arrange(year, month)
 }
@@ -47,7 +48,6 @@ create_c_cpi_u <- function(raw_nsa_csv) {
     quarterly_nsa_csv,
     quarterly_nsa_rda
   )
-
 
   ### ANNUAL
   annual_csv <- "data-raw/processed/c_cpi_u_annual.csv"

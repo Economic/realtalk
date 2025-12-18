@@ -2,6 +2,7 @@ read_cpi_u <- function(csv) {
   read_csv(csv, show_col_types = FALSE) %>%
     mutate(month = as.numeric(str_sub(period, 2, 3))) %>%
     filter(month %in% 1:12) %>%
+    mutate(value = as.numeric(value)) |>
     select(year, month, cpi_u = value) %>%
     arrange(year, month)
 }
