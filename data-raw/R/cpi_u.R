@@ -41,9 +41,9 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
   cpi_u_quarterly_nsa <- cpi_u_monthly_nsa |>
     mutate(quarter = quarter(month)) |>
     mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
-    filter(month_count == 3) %>%
+    filter(month_count == 3 | (year == 2025 & quarter == 4 & month_count == 2)) %>%
     summarize(
-      cpi_u = mean(cpi_u),
+      cpi_u = mean(cpi_u, na.rm = TRUE),
       .by = c(year, quarter)
     ) %>%
     mutate(cpi_u = round(cpi_u, digits = 1)) %>%
@@ -52,9 +52,9 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
   cpi_u_quarterly_sa <- cpi_u_monthly_sa |>
     mutate(quarter = quarter(month)) |>
     mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
-    filter(month_count == 3) %>%
+    filter(month_count == 3 | (year == 2025 & quarter == 4 & month_count == 2)) %>%
     summarize(
-      cpi_u = mean(cpi_u),
+      cpi_u = mean(cpi_u, na.rm = TRUE),
       .by = c(year, quarter)
     ) %>%
     mutate(cpi_u = round(cpi_u, digits = 1)) %>%
@@ -82,8 +82,8 @@ create_cpi_u <- function(raw_nsa_csv, raw_sa_csv) {
   cpi_u_annual <- cpi_u_monthly_nsa %>%
     # only annualize data where 12 months of values exist
     mutate(month_count = sum(!is.na(month)), .by = year) %>%
-    filter(month_count == 12) %>%
-    summarize(cpi_u = mean(cpi_u), .by = year) %>%
+    filter(month_count == 12 | (year == 2025 & month_count == 11)) %>%
+    summarize(cpi_u = mean(cpi_u, na.rm = TRUE), .by = year) %>%
     mutate(cpi_u = round(cpi_u, digits = 1)) %>%
     arrange(year)
 

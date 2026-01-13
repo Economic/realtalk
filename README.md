@@ -41,26 +41,26 @@ available_price_indexes
 #> # A tibble: 20 × 6
 #>    index_name        frequency seasonal min_date max_date package_data_name             
 #>    <chr>             <chr>     <chr>    <chr>    <chr>    <chr>                         
-#>  1 C-CPI-U           annual    <NA>     2000     2024     c_cpi_u_annual                
-#>  2 C-CPI-U           monthly   NSA      Dec 1999 Nov 2025 c_cpi_u_monthly_nsa           
-#>  3 C-CPI-U           quarterly NSA      2000q1   2025q3   c_cpi_u_quarterly_nsa         
-#>  4 C-CPI-U, extended annual    <NA>     1937     2024     c_cpi_u_extended_annual       
-#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 Nov 2025 c_cpi_u_extended_monthly_nsa  
-#>  6 C-CPI-U, extended monthly   SA       Jan 1947 Nov 2025 c_cpi_u_extended_monthly_sa   
-#>  7 C-CPI-U, extended quarterly NSA      1937q1   2025q3   c_cpi_u_extended_quarterly_nsa
-#>  8 C-CPI-U, extended quarterly SA       1947q1   2025q3   c_cpi_u_extended_quarterly_sa 
-#>  9 CPI-U             annual    <NA>     1937     2024     cpi_u_annual                  
-#> 10 CPI-U             monthly   NSA      Jan 1937 Nov 2025 cpi_u_monthly_nsa             
-#> 11 CPI-U             monthly   SA       Jan 1947 Nov 2025 cpi_u_monthly_sa              
-#> 12 CPI-U             quarterly NSA      1937q1   2025q3   cpi_u_quarterly_nsa           
-#> 13 CPI-U             quarterly SA       1947q1   2025q3   cpi_u_quarterly_sa            
+#>  1 C-CPI-U           annual    <NA>     2000     2025     c_cpi_u_annual                
+#>  2 C-CPI-U           monthly   NSA      Dec 1999 Dec 2025 c_cpi_u_monthly_nsa           
+#>  3 C-CPI-U           quarterly NSA      2000q1   2025q4   c_cpi_u_quarterly_nsa         
+#>  4 C-CPI-U, extended annual    <NA>     1937     2025     c_cpi_u_extended_annual       
+#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 Dec 2025 c_cpi_u_extended_monthly_nsa  
+#>  6 C-CPI-U, extended monthly   SA       Jan 1947 Dec 2025 c_cpi_u_extended_monthly_sa   
+#>  7 C-CPI-U, extended quarterly NSA      1937q1   2025q4   c_cpi_u_extended_quarterly_nsa
+#>  8 C-CPI-U, extended quarterly SA       1947q1   2025q4   c_cpi_u_extended_quarterly_sa 
+#>  9 CPI-U             annual    <NA>     1937     2025     cpi_u_annual                  
+#> 10 CPI-U             monthly   NSA      Jan 1937 Dec 2025 cpi_u_monthly_nsa             
+#> 11 CPI-U             monthly   SA       Jan 1947 Dec 2025 cpi_u_monthly_sa              
+#> 12 CPI-U             quarterly NSA      1937q1   2025q4   cpi_u_quarterly_nsa           
+#> 13 CPI-U             quarterly SA       1947q1   2025q4   cpi_u_quarterly_sa            
 #> 14 CPI-U-RS          annual    <NA>     1978     2024     cpi_u_rs_annual               
 #> 15 CPI-U-RS          monthly   NSA      Dec 1977 Dec 2024 cpi_u_rs_monthly_nsa          
 #> 16 CPI-U-X1          annual    <NA>     1967     1982     cpi_u_x1_annual               
 #> 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa          
 #> 18 PCE               annual    <NA>     1929     2024     pce_annual                    
 #> 19 PCE               monthly   SA       Jan 1959 Sep 2025 pce_monthly_sa                
-#> 20 PCE               quarterly SA       1947q1   2025q2   pce_quarterly_sa
+#> 20 PCE               quarterly SA       1947q1   2025q3   pce_quarterly_sa
 ```
 
 The `package_data_name` column contains the internal name of each
