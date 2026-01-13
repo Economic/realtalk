@@ -30,7 +30,7 @@ create_cpi_u_rs <- function(raw_csv) {
   cpi_u_rs_annual <- cpi_u_rs_monthly_nsa %>%
     # only annualize data where 12 months of values exist
     mutate(month_count = sum(!is.na(month)), .by = year) %>%
-    filter(month_count == 12 | year == 2025) %>%
+    filter(month_count == 12 | (year == 2025 & month_count == 11)) %>%
     summarize(cpi_u_rs = mean(cpi_u_rs, na.rm = TRUE), .by = year) %>%
     mutate(cpi_u_rs = round(cpi_u_rs, digits = 1)) %>%
     arrange(year)
