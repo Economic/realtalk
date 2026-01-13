@@ -5,14 +5,8 @@ cpi_u_rs_raw|stem|877e4417d87c4b0b|805f53801fda8d26|2c530c1562a7fbd1|558666760|d
 cpi_u_x1_data|stem|da45663bb64380d8|08595f3b49af6999|91c8798a92871f66|-185363300|data-raw/processed/cpi_u_x1_monthly_nsa.csv*data/cpi_u_x1_monthly_nsa.rda*data-raw/processed/cpi_u_x1_annual.csv*data/cpi_u_x1_annual.rda|t20238.624732167s|s3675b|3675|file|local|vector|||0.109||
 fed_mw_monthly_data|stem|a90e0a53f16a5f40|5d6f6367ee6c3576|74d39e94c1a6e9de|941006101||t20440.6967913189s|s632b|632|rds|local|vector|||0.361||
 fed_mw_annual_data|stem|4863082657d8b294|51bc43577ffb7886|39955a20ee929918|-1921098597|data-raw/processed/us_minimum_wage_annual.csv*data/us_minimum_wage_annual.rda|t20440.6967923143s|s1368b|1368|file|local|vector|||0.033||
-c_cpi_u_raw|stem|67cbc0632a76554f|b8dccdaf45747511|8c4183b0f2f901de|1190310224|data-raw/raw/c_cpi_u_nsa.csv|t20466.6656692278s|s5115b|5115|file|local|vector|||1.228||
-pce_monthly_raw|stem|655ed2a8dc34542f|7c187b07a3fe8b6c|771f9a53653b235c|-1999646557|data-raw/raw/pce_monthly_sa.csv|t20466.6657047748s|s12062b|12062|file|local|vector|||3.01||
-cpi_u_nsa_raw|stem|0fe8df6f894403d6|203f1b1925cbab23|4eff910f781d6f32|-1324096073|data-raw/raw/cpi_u_nsa.csv|t20466.6657150766s|s15929b|15929|file|local|vector|||0.817||
 pce_annual_raw|stem|7423b44a8fa910e2|912d5c643fa422ad|a26cbab9d41477da|-1972308675|data-raw/raw/pce_annual.csv|t20466.6657196371s|s1149b|1149|file|local|vector|||0.369||
-pce_quarterly_raw|stem|2417135f656f4a10|9117ae072aa6c820|9bcf751c2480c973|-612556484|data-raw/raw/pce_quarterly_sa.csv|t20466.665726941s|s4436b|4436|file|local|vector|||0.607||
-cpi_u_sa_raw|stem|5a10ae3568d4d5c8|32d9ca96981190f9|d4ad55755d6b997d|1451996581|data-raw/raw/cpi_u_sa.csv|t20466.665735657s|s14909b|14909|file|local|vector|||0.74||
-pce_data|stem|f8f4ea0e5de26be2|7e1fa3ef51bdfb83|2b70363ab298226d|1257237784|data-raw/processed/pce_monthly_sa.csv*data/pce_monthly_sa.rda*data-raw/processed/pce_quarterly_sa.csv*data/pce_quarterly_sa.rda*data-raw/processed/pce_annual.csv*data/pce_annual.rda|t20466.665744836s|s24306b|24306|file|local|vector|||0.187||
-.Random.seed|object|2a1a069259ada9a2
+.Random.seed|object|f70fda4e9694d2f5
 create_pce|function|5b6b01aa97ea9756
 fetch_c_cpi_u|function|cd6666414746a468
 read_c_cpi_u|function|fba215daca134087
@@ -30,15 +24,21 @@ chain_to_base|function|8ee5c1ab1591c5b8
 create_fed_mw_monthly|function|556b02fd5c33c016
 fetch_pce_monthly_sa|function|f1e62c15ba25cda9
 fetch_pce_quarterly_sa|function|06c01632fadec954
-create_c_cpi_u|function|489cc0a129922427
-create_cpi_u|function|454add84fcc9e03a
-create_cpi_u_rs|function|707b426bab9c7a9a
+create_c_cpi_u|function|2fbc17fa9454a3af
+create_cpi_u|function|4f488ee4d2dc687a
+create_cpi_u_rs|function|cab633030a082194
 create_cpi_u_x1|function|93e7302ffdcd7f0e
 summarize_datasets|function|f8dbe39e40f4c982
 create_c_cpi_u_extended|function|968e17fc639d9017
 catalog_data|function|435f211649060670
-c_cpi_u_data|stem|d85b9c1c931ebe6d|683c246f8e98c9b2|e4d8246259c61e80|1652930167|data-raw/processed/c_cpi_u_monthly_nsa.csv*data/c_cpi_u_monthly_nsa.rda*data-raw/processed/c_cpi_u_quarterly_nsa.csv*data/c_cpi_u_quarterly_nsa.rda*data-raw/processed/c_cpi_u_annual.csv*data/c_cpi_u_annual.rda|t20466.6774130108s|s9100b|9100|file|local|vector|||0.353||
-cpi_u_rs_data|stem|5fc2675d2ddaeef3|85af6fbd26ac25c6|ad98aa0a44ae7096|-511071579|data-raw/processed/cpi_u_rs_monthly_nsa.csv*data/cpi_u_rs_monthly_nsa.rda*data-raw/processed/cpi_u_rs_annual.csv*data/cpi_u_rs_annual.rda|t20466.677414967s|s10429b|10429|file|local|vector|||0.144||
-cpi_u_data|stem|3e2a044738cd6960|e8e74356c2628d17|37f3a1216bb84582|2023313701|data-raw/processed/cpi_u_monthly_nsa.csv*data/cpi_u_monthly_nsa.rda*data-raw/processed/cpi_u_monthly_sa.csv*data/cpi_u_monthly_sa.rda*data-raw/processed/cpi_u_quarterly_nsa.csv*data/cpi_u_quarterly_nsa.rda*data-raw/processed/cpi_u_quarterly_sa.csv*data/cpi_u_quarterly_sa.rda*data-raw/processed/cpi_u_annual.csv*data/cpi_u_annual.rda|t20466.6774224908s|s46791b|46791|file|local|vector|||0.578|There was 1 warning in `mutate()`. ℹ In argument: `value = as.numeric(value)`. Caused by warning: ! NAs introduced by coercion. There was 1 warning in `mutate()`. ℹ In argument: `value = as.numeric(value)`. Caused by warning: ! NAs introduced by coercion|
-c_cpi_u_extended_data|stem|24236bb3b8f3d82d|7e91959e39fb3e6e|ef03d0d0e0065dca|-781456742|data-raw/processed/c_cpi_u_extended_monthly_nsa.csv*data/c_cpi_u_extended_monthly_nsa.rda*data-raw/processed/c_cpi_u_extended_monthly_sa.csv*data/c_cpi_u_extended_monthly_sa.rda*data-raw/processed/c_cpi_u_extended_quarterly_nsa.csv*data/c_cpi_u_extended_quarterly_nsa.rda*data-raw/processed/c_cpi_u_extended_quaterly_sa.csv*data/c_cpi_u_extended_quarterly_sa.rda*data-raw/processed/c_cpi_u_extended_annual.csv*data/c_cpi_u_extended_annual.rda|t20466.6774294821s|s42422b|42422|file|local|vector|||0.585||
-available_data|stem|1d86271f7fe02dcd|74aa2659126c4ea1|bca066b352f65e38|-98316816|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t20466.6774336375s|s1789b|1789|file|local|vector|||0.343||
+c_cpi_u_raw|stem|67cbc0632a76554f|b8dccdaf45747511|8c4183b0f2f901de|1190310224|data-raw/raw/c_cpi_u_nsa.csv|t20466.7416502389s|s5115b|5115|file|local|vector|||1.228||
+pce_monthly_raw|stem|655ed2a8dc34542f|7c187b07a3fe8b6c|771f9a53653b235c|-1999646557|data-raw/raw/pce_monthly_sa.csv|t20466.7416502389s|s12062b|12062|file|local|vector|||3.01||
+cpi_u_nsa_raw|stem|0fe8df6f894403d6|203f1b1925cbab23|4eff910f781d6f32|-1324096073|data-raw/raw/cpi_u_nsa.csv|t20466.7416502389s|s15929b|15929|file|local|vector|||0.817||
+pce_quarterly_raw|stem|2417135f656f4a10|9117ae072aa6c820|9bcf751c2480c973|-612556484|data-raw/raw/pce_quarterly_sa.csv|t20466.7416502389s|s4436b|4436|file|local|vector|||0.607||
+cpi_u_sa_raw|stem|5a10ae3568d4d5c8|32d9ca96981190f9|d4ad55755d6b997d|1451996581|data-raw/raw/cpi_u_sa.csv|t20466.7416502389s|s14909b|14909|file|local|vector|||0.74||
+c_cpi_u_data|stem|d85b9c1c931ebe6d|683c246f8e98c9b2|2ecf9e39253e96b1|1652930167|data-raw/processed/c_cpi_u_monthly_nsa.csv*data/c_cpi_u_monthly_nsa.rda*data-raw/processed/c_cpi_u_quarterly_nsa.csv*data/c_cpi_u_quarterly_nsa.rda*data-raw/processed/c_cpi_u_annual.csv*data/c_cpi_u_annual.rda|t20466.7488494027s|s9100b|9100|file|local|vector|||0.31||
+cpi_u_rs_data|stem|5fc2675d2ddaeef3|85af6fbd26ac25c6|14db170880827ba4|-511071579|data-raw/processed/cpi_u_rs_monthly_nsa.csv*data/cpi_u_rs_monthly_nsa.rda*data-raw/processed/cpi_u_rs_annual.csv*data/cpi_u_rs_annual.rda|t20466.7488514167s|s10429b|10429|file|local|vector|||0.149||
+pce_data|stem|f8f4ea0e5de26be2|7e1fa3ef51bdfb83|2b70363ab298226d|1257237784|data-raw/processed/pce_monthly_sa.csv*data/pce_monthly_sa.rda*data-raw/processed/pce_quarterly_sa.csv*data/pce_quarterly_sa.rda*data-raw/processed/pce_annual.csv*data/pce_annual.rda|t20466.7416502621s|s24306b|24306|file|local|vector|||0.187||
+cpi_u_data|stem|3e2a044738cd6960|e8e74356c2628d17|db2842c2c279c6b7|2023313701|data-raw/processed/cpi_u_monthly_nsa.csv*data/cpi_u_monthly_nsa.rda*data-raw/processed/cpi_u_monthly_sa.csv*data/cpi_u_monthly_sa.rda*data-raw/processed/cpi_u_quarterly_nsa.csv*data/cpi_u_quarterly_nsa.rda*data-raw/processed/cpi_u_quarterly_sa.csv*data/cpi_u_quarterly_sa.rda*data-raw/processed/cpi_u_annual.csv*data/cpi_u_annual.rda|t20466.7488577946s|s46791b|46791|file|local|vector|||0.5|There was 1 warning in `mutate()`. ℹ In argument: `value = as.numeric(value)`. Caused by warning: ! NAs introduced by coercion. There was 1 warning in `mutate()`. ℹ In argument: `value = as.numeric(value)`. Caused by warning: ! NAs introduced by coercion|
+c_cpi_u_extended_data|stem|24236bb3b8f3d82d|7e91959e39fb3e6e|ef03d0d0e0065dca|-781456742|data-raw/processed/c_cpi_u_extended_monthly_nsa.csv*data/c_cpi_u_extended_monthly_nsa.rda*data-raw/processed/c_cpi_u_extended_monthly_sa.csv*data/c_cpi_u_extended_monthly_sa.rda*data-raw/processed/c_cpi_u_extended_quarterly_nsa.csv*data/c_cpi_u_extended_quarterly_nsa.rda*data-raw/processed/c_cpi_u_extended_quaterly_sa.csv*data/c_cpi_u_extended_quarterly_sa.rda*data-raw/processed/c_cpi_u_extended_annual.csv*data/c_cpi_u_extended_annual.rda|t20466.7416502505s|s42422b|42422|file|local|vector|||0.585||
+available_data|stem|1d86271f7fe02dcd|74aa2659126c4ea1|bca066b352f65e38|-98316816|data-raw/processed/available_price_indexes.csv*data/available_price_indexes.rda|t20466.7416502505s|s1789b|1789|file|local|vector|||0.343||
