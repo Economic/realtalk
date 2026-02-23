@@ -56,7 +56,7 @@ us_minimum_wage_annual |>
   ) +
   scale_x_continuous(breaks = seq(1940, 2020, 10)) +
   #expand_limits(y = -0.013) +
-  labs(x = NULL, y = NULL, title = "US national minimum wage, in nominal and real terms (2024$)") +
+  labs(x = NULL, y = NULL, title = "US national minimum wage, in nominal and real terms (2025$)") +
   annotate(
     "text",
     label = "Real minimum wage",
