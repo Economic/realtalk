@@ -37,7 +37,7 @@ color_2 <- "#414487"
 colors <- c("real" = color_2, "nominal" = color_1)
 
 index_base = c_cpi_u_extended_annual |> 
-  filter(year == 2024) |> 
+  filter(year == 2025) |> 
   pull(c_cpi_u_extended)
 
 us_minimum_wage_annual |> 

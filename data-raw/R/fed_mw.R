@@ -5,7 +5,7 @@ create_fed_mw_annual <- function(raw_csv) {
   mw_csv <- "data-raw/processed/us_minimum_wage_annual.csv"
   mw_rda <- "data/us_minimum_wage_annual.rda"
 
-  years_data <- enframe(1938:2025, name = NULL, value = "year")
+  years_data <- enframe(1938:2026, name = NULL, value = "year")
 
   us_minimum_wage <- raw_csv %>%
     read_csv(show_col_types = FALSE) %>%
@@ -28,7 +28,7 @@ create_fed_mw_monthly <- function(raw_csv) {
   mw_csv <- "data-raw/processed/us_minimum_wage_monthly.csv"
   mw_rda <- "data/us_minimum_wage_monthly.rda"
 
-  final_yearmonth_date <- "2025m12"
+  final_yearmonth_date <- "2026m2"
   current_fed_mw <- 7.25
 
   us_minimum_wage_monthly <- raw_csv %>%

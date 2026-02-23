@@ -1,3 +1,6 @@
+## Version 2026.02.23
+* update PCE through December 2025
+
 ## Version 2026.02.13
 * update CPI-based data through January 2026 and PCE through November 2025
 
