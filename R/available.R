@@ -20,5 +20,3 @@
 #' @examples
 #' available_price_indexes
 "available_price_indexes"
-
-

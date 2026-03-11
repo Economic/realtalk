@@ -35,5 +35,3 @@
 #' @rdname cpi_u_x1
 #' @format NULL
 "cpi_u_x1_annual"
-
-

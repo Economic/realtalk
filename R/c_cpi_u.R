@@ -52,5 +52,3 @@
 #' @rdname c_cpi_u
 #' @format NULL
 "c_cpi_u_annual"
-
-

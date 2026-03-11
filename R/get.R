@@ -20,8 +20,7 @@ get_price_index <- function(index_name, frequency, seasonal = NA) {
 
   if (is.na(seasonal)) {
     valid_name <- paste0(index_name, frequency)
-  }
-  else {
+  } else {
     valid_name <- paste0(index_name, frequency, seasonal)
   }
 
@@ -36,16 +35,17 @@ get_price_index <- function(index_name, frequency, seasonal = NA) {
     stop(
       "Specified index_name in get_price_index() does not uniquely match entry in available_price_indexes"
     )
-  }
-  else {
+  } else {
     get(available[["package_data_name"]])
   }
 }
 
-price_inflate_annual <- function(variable, index, year_base) {
+price_inflate_annual <- function(variable, index, year_base) {}
 
-}
-
-price_inflate_monthly <- function(variable, index, year_base, month_base, seasonal) {
-
-}
+price_inflate_monthly <- function(
+  variable,
+  index,
+  year_base,
+  month_base,
+  seasonal
+) {}

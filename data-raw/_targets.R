@@ -2,10 +2,10 @@
 source("data-raw/packages.R")
 
 ## Globals
-download_date <- ymd("2026-02-23")
+download_date <- ymd("2026-03-11")
 
 ## Functions
-lapply(list.files("./data-raw/R", full.names = TRUE), source)
+tar_source("./data-raw/R")
 
 tar_plan(
   # raw data files

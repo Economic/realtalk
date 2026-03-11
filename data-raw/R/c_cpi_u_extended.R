@@ -1,5 +1,9 @@
-create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_cpi_u_data) {
-
+create_c_cpi_u_extended <- function(
+  cpi_u_data,
+  cpi_u_x1_data,
+  cpi_u_rs_data,
+  c_cpi_u_data
+) {
   cpi_u_nsa_path <- tar_read(cpi_u_data) %>%
     str_subset("cpi_u_monthly_nsa.rda")
   cpi_u_sa_path <- tar_read(cpi_u_data) %>%
@@ -45,12 +49,14 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
     chain_to_base_annual(cpi_u_rs, cpi_late, 2000) |>
     chain_to_base_annual(cpi_u_x1, cpi_u_rs, 1978) |>
     chain_to_base_annual(cpi_early, cpi_u_x1, 1967) |>
-    mutate(value = case_when(
-      year <= 1966 ~ cpi_early,
-      year >= 1967 & year <= 1977 ~ cpi_u_x1,
-      year >= 1978 & year <= 1999 ~ cpi_u_rs,
-      year >= 2000 ~ cpi_late
-    )) |>
+    mutate(
+      value = case_when(
+        year <= 1966 ~ cpi_early,
+        year >= 1967 & year <= 1977 ~ cpi_u_x1,
+        year >= 1978 & year <= 1999 ~ cpi_u_rs,
+        year >= 2000 ~ cpi_late
+      )
+    ) |>
     select(year, c_cpi_u_extended = value) |>
     mutate(c_cpi_u_extended = round(c_cpi_u_extended, digits = 1)) |>
     arrange(year)
@@ -103,13 +109,16 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
     rename(cpi_monthly = c_cpi_u) |>
     full_join(c_cpi_u_extended_annual, by = "year") |>
     rename(cpi_annual = c_cpi_u_extended) |>
-    mutate(value = case_when(
-      year <= 1966 ~ cpi_u_ratio * cpi_annual,
-      year >= 1967 & year <= 1977 ~ cpi_u_x1_ratio * cpi_annual,
-      year >= 1978 & year <= 1999 ~ cpi_u_rs_ratio * cpi_annual,
-      year >= 2000 ~ cpi_monthly
-    )) |>
+    mutate(
+      value = case_when(
+        year <= 1966 ~ cpi_u_ratio * cpi_annual,
+        year >= 1967 & year <= 1977 ~ cpi_u_x1_ratio * cpi_annual,
+        year >= 1978 & year <= 1999 ~ cpi_u_rs_ratio * cpi_annual,
+        year >= 2000 ~ cpi_monthly
+      )
+    ) |>
     select(year, month, c_cpi_u_extended = value) |>
+    interpolate_missing_months(c_cpi_u_extended, ym("2025m10")) |>
     mutate(c_cpi_u_extended = round(c_cpi_u_extended, digits = 1)) |>
     arrange(year, month)
 
@@ -123,6 +132,7 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
       c_cpi_u_extended = c_cpi_u_extended * sa_factor
     ) %>%
     select(year, month, c_cpi_u_extended) %>%
+    interpolate_missing_months(c_cpi_u_extended, ym("2025m10")) %>%
     mutate(c_cpi_u_extended = round(c_cpi_u_extended, digits = 1)) %>%
     arrange(year, month)
 
@@ -151,7 +161,10 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   c_cpi_u_extended_quarterly_sa <- c_cpi_u_extended_monthly_sa |>
     # only quarter-ize data where 3 months of values exist
     mutate(quarter = quarter(month)) |>
-    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    mutate(
+      month_count = sum(!is.na(c_cpi_u_extended)),
+      .by = c(year, quarter)
+    ) %>%
     filter(month_count == 3) %>%
     summarize(
       c_cpi_u_extended = mean(c_cpi_u_extended),
@@ -163,7 +176,10 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   c_cpi_u_extended_quarterly_nsa <- c_cpi_u_extended_monthly_nsa |>
     # only quarter-ize data where 3 months of values exist
     mutate(quarter = quarter(month)) |>
-    mutate(month_count = sum(!is.na(month)), .by = c(year, quarter)) %>%
+    mutate(
+      month_count = sum(!is.na(c_cpi_u_extended)),
+      .by = c(year, quarter)
+    ) %>%
     filter(month_count == 3) %>%
     summarize(
       c_cpi_u_extended = mean(c_cpi_u_extended),
@@ -191,5 +207,4 @@ create_c_cpi_u_extended <- function(cpi_u_data, cpi_u_x1_data, cpi_u_rs_data, c_
   ### ALL FILENAMES
   output <- c(output_monthly, output_quarterly, output_annual)
   output
-
 }

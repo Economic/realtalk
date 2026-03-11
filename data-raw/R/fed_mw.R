@@ -1,7 +1,6 @@
 library(tidyverse)
 
 create_fed_mw_annual <- function(raw_csv) {
-
   mw_csv <- "data-raw/processed/us_minimum_wage_annual.csv"
   mw_rda <- "data/us_minimum_wage_annual.rda"
 
@@ -34,7 +33,10 @@ create_fed_mw_monthly <- function(raw_csv) {
   us_minimum_wage_monthly <- raw_csv %>%
     read_csv(show_col_types = FALSE) %>%
     mutate(date = yearmonth(mdy(date))) %>%
-    add_row(date = yearmonth(final_yearmonth_date), fed_min_wage = current_fed_mw) %>%
+    add_row(
+      date = yearmonth(final_yearmonth_date),
+      fed_min_wage = current_fed_mw
+    ) %>%
     as_tsibble(index = date) %>%
     fill_gaps() %>%
     as_tibble() %>%
@@ -70,5 +72,3 @@ create_fed_mw_annual <- function(monthly_mw_data) {
   output <- c(mw_csv, mw_rda)
   output
 }
-
-

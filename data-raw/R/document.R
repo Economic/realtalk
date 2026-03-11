@@ -16,7 +16,6 @@ catalog_data <- function(...) {
 
   output <- c(available_csv, available_rda)
   output
-
 }
 
 summarize_datasets <- function(x) {
@@ -75,11 +74,9 @@ single_dataset_info <- function(x) {
     pull(max_date)
 
   documented_data <- tribble(
-    ~index_name, ~frequency, ~seasonal, ~min_date, ~max_date, ~package_data_name,
-    index_name, frequency, seasonal, min_date, max_date, file
+    ~index_name , ~frequency , ~seasonal , ~min_date , ~max_date , ~package_data_name ,
+    index_name  , frequency  , seasonal  , min_date  , max_date  , file
   )
 
   documented_data
-
 }
-

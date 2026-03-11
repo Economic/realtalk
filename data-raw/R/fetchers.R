@@ -62,7 +62,7 @@ fetch_pce_monthly_sa <- function(download_date) {
   pce_monthly_sa_file_path <- "data-raw/raw/pce_monthly_sa.csv"
 
   beaSpecs <- list(
-    'UserID' = BEA_API_KEY ,
+    'UserID' = BEA_API_KEY,
     'Method' = 'GetData',
     'datasetname' = 'NIPA',
     'TableName' = 'T20804',
@@ -87,7 +87,7 @@ fetch_pce_annual <- function(download_date) {
   pce_annual_file_path <- "data-raw/raw/pce_annual.csv"
 
   beaSpecs <- list(
-    'UserID' = BEA_API_KEY ,
+    'UserID' = BEA_API_KEY,
     'Method' = 'GetData',
     'datasetname' = 'NIPA',
     'TableName' = 'T20304',
@@ -103,7 +103,6 @@ fetch_pce_annual <- function(download_date) {
     write_csv(pce_annual_file_path)
 
   pce_annual_file_path
-
 }
 
 fetch_pce_quarterly_sa <- function(download_date) {
@@ -113,7 +112,7 @@ fetch_pce_quarterly_sa <- function(download_date) {
   pce_quarterly_sa_file_path <- "data-raw/raw/pce_quarterly_sa.csv"
 
   beaSpecs <- list(
-    'UserID' = BEA_API_KEY ,
+    'UserID' = BEA_API_KEY,
     'Method' = 'GetData',
     'datasetname' = 'NIPA',
     'TableName' = 'T20304',
@@ -130,8 +129,3 @@ fetch_pce_quarterly_sa <- function(download_date) {
 
   pce_quarterly_sa_file_path
 }
-
-
-
-
-

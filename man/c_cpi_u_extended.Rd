@@ -49,6 +49,11 @@ a multiplication of the non-seasonally adjusted
 The quarterly \code{c_cpi_u_extended_quarterly_nsa} and \code{c_cpi_u_extended_quarterly_sa}
 series are the quarterly means of their respective monthly series.
 
+For months where CPI data was not published (e.g., October 2025), the
+monthly extended series values are linearly interpolated from the
+adjacent months' values. The quarterly series are then computed as usual
+from the monthly values including any interpolated months.
+
 For annual statistics, the U.S. Census Bureau currently uses a similar
 combination of price indexes to extend the C-CPI-U:
 \url{https://www.census.gov/topics/income-poverty/income/guidance/current-vs-constant-dollars.html}.
