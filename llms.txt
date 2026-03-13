@@ -1,0 +1,162 @@
+# realtalk
+
+realtalk makes it easy to use common US price indexes in R.
+
+![](reference/figures/README-unnamed-chunk-2-1.png)
+
+## Loading the data
+
+`realtalk` is mostly a data package and includes several datasets of
+common US price indexes, like the CPI-U-RS:
+
+``` r
+library(realtalk)
+cpi_u_rs_annual
+#> # A tibble: 47 × 2
+#>     year cpi_u_rs
+#>    <dbl>    <dbl>
+#>  1  1978     104.
+#>  2  1979     114.
+#>  3  1980     127.
+#>  4  1981     139.
+#>  5  1982     148.
+#>  6  1983     154.
+#>  7  1984     160.
+#>  8  1985     166.
+#>  9  1986     168.
+#> 10  1987     174.
+#> # ℹ 37 more rows
+```
+
+You can see what datasets are available by loading
+`available_price_indexes`:
+
+``` r
+available_price_indexes
+#> # A tibble: 20 × 6
+#>    index_name        frequency seasonal min_date max_date package_data_name     
+#>    <chr>             <chr>     <chr>    <chr>    <chr>    <chr>                 
+#>  1 C-CPI-U           annual    <NA>     2000     2025     c_cpi_u_annual        
+#>  2 C-CPI-U           monthly   NSA      Dec 1999 Feb 2026 c_cpi_u_monthly_nsa   
+#>  3 C-CPI-U           quarterly NSA      2000q1   2025q4   c_cpi_u_quarterly_nsa 
+#>  4 C-CPI-U, extended annual    <NA>     1937     2025     c_cpi_u_extended_annu…
+#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 Feb 2026 c_cpi_u_extended_mont…
+#>  6 C-CPI-U, extended monthly   SA       Jan 1947 Feb 2026 c_cpi_u_extended_mont…
+#>  7 C-CPI-U, extended quarterly NSA      1937q1   2025q4   c_cpi_u_extended_quar…
+#>  8 C-CPI-U, extended quarterly SA       1947q1   2025q4   c_cpi_u_extended_quar…
+#>  9 CPI-U             annual    <NA>     1937     2025     cpi_u_annual          
+#> 10 CPI-U             monthly   NSA      Jan 1937 Feb 2026 cpi_u_monthly_nsa     
+#> 11 CPI-U             monthly   SA       Jan 1947 Feb 2026 cpi_u_monthly_sa      
+#> 12 CPI-U             quarterly NSA      1937q1   2025q4   cpi_u_quarterly_nsa   
+#> 13 CPI-U             quarterly SA       1947q1   2025q4   cpi_u_quarterly_sa    
+#> 14 CPI-U-RS          annual    <NA>     1978     2024     cpi_u_rs_annual       
+#> 15 CPI-U-RS          monthly   NSA      Dec 1977 Dec 2024 cpi_u_rs_monthly_nsa  
+#> 16 CPI-U-X1          annual    <NA>     1967     1982     cpi_u_x1_annual       
+#> 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  
+#> 18 PCE               annual    <NA>     1929     2025     pce_annual            
+#> 19 PCE               monthly   SA       Jan 1959 Dec 2025 pce_monthly_sa        
+#> 20 PCE               quarterly SA       1947q1   2025q4   pce_quarterly_sa
+```
+
+The `package_data_name` column contains the internal name of each
+dataset:
+
+``` r
+pce_monthly_sa
+#> # A tibble: 804 × 3
+#>     year month   pce
+#>    <dbl> <dbl> <dbl>
+#>  1  1959     1  15.2
+#>  2  1959     2  15.2
+#>  3  1959     3  15.2
+#>  4  1959     4  15.2
+#>  5  1959     5  15.2
+#>  6  1959     6  15.3
+#>  7  1959     7  15.3
+#>  8  1959     8  15.3
+#>  9  1959     9  15.4
+#> 10  1959    10  15.4
+#> # ℹ 794 more rows
+```
+
+You can also use
+[`get_price_index()`](https://economic.github.io/realtalk/reference/get_price_index.md):
+
+``` r
+get_price_index("PCE", "monthly", "SA")
+#> # A tibble: 804 × 3
+#>     year month   pce
+#>    <dbl> <dbl> <dbl>
+#>  1  1959     1  15.2
+#>  2  1959     2  15.2
+#>  3  1959     3  15.2
+#>  4  1959     4  15.2
+#>  5  1959     5  15.2
+#>  6  1959     6  15.3
+#>  7  1959     7  15.3
+#>  8  1959     8  15.3
+#>  9  1959     9  15.4
+#> 10  1959    10  15.4
+#> # ℹ 794 more rows
+```
+
+## Installation
+
+``` r
+install.packages('realtalk', repos = c('https://economic.r-universe.dev'))
+```
+
+# Package index
+
+## Datasets
+
+Included datasets.
+
+- [`cpi_u_monthly_nsa`](https://economic.github.io/realtalk/reference/cpi_u.md)
+  [`cpi_u_monthly_sa`](https://economic.github.io/realtalk/reference/cpi_u.md)
+  [`cpi_u_quarterly_nsa`](https://economic.github.io/realtalk/reference/cpi_u.md)
+  [`cpi_u_quarterly_sa`](https://economic.github.io/realtalk/reference/cpi_u.md)
+  [`cpi_u_annual`](https://economic.github.io/realtalk/reference/cpi_u.md)
+  : Consumer Price Index for Urban Consumers (CPI-U) data
+- [`c_cpi_u_monthly_nsa`](https://economic.github.io/realtalk/reference/c_cpi_u.md)
+  [`c_cpi_u_quarterly_nsa`](https://economic.github.io/realtalk/reference/c_cpi_u.md)
+  [`c_cpi_u_annual`](https://economic.github.io/realtalk/reference/c_cpi_u.md)
+  : Chained Consumer Price Index for Urban Consumers (C-CPI-U) data
+- [`c_cpi_u_extended_monthly_nsa`](https://economic.github.io/realtalk/reference/c_cpi_u_extended.md)
+  [`c_cpi_u_extended_monthly_sa`](https://economic.github.io/realtalk/reference/c_cpi_u_extended.md)
+  [`c_cpi_u_extended_quarterly_nsa`](https://economic.github.io/realtalk/reference/c_cpi_u_extended.md)
+  [`c_cpi_u_extended_quarterly_sa`](https://economic.github.io/realtalk/reference/c_cpi_u_extended.md)
+  [`c_cpi_u_extended_annual`](https://economic.github.io/realtalk/reference/c_cpi_u_extended.md)
+  : Extended Chained Consumer Price Index for Urban Consumers (C-CPI-U)
+- [`cpi_u_rs_monthly_nsa`](https://economic.github.io/realtalk/reference/cpi_u_rs.md)
+  [`cpi_u_rs_annual`](https://economic.github.io/realtalk/reference/cpi_u_rs.md)
+  : Consumer Price Index for Urban Consumers Research Series (CPI-U-RS)
+  data
+- [`cpi_u_x1_monthly_nsa`](https://economic.github.io/realtalk/reference/cpi_u_x1.md)
+  [`cpi_u_x1_annual`](https://economic.github.io/realtalk/reference/cpi_u_x1.md)
+  : Experimental Consumer Price Index for Urban Consumers X1 (CPI-U-X1)
+  data
+- [`pce_monthly_sa`](https://economic.github.io/realtalk/reference/pce.md)
+  [`pce_quarterly_sa`](https://economic.github.io/realtalk/reference/pce.md)
+  [`pce_annual`](https://economic.github.io/realtalk/reference/pce.md) :
+  Personal Consumption Expenditures (PCE) price index
+- [`us_minimum_wage_monthly`](https://economic.github.io/realtalk/reference/us_minimum_wage.md)
+  [`us_minimum_wage_annual`](https://economic.github.io/realtalk/reference/us_minimum_wage.md)
+  : Example nominal US federal minimum wage data
+
+## Documentation
+
+Tibbles documenting the data.
+
+- [`available_price_indexes`](https://economic.github.io/realtalk/reference/available_price_indexes.md)
+  :
+
+  Price indexes available in the `realtalk` package
+
+## Functions
+
+Package functions.
+
+- [`get_price_index()`](https://economic.github.io/realtalk/reference/get_price_index.md)
+  : Get price index series as a data frame
+
