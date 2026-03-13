@@ -1,5 +1,8 @@
 url: https://economic.github.io/realtalk/
 
+template:
+  package: epitemplate
+
 navbar:
   right:
    - icon: fa-github
