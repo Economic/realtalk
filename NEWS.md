@@ -1,3 +1,8 @@
+## Version 2026.4.10
+* update CPI-based data through March 2026
+* update PCE through February 2026
+* update CPI-R-US through 2025
+
 ## Version 2026.3.11
 * update CPI through February 2026
 

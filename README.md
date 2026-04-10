@@ -3,6 +3,7 @@
 # realtalk <a href="https://economic.github.io/realtalk/"><img src="man/figures/logo.png" align="right" width="120" /></a>
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 realtalk makes it easy to use common US price indexes in R.
@@ -17,7 +18,7 @@ common US price indexes, like the CPI-U-RS:
 ``` r
 library(realtalk)
 cpi_u_rs_annual
-#> # A tibble: 47 × 2
+#> # A tibble: 48 × 2
 #>     year cpi_u_rs
 #>    <dbl>    <dbl>
 #>  1  1978     104.
@@ -30,7 +31,7 @@ cpi_u_rs_annual
 #>  8  1985     166.
 #>  9  1986     168.
 #> 10  1987     174.
-#> # ℹ 37 more rows
+#> # ℹ 38 more rows
 ```
 
 You can see what datasets are available by loading
@@ -42,24 +43,24 @@ available_price_indexes
 #>    index_name        frequency seasonal min_date max_date package_data_name     
 #>    <chr>             <chr>     <chr>    <chr>    <chr>    <chr>                 
 #>  1 C-CPI-U           annual    <NA>     2000     2025     c_cpi_u_annual        
-#>  2 C-CPI-U           monthly   NSA      Dec 1999 Feb 2026 c_cpi_u_monthly_nsa   
-#>  3 C-CPI-U           quarterly NSA      2000q1   2025q4   c_cpi_u_quarterly_nsa 
+#>  2 C-CPI-U           monthly   NSA      Dec 1999 Mar 2026 c_cpi_u_monthly_nsa   
+#>  3 C-CPI-U           quarterly NSA      2000q1   2026q1   c_cpi_u_quarterly_nsa 
 #>  4 C-CPI-U, extended annual    <NA>     1937     2025     c_cpi_u_extended_annu…
-#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 Feb 2026 c_cpi_u_extended_mont…
-#>  6 C-CPI-U, extended monthly   SA       Jan 1947 Feb 2026 c_cpi_u_extended_mont…
-#>  7 C-CPI-U, extended quarterly NSA      1937q1   2025q4   c_cpi_u_extended_quar…
-#>  8 C-CPI-U, extended quarterly SA       1947q1   2025q4   c_cpi_u_extended_quar…
+#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 Mar 2026 c_cpi_u_extended_mont…
+#>  6 C-CPI-U, extended monthly   SA       Jan 1947 Mar 2026 c_cpi_u_extended_mont…
+#>  7 C-CPI-U, extended quarterly NSA      1937q1   2026q1   c_cpi_u_extended_quar…
+#>  8 C-CPI-U, extended quarterly SA       1947q1   2026q1   c_cpi_u_extended_quar…
 #>  9 CPI-U             annual    <NA>     1937     2025     cpi_u_annual          
-#> 10 CPI-U             monthly   NSA      Jan 1937 Feb 2026 cpi_u_monthly_nsa     
-#> 11 CPI-U             monthly   SA       Jan 1947 Feb 2026 cpi_u_monthly_sa      
-#> 12 CPI-U             quarterly NSA      1937q1   2025q4   cpi_u_quarterly_nsa   
-#> 13 CPI-U             quarterly SA       1947q1   2025q4   cpi_u_quarterly_sa    
-#> 14 CPI-U-RS          annual    <NA>     1978     2024     cpi_u_rs_annual       
-#> 15 CPI-U-RS          monthly   NSA      Dec 1977 Dec 2024 cpi_u_rs_monthly_nsa  
+#> 10 CPI-U             monthly   NSA      Jan 1937 Mar 2026 cpi_u_monthly_nsa     
+#> 11 CPI-U             monthly   SA       Jan 1947 Mar 2026 cpi_u_monthly_sa      
+#> 12 CPI-U             quarterly NSA      1937q1   2026q1   cpi_u_quarterly_nsa   
+#> 13 CPI-U             quarterly SA       1947q1   2026q1   cpi_u_quarterly_sa    
+#> 14 CPI-U-RS          annual    <NA>     1978     2025     cpi_u_rs_annual       
+#> 15 CPI-U-RS          monthly   NSA      Dec 1977 Dec 2025 cpi_u_rs_monthly_nsa  
 #> 16 CPI-U-X1          annual    <NA>     1967     1982     cpi_u_x1_annual       
 #> 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  
 #> 18 PCE               annual    <NA>     1929     2025     pce_annual            
-#> 19 PCE               monthly   SA       Jan 1959 Dec 2025 pce_monthly_sa        
+#> 19 PCE               monthly   SA       Jan 1959 Feb 2026 pce_monthly_sa        
 #> 20 PCE               quarterly SA       1947q1   2025q4   pce_quarterly_sa
 ```
 
@@ -68,7 +69,7 @@ dataset:
 
 ``` r
 pce_monthly_sa
-#> # A tibble: 804 × 3
+#> # A tibble: 806 × 3
 #>     year month   pce
 #>    <dbl> <dbl> <dbl>
 #>  1  1959     1  15.2
@@ -81,14 +82,14 @@ pce_monthly_sa
 #>  8  1959     8  15.3
 #>  9  1959     9  15.4
 #> 10  1959    10  15.4
-#> # ℹ 794 more rows
+#> # ℹ 796 more rows
 ```
 
 You can also use `get_price_index()`:
 
 ``` r
 get_price_index("PCE", "monthly", "SA")
-#> # A tibble: 804 × 3
+#> # A tibble: 806 × 3
 #>     year month   pce
 #>    <dbl> <dbl> <dbl>
 #>  1  1959     1  15.2
@@ -101,7 +102,7 @@ get_price_index("PCE", "monthly", "SA")
 #>  8  1959     8  15.3
 #>  9  1959     9  15.4
 #> 10  1959    10  15.4
-#> # ℹ 794 more rows
+#> # ℹ 796 more rows
 ```
 
 ## Installation

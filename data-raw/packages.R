@@ -10,5 +10,7 @@ options(usethis.quiet = TRUE, tidyverse.quiet = TRUE)
 # packages for this analysis
 library(tidyverse)
 library(readxl)
-library(blsR)
+library(epidatatools)
+library(epitargets)
 library(tsibble)
+library(cli)
