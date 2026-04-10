@@ -11,3 +11,5 @@
 ^altdoc$
 ^_quarto$
 ^.vscode$
+^\.claude$
+^CLAUDE\.md$

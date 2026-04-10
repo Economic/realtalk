@@ -8,3 +8,4 @@ altdoc/freeze.rds
 .vscode
 
 /.quarto/
+.DS_Store

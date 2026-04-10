@@ -4,13 +4,11 @@ library(tarchetypes)
 
 # conflicts and other options
 library(conflicted)
-conflict_prefer("filter", "dplyr", quiet = TRUE)
-options(usethis.quiet = TRUE)
+conflicts_prefer(dplyr::filter(), .quiet = TRUE)
+options(usethis.quiet = TRUE, tidyverse.quiet = TRUE)
 
 # packages for this analysis
-suppressPackageStartupMessages({
-  library(tidyverse)
-  library(readxl)
-  library(blsR)
-  library(tsibble)
-})
+library(tidyverse)
+library(readxl)
+library(blsR)
+library(tsibble)

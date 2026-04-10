@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(air:*)",
+      "Bash(awk:*)",
+      "Bash(cat:*)",
+      "Bash(diff:*)",
+      "Bash(echo:*)",
+      "Bash(fd:*)",
+      "Bash(find:*)",
+      "Bash(git checkout:*)",
+      "Bash(git diff:*)",
+      "Bash(git grep:*)",
+      "Bash(git log:*)",
+      "Bash(git mv:*)",
+      "Bash(git show:*)",
+      "Bash(git status:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(R:*)",
+      "Bash(rg:*)",
+      "Bash(Rscript:*)",
+      "Bash(sed:*)",
+      "Bash(sort:*)",
+      "Bash(tail:*)",
+      "Bash(time:*)",
+      "Bash(timeout:*)",
+      "Bash(touch:*)",
+      "Bash(tree:*)",
+      "Bash(uniq:*)",
+      "Bash(wc:*)",
+      "WebFetch(domain:cran.r-project.org)",
+      "WebFetch(domain:docs.ropensci.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:rdrr.io)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Read(.Renviron)",
+      "Read(.env)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v air >/dev/null 2>&1 && air format ."
+          }
+        ]
+      }
+    ]
+  }
+}
