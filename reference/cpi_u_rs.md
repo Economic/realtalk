@@ -56,7 +56,7 @@ and other series.
 
 ``` r
 cpi_u_rs_annual
-#> # A tibble: 47 × 2
+#> # A tibble: 48 × 2
 #>     year cpi_u_rs
 #>    <dbl>    <dbl>
 #>  1  1978     104.
@@ -69,5 +69,5 @@ cpi_u_rs_annual
 #>  8  1985     166.
 #>  9  1986     168.
 #> 10  1987     174.
-#> # ℹ 37 more rows
+#> # ℹ 38 more rows
 ```

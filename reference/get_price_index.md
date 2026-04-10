@@ -31,9 +31,9 @@ A tibble with the requested price index
 
 ``` r
 get_price_index("CPI-U-RS", "monthly", "NSA")
-#> # A tibble: 565 × 3
+#> # A tibble: 576 × 3
 #>     year month cpi_u_rs
-#>    <dbl> <dbl>    <dbl>
+#>    <int> <dbl>    <dbl>
 #>  1  1977    12     100 
 #>  2  1978     1     100.
 #>  3  1978     2     101.
@@ -44,5 +44,5 @@ get_price_index("CPI-U-RS", "monthly", "NSA")
 #>  8  1978     7     105 
 #>  9  1978     8     106.
 #> 10  1978     9     106.
-#> # ℹ 555 more rows
+#> # ℹ 566 more rows
 ```

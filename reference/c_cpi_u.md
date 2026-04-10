@@ -75,7 +75,7 @@ goes back to 1978.
 
 ``` r
 c_cpi_u_monthly_nsa
-#> # A tibble: 315 × 3
+#> # A tibble: 318 × 3
 #>     year month c_cpi_u
 #>    <dbl> <dbl>   <dbl>
 #>  1  1999    12    100 
@@ -88,5 +88,5 @@ c_cpi_u_monthly_nsa
 #>  8  2000     7    102.
 #>  9  2000     8    102.
 #> 10  2000     9    103.
-#> # ℹ 305 more rows
+#> # ℹ 308 more rows
 ```
