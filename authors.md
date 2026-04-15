@@ -11,12 +11,12 @@
 ## Citation
 
 Zipperer B (2026). *realtalk: Price index data for the US economy*. R
-package version 2026.4.10, <https://economic.github.io/realtalk/>.
+package version 2026.4.15, <https://economic.github.io/realtalk/>.
 
     @Manual{,
       title = {realtalk: Price index data for the US economy},
       author = {Ben Zipperer},
       year = {2026},
-      note = {R package version 2026.4.10},
+      note = {R package version 2026.4.15},
       url = {https://economic.github.io/realtalk/},
     }
