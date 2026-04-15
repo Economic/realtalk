@@ -1,3 +1,6 @@
+## Version 2026.4.15
+* correct error in chained CPI-U datasets due to duplicated months of data
+
 ## Version 2026.4.10
 * update CPI-based data through March 2026
 * update PCE through February 2026

@@ -1,6 +1,7 @@
 fetch_bls_series <- function(series_id, file_path, start_year, end_year) {
   get_bls(series_id, start = start_year, end = end_year) |>
     select(year, month, value) |>
+    assert_rows(col_concat, is_uniq, year, month) |>
     write_csv(file_path)
   file_path
 }
