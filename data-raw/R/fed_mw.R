@@ -1,12 +1,12 @@
 create_fed_mw_monthly <- function(raw_csv) {
-  final_yearmonth_date <- "2026m2"
+  final_year <- "2026"
   current_fed_mw <- 7.25
 
   raw_csv |>
     read_csv(show_col_types = FALSE) |>
     mutate(date = yearmonth(mdy(date))) |>
     add_row(
-      date = yearmonth(final_yearmonth_date),
+      date = yearmonth(paste0(final_year, "m12")),
       fed_min_wage = current_fed_mw
     ) |>
     as_tsibble(index = date) |>
