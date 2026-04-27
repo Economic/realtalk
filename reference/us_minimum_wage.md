@@ -47,7 +47,7 @@ Labor](https://www.dol.gov/agencies/whd/minimum-wage/history/chart)
 
 ``` r
 us_minimum_wage_monthly
-#> # A tibble: 1,049 × 3
+#> # A tibble: 1,059 × 3
 #>     year month minimum_wage
 #>    <dbl> <dbl>        <dbl>
 #>  1  1938    10         0.25
@@ -60,5 +60,5 @@ us_minimum_wage_monthly
 #>  8  1939     5         0.25
 #>  9  1939     6         0.25
 #> 10  1939     7         0.25
-#> # ℹ 1,039 more rows
+#> # ℹ 1,049 more rows
 ```

@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2026.4.26
+
+- ensure monthly minimum wage example data is full-year
+
 ## Version 2026.4.15
 
 - correct error in chained CPI-U datasets due to duplicated months of
