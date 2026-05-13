@@ -10,6 +10,7 @@ realtalk makes it easy to use common US price indexes in R.
 common US price indexes, like the CPI-U-RS:
 
 ``` r
+
 library(realtalk)
 cpi_u_rs_annual
 #> # A tibble: 48 × 2
@@ -32,6 +33,7 @@ You can see what datasets are available by loading
 `available_price_indexes`:
 
 ``` r
+
 available_price_indexes
 #> # A tibble: 20 × 6
 #>    index_name        frequency seasonal min_date max_date package_data_name     
@@ -62,6 +64,7 @@ The `package_data_name` column contains the internal name of each
 dataset:
 
 ``` r
+
 pce_monthly_sa
 #> # A tibble: 806 × 3
 #>     year month   pce
@@ -83,6 +86,7 @@ You can also use
 [`get_price_index()`](https://economic.github.io/realtalk/reference/get_price_index.md):
 
 ``` r
+
 get_price_index("PCE", "monthly", "SA")
 #> # A tibble: 806 × 3
 #>     year month   pce
@@ -103,5 +107,6 @@ get_price_index("PCE", "monthly", "SA")
 ## Installation
 
 ``` r
+
 install.packages('realtalk', repos = c('https://economic.r-universe.dev'))
 ```
