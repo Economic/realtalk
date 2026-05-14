@@ -17,6 +17,7 @@ Roxygen: list(markdown = TRUE)
 URL: https://economic.github.io/realtalk/, https://github.com/economic/realtalk
 BugReports: https://github.com/economic/realtalk/issues
 Config/Needs/website: economic/epitemplate
+Config/Needs/readme: tidyverse, hrbrthemes
 Suggests: 
     epidatatools,
     testthat (>= 3.0.0)
