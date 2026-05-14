@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">realtalk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2026.4.26</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2026.5.13</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 </h1>
 </div>
 <!-- badges: start -->
-<!-- badges: end -->
+
 <p>realtalk makes it easy to use common US price indexes in R.</p>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" alt="" width="100%"></p>
 <div class="section level2">
@@ -87,16 +87,16 @@
 <span><span class="co">#&gt;    index_name        frequency seasonal min_date max_date package_data_name     </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;             &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;                 </span></span>
 <span><span class="co">#&gt;  1 C-CPI-U           annual    &lt;NA&gt;     2000     2025     c_cpi_u_annual        </span></span>
-<span><span class="co">#&gt;  2 C-CPI-U           monthly   NSA      Dec 1999 Mar 2026 c_cpi_u_monthly_nsa   </span></span>
+<span><span class="co">#&gt;  2 C-CPI-U           monthly   NSA      Dec 1999 Apr 2026 c_cpi_u_monthly_nsa   </span></span>
 <span><span class="co">#&gt;  3 C-CPI-U           quarterly NSA      2000q1   2026q1   c_cpi_u_quarterly_nsa </span></span>
 <span><span class="co">#&gt;  4 C-CPI-U, extended annual    &lt;NA&gt;     1937     2025     c_cpi_u_extended_annu…</span></span>
-<span><span class="co">#&gt;  5 C-CPI-U, extended monthly   NSA      Jan 1937 Mar 2026 c_cpi_u_extended_mont…</span></span>
-<span><span class="co">#&gt;  6 C-CPI-U, extended monthly   SA       Jan 1947 Mar 2026 c_cpi_u_extended_mont…</span></span>
+<span><span class="co">#&gt;  5 C-CPI-U, extended monthly   NSA      Jan 1937 Apr 2026 c_cpi_u_extended_mont…</span></span>
+<span><span class="co">#&gt;  6 C-CPI-U, extended monthly   SA       Jan 1947 Apr 2026 c_cpi_u_extended_mont…</span></span>
 <span><span class="co">#&gt;  7 C-CPI-U, extended quarterly NSA      1937q1   2026q1   c_cpi_u_extended_quar…</span></span>
 <span><span class="co">#&gt;  8 C-CPI-U, extended quarterly SA       1947q1   2026q1   c_cpi_u_extended_quar…</span></span>
 <span><span class="co">#&gt;  9 CPI-U             annual    &lt;NA&gt;     1937     2025     cpi_u_annual          </span></span>
-<span><span class="co">#&gt; 10 CPI-U             monthly   NSA      Jan 1937 Mar 2026 cpi_u_monthly_nsa     </span></span>
-<span><span class="co">#&gt; 11 CPI-U             monthly   SA       Jan 1947 Mar 2026 cpi_u_monthly_sa      </span></span>
+<span><span class="co">#&gt; 10 CPI-U             monthly   NSA      Jan 1937 Apr 2026 cpi_u_monthly_nsa     </span></span>
+<span><span class="co">#&gt; 11 CPI-U             monthly   SA       Jan 1947 Apr 2026 cpi_u_monthly_sa      </span></span>
 <span><span class="co">#&gt; 12 CPI-U             quarterly NSA      1937q1   2026q1   cpi_u_quarterly_nsa   </span></span>
 <span><span class="co">#&gt; 13 CPI-U             quarterly SA       1947q1   2026q1   cpi_u_quarterly_sa    </span></span>
 <span><span class="co">#&gt; 14 CPI-U-RS          annual    &lt;NA&gt;     1978     2025     cpi_u_rs_annual       </span></span>
@@ -104,14 +104,14 @@
 <span><span class="co">#&gt; 16 CPI-U-X1          annual    &lt;NA&gt;     1967     1982     cpi_u_x1_annual       </span></span>
 <span><span class="co">#&gt; 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  </span></span>
 <span><span class="co">#&gt; 18 PCE               annual    &lt;NA&gt;     1929     2025     pce_annual            </span></span>
-<span><span class="co">#&gt; 19 PCE               monthly   SA       Jan 1959 Feb 2026 pce_monthly_sa        </span></span>
-<span><span class="co">#&gt; 20 PCE               quarterly SA       1947q1   2025q4   pce_quarterly_sa</span></span></code></pre></div>
+<span><span class="co">#&gt; 19 PCE               monthly   SA       Jan 1959 Mar 2026 pce_monthly_sa        </span></span>
+<span><span class="co">#&gt; 20 PCE               quarterly SA       1947q1   2026q1   pce_quarterly_sa</span></span></code></pre></div>
 <p>The <code>package_data_name</code> column contains the internal name of each dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pce_monthly_sa</span></span>
-<span><span class="co">#&gt; # A tibble: 806 × 3</span></span>
+<span><span class="co">#&gt; # A tibble: 807 × 3</span></span>
 <span><span class="co">#&gt;     year month   pce</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1  1959     1  15.2</span></span>
 <span><span class="co">#&gt;  2  1959     2  15.2</span></span>
 <span><span class="co">#&gt;  3  1959     3  15.2</span></span>
@@ -122,13 +122,13 @@
 <span><span class="co">#&gt;  8  1959     8  15.3</span></span>
 <span><span class="co">#&gt;  9  1959     9  15.4</span></span>
 <span><span class="co">#&gt; 10  1959    10  15.4</span></span>
-<span><span class="co">#&gt; # ℹ 796 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 797 more rows</span></span></code></pre></div>
 <p>You can also use <code><a href="reference/get_price_index.html">get_price_index()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_price_index.html">get_price_index</a></span><span class="op">(</span><span class="st">"PCE"</span>, <span class="st">"monthly"</span>, <span class="st">"SA"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 806 × 3</span></span>
+<span><span class="co">#&gt; # A tibble: 807 × 3</span></span>
 <span><span class="co">#&gt;     year month   pce</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1  1959     1  15.2</span></span>
 <span><span class="co">#&gt;  2  1959     2  15.2</span></span>
 <span><span class="co">#&gt;  3  1959     3  15.2</span></span>
@@ -139,16 +139,38 @@
 <span><span class="co">#&gt;  8  1959     8  15.3</span></span>
 <span><span class="co">#&gt;  9  1959     9  15.4</span></span>
 <span><span class="co">#&gt; 10  1959    10  15.4</span></span>
-<span><span class="co">#&gt; # ℹ 796 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 797 more rows</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<p>Install realtalk from r-universe:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'realtalk'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://economic.r-universe.dev'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
+<span>  <span class="st">"realtalk"</span>,</span>
+<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://economic.r-universe.dev"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>If you add the EPI r-universe repository to your <code>.Rprofile</code> with</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example .Rprofile</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  EPI <span class="op">=</span> <span class="st">"https://economic.r-universe.dev"</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>then you can simply</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"realtalk"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-  </main><aside class="col-md-3"><div class="license">
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/economic/realtalk/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/economic/realtalk/issues" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
@@ -173,7 +195,12 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/Economic/realtalk/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/Economic/realtalk/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

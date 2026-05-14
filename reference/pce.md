@@ -65,7 +65,7 @@ PCE. It has two columns:
 pce_annual
 #> # A tibble: 97 × 2
 #>     year   pce
-#>    <dbl> <dbl>
+#>    <int> <dbl>
 #>  1  1929  8.79
 #>  2  1930  8.41
 #>  3  1931  7.51

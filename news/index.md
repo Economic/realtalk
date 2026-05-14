@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2026.5.13
+
+- update CPI-based data through April 2026
+- update PCE through March 2026
+
 ## Version 2026.4.26
 
 - ensure monthly minimum wage example data is full-year
