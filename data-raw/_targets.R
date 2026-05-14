@@ -6,17 +6,49 @@ bls_missing <- c(ym("2025m10"))
 
 tar_assign({
   ## ── Static file inputs ──
-  us_minimum_wage_raw <- "data-raw/raw/us_minimum_wage.csv" |> tar_file()
-  cpi_u_x1_raw <- "data-raw/raw/cpi_u_x1.csv" |> tar_file()
-  cpi_u_rs_raw <- "data-raw/raw/r-cpi-u-rs-allitems.csv" |> tar_file()
+  us_minimum_wage_raw <- "data-raw/raw/static/us_minimum_wage.csv" |> tar_file()
+  cpi_u_x1_raw <- "data-raw/raw/static/cpi_u_x1.csv" |> tar_file()
+  cpi_u_rs_raw <- "data-raw/raw/static/r-cpi-u-rs-allitems.csv" |> tar_file()
 
   ## ── API fetches (re-run daily) ──
   cpi_u_nsa_raw <- fetch_cpi_u_nsa() |> tar_age_date()
   cpi_u_sa_raw <- fetch_cpi_u_sa() |> tar_age_date()
   c_cpi_u_raw <- fetch_c_cpi_u() |> tar_age_date()
-  pce_monthly_raw <- fetch_pce_monthly_sa() |> tar_age_date()
-  pce_quarterly_raw <- fetch_pce_quarterly_sa() |> tar_age_date()
-  pce_annual_raw <- fetch_pce_annual() |> tar_age_date()
+  pce_monthly_sa <- fetch_pce_monthly_sa() |> tar_age_date()
+  pce_quarterly_sa <- fetch_pce_quarterly_sa() |> tar_age_date()
+  pce_annual <- fetch_pce_annual() |> tar_age_date()
+
+  ## ── Raw CSV snapshots of fetched data ──
+  cpi_u_nsa_raw_csv <- create_csv(
+    cpi_u_nsa_raw,
+    "data-raw/raw/snapshots/cpi_u_nsa.csv"
+  ) |>
+    tar_file()
+  cpi_u_sa_raw_csv <- create_csv(
+    cpi_u_sa_raw,
+    "data-raw/raw/snapshots/cpi_u_sa.csv"
+  ) |>
+    tar_file()
+  c_cpi_u_raw_csv <- create_csv(
+    c_cpi_u_raw,
+    "data-raw/raw/snapshots/c_cpi_u_nsa.csv"
+  ) |>
+    tar_file()
+  pce_monthly_sa_raw_csv <- create_csv(
+    pce_monthly_sa,
+    "data-raw/raw/snapshots/pce_monthly_sa.csv"
+  ) |>
+    tar_file()
+  pce_quarterly_sa_raw_csv <- create_csv(
+    pce_quarterly_sa,
+    "data-raw/raw/snapshots/pce_quarterly_sa.csv"
+  ) |>
+    tar_file()
+  pce_annual_raw_csv <- create_csv(
+    pce_annual,
+    "data-raw/raw/snapshots/pce_annual.csv"
+  ) |>
+    tar_file()
 
   ## ── Clean monthly series ──
   cpi_u_monthly_nsa <- clean_bls_monthly(cpi_u_nsa_raw, "cpi_u") |> tar_target()
@@ -25,7 +57,6 @@ tar_assign({
   cpi_u_x1_monthly_nsa <- clean_cpi_u_x1(cpi_u_x1_raw) |> tar_target()
   cpi_u_rs_monthly_nsa <- clean_cpi_u_rs(cpi_u_rs_raw, bls_missing) |>
     tar_target()
-  pce_monthly_sa <- clean_pce(pce_monthly_raw) |> tar_target()
 
   ## ── Aggregate: quarterly ──
   cpi_u_quarterly_nsa <- monthly_to_quarterly(
@@ -47,9 +78,6 @@ tar_assign({
     c_cpi_u,
     known_missing = bls_missing
   ) |>
-    tar_target()
-
-  pce_quarterly_sa <- clean_pce_quarterly(pce_quarterly_raw) |>
     tar_target()
 
   ## ── Aggregate: annual ──
@@ -76,8 +104,6 @@ tar_assign({
     known_missing = bls_missing
   ) |>
     tar_target()
-
-  pce_annual <- clean_pce_annual(pce_annual_raw) |> tar_target()
 
   ## ── Extended C-CPI-U ──
   c_cpi_u_extended_annual <- create_c_cpi_u_extended_annual(

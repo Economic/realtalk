@@ -8,7 +8,20 @@ If the general targets scaffolding (`_targets.R`, etc.) does not exist, create
 
 ## Development workflow
 
-Re-run the targets pipeline after any changes: `Rscript -e 'targets::tar_make()'`. 
+### After any edit to pipeline code
+
+An edit to `_targets.R`, `packages.R`, or any function in `R/` is **not complete** until you have run `Rscript -e 'targets::tar_make()'` and observed it finish without error. This applies regardless of how small the change appears, including:
+
+- Renaming a variable or argument
+- Changing a default value
+- Reformatting or moving code between files
+- Edits you believe are "obviously correct"
+
+If a full `tar_make()` is too expensive (e.g. hits external APIs), scope it with `tar_make(names = c(...))` to the affected targets, but still run it. Never substitute reasoning ("the change is trivial") for execution.
+
+If you didn't run it, say so explicitly in your summary: *"I did not run `tar_make()` because …"* — don't let the omission go unmentioned.
+
+### Inspecting targets
 
 To inspect targets interactively or in ad hoc scripts, first call `targets::tar_load_globals()` to load all packages and functions, then use `tar_load()` or `tar_read()` to access built targets.
 

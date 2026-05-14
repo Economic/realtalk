@@ -1,11 +1,11 @@
-clean_bls_monthly <- function(csv, col_name) {
-  read_csv(csv, show_col_types = FALSE) |>
+clean_bls_monthly <- function(data, col_name) {
+  data |>
     select(year, month, !!col_name := value) |>
     arrange(year, month)
 }
 
-clean_c_cpi_u <- function(csv, known_missing) {
-  clean_bls_monthly(csv, "c_cpi_u") |>
+clean_c_cpi_u <- function(data, known_missing) {
+  clean_bls_monthly(data, "c_cpi_u") |>
     add_missing_month_rows(c_cpi_u, known_missing)
 }
 
@@ -61,16 +61,4 @@ clean_cpi_u_rs <- function(csv, known_missing = NULL) {
     filter(!is.na(cpi_u_rs)) |>
     select(year, month, cpi_u_rs) |>
     arrange(year, month)
-}
-
-clean_pce <- function(csv) {
-  read_csv(csv, show_col_types = FALSE)
-}
-
-clean_pce_quarterly <- function(csv) {
-  read_csv(csv, show_col_types = FALSE)
-}
-
-clean_pce_annual <- function(csv) {
-  read_csv(csv, show_col_types = FALSE)
 }

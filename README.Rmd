@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 # realtalk <a href="https://economic.github.io/realtalk/"><img src="man/figures/logo.png" align="right" width="120" /></a>
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/Economic/realtalk/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Economic/realtalk/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 realtalk makes it easy to use common US price indexes in R.
@@ -102,6 +103,24 @@ get_price_index("PCE", "monthly", "SA")
 ```
 
 ## Installation
+Install realtalk from r-universe:
+
 ``` r
-install.packages('realtalk', repos = c('https://economic.r-universe.dev'))
+install.packages(
+  "realtalk",
+  repos = c("https://economic.r-universe.dev", getOption("repos"))
+)
+```
+
+If you add the EPI r-universe repository to your `.Rprofile` with
+``` r
+# Example .Rprofile
+options(repos = c(
+  EPI = "https://economic.r-universe.dev",
+  getOption("repos")
+))
+```
+then you can simply
+``` r
+install.packages("realtalk")
 ```
