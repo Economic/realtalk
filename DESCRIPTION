@@ -14,9 +14,12 @@ Depends:
     R (>= 4.1)
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
-URL: https://economic.github.io/realtalk/
+URL: https://economic.github.io/realtalk/, https://github.com/economic/realtalk
+BugReports: https://github.com/economic/realtalk/issues
 Config/Needs/website: economic/epitemplate
 Suggests: 
     epidatatools,
     testthat (>= 3.0.0)
+Remotes:
+    economic/epidatatools
 Config/testthat/edition: 3
