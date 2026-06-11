@@ -14,6 +14,8 @@ Makes it easy to use US price index data like the CPI.
 Useful links:
 \itemize{
   \item \url{https://economic.github.io/realtalk/}
+  \item \url{https://github.com/economic/realtalk}
+  \item Report bugs at \url{https://github.com/economic/realtalk/issues}
 }
 
 }
