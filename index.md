@@ -39,16 +39,16 @@ available_price_indexes
 #>    index_name        frequency seasonal min_date max_date package_data_name     
 #>    <chr>             <chr>     <chr>    <chr>    <chr>    <chr>                 
 #>  1 C-CPI-U           annual    <NA>     2000     2025     c_cpi_u_annual        
-#>  2 C-CPI-U           monthly   NSA      Dec 1999 Apr 2026 c_cpi_u_monthly_nsa   
+#>  2 C-CPI-U           monthly   NSA      Dec 1999 May 2026 c_cpi_u_monthly_nsa   
 #>  3 C-CPI-U           quarterly NSA      2000q1   2026q1   c_cpi_u_quarterly_nsa 
 #>  4 C-CPI-U, extended annual    <NA>     1937     2025     c_cpi_u_extended_annu…
-#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 Apr 2026 c_cpi_u_extended_mont…
-#>  6 C-CPI-U, extended monthly   SA       Jan 1947 Apr 2026 c_cpi_u_extended_mont…
+#>  5 C-CPI-U, extended monthly   NSA      Jan 1937 May 2026 c_cpi_u_extended_mont…
+#>  6 C-CPI-U, extended monthly   SA       Jan 1947 May 2026 c_cpi_u_extended_mont…
 #>  7 C-CPI-U, extended quarterly NSA      1937q1   2026q1   c_cpi_u_extended_quar…
 #>  8 C-CPI-U, extended quarterly SA       1947q1   2026q1   c_cpi_u_extended_quar…
 #>  9 CPI-U             annual    <NA>     1937     2025     cpi_u_annual          
-#> 10 CPI-U             monthly   NSA      Jan 1937 Apr 2026 cpi_u_monthly_nsa     
-#> 11 CPI-U             monthly   SA       Jan 1947 Apr 2026 cpi_u_monthly_sa      
+#> 10 CPI-U             monthly   NSA      Jan 1937 May 2026 cpi_u_monthly_nsa     
+#> 11 CPI-U             monthly   SA       Jan 1947 May 2026 cpi_u_monthly_sa      
 #> 12 CPI-U             quarterly NSA      1937q1   2026q1   cpi_u_quarterly_nsa   
 #> 13 CPI-U             quarterly SA       1947q1   2026q1   cpi_u_quarterly_sa    
 #> 14 CPI-U-RS          annual    <NA>     1978     2025     cpi_u_rs_annual       
@@ -56,7 +56,7 @@ available_price_indexes
 #> 16 CPI-U-X1          annual    <NA>     1967     1982     cpi_u_x1_annual       
 #> 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  
 #> 18 PCE               annual    <NA>     1929     2025     pce_annual            
-#> 19 PCE               monthly   SA       Jan 1959 Mar 2026 pce_monthly_sa        
+#> 19 PCE               monthly   SA       Jan 1959 Apr 2026 pce_monthly_sa        
 #> 20 PCE               quarterly SA       1947q1   2026q1   pce_quarterly_sa
 ```
 
@@ -66,7 +66,7 @@ dataset:
 ``` r
 
 pce_monthly_sa
-#> # A tibble: 807 × 3
+#> # A tibble: 808 × 3
 #>     year month   pce
 #>    <int> <int> <dbl>
 #>  1  1959     1  15.2
@@ -79,7 +79,7 @@ pce_monthly_sa
 #>  8  1959     8  15.3
 #>  9  1959     9  15.4
 #> 10  1959    10  15.4
-#> # ℹ 797 more rows
+#> # ℹ 798 more rows
 ```
 
 You can also use
@@ -88,7 +88,7 @@ You can also use
 ``` r
 
 get_price_index("PCE", "monthly", "SA")
-#> # A tibble: 807 × 3
+#> # A tibble: 808 × 3
 #>     year month   pce
 #>    <int> <int> <dbl>
 #>  1  1959     1  15.2
@@ -101,7 +101,7 @@ get_price_index("PCE", "monthly", "SA")
 #>  8  1959     8  15.3
 #>  9  1959     9  15.4
 #> 10  1959    10  15.4
-#> # ℹ 797 more rows
+#> # ℹ 798 more rows
 ```
 
 ## Installation

@@ -8,6 +8,10 @@ Useful links:
 
 - <https://economic.github.io/realtalk/>
 
+- <https://github.com/economic/realtalk>
+
+- Report bugs at <https://github.com/economic/realtalk/issues>
+
 ## Author
 
 **Maintainer**: Ben Zipperer <bzipperer@epi.org>
