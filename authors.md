@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/economic/realtalk/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/economic/realtalk/blob/v2026.8.12/DESCRIPTION)
 
 Zipperer B (2026). *realtalk: Price index data for the US economy*. R
 package version 2026.8.12, <https://economic.github.io/realtalk/>.
