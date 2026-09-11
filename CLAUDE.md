@@ -31,7 +31,7 @@ Rscript -e 'targets::tar_make()'
 - **data/**: 23 `.rda` dataset files built by the data pipeline
 - **data-raw/**: Targets-based pipeline that fetches data from BLS and
   BEA APIs, processes it, and writes `.rda` files via
-  [`usethis::use_data()`](https://usethis.r-lib.org/reference/use_data.html)
+  `usethis::use_data()`
   - `_targets.R` + `packages.R`: pipeline definition and dependencies
   - `R/`: processing functions (fetchers, helpers, per-index logic)
   - `raw/` and `processed/`: intermediate data files

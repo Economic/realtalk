@@ -11,15 +11,15 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/economic/realtalk/blob/v2026.8.12/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/economic/realtalk/blob/main/DESCRIPTION)
 
 Zipperer B (2026). *realtalk: Price index data for the US economy*. R
-package version 2026.8.12, <https://economic.github.io/realtalk/>.
+package version 2026.9.11, <https://economic.github.io/realtalk/>.
 
     @Manual{,
       title = {realtalk: Price index data for the US economy},
       author = {Ben Zipperer},
       year = {2026},
-      note = {R package version 2026.8.12},
+      note = {R package version 2026.9.11},
       url = {https://economic.github.io/realtalk/},
     }

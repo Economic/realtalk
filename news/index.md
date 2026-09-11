@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2026.9.11
+
+- update CPI-based data through August 2026
+- update PCE through July 2026
+
 ## Version 2026.8.12
 
 - update CPI-based data through July 2026
