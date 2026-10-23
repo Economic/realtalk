@@ -51,6 +51,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | Team membership | `realtalk-maintainers`: benzipperer and zmokhiber, for now. Drafters are whoever has Write access; nothing in the workflows names them. |
 | `_targets/meta/meta` | Stop committing it: add it to `data-raw/_targets/.gitignore` and remove it from the index. CI starts with an empty store, so it would change on every run and tell nobody anything. |
 | Reminder | A scheduled check every weekday that opens or updates one rolling issue when any fetched source has new data, and @-mentions `@economic/realtalk-maintainers`, who decide who drafts. |
+| FRED verification | Runs only in "Draft update", which has the key and runs code from `main`. A mismatch stops the draft. PR checks need no secrets and don't call FRED. (After design review job 200.) |
 | Names | The workflows are "Draft update" and "Publish update". "Release" means only the GitHub release page. |
 
 ## What's different from productivity_pay_gap
@@ -105,12 +106,13 @@ Settings:
   - sets the version to today's date, with a suffix if that version is already released (see "Version" above)
   - writes the `NEWS.md` entry from the dataset end dates ("update CPI-based data through September 2026", "update PCE through August 2026")
   - rebuilds the README
-  - runs the tests (with FRED) and R CMD check
+  - runs the tests and R CMD check
+  - runs the FRED verification (see "Verification" in the memo section). If it fails, the build job fails and opens no PR, and GitHub emails the person who pressed the button.
   - writes the memo
   - uploads the changed files and the memo as an artifact
 - **PR job** (write token, runs no R):
   - copies only allowlisted files from the build's artifact, as productivity_pay_gap's `copy-refresh-files.sh` does
-  - force-pushes the rolling `data-update` branch, starting fresh from `main`
+  - creates the `data-update` branch from the commit the build job used (`github.sha`), not from the current `main`, so the outputs always sit on the code that built them. It then force-pushes the branch. If `main` moved during the build, the PR's base is out of date, and "Publish update" refuses it.
   - opens or updates the PR, assigned to `github.actor`, with the memo as the body
 - **If no new data arrived:** it opens no PR, and the run summary says so and shows each dataset's latest period. If a PR is open and `main` already has the same data, it closes that PR.
 - **With `dry_run`:** it builds the memo and writes it to the run summary, and touches no branch or PR.
@@ -124,7 +126,8 @@ GitHub will probably hold the PR check on a bot-opened PR until someone with Wri
    - there is no open `data-update` PR
    - the PR's required checks haven't passed on its latest commit
    - no maintainer has approved the PR's latest commit. The ruleset would refuse the merge anyway; checking first gives a clearer message.
-   - `main` has moved since the draft, meaning the PR's base isn't the current `main`. Then the merge commit would contain files nobody checked. Re-run "Draft update".
+   - `main` has moved since the draft, meaning the commit the draft was built from isn't the current `main`. Then the merge commit would contain files nobody checked. Re-run "Draft update".
+   - the PR's latest commit isn't the draft commit that "Draft update" pushed, for example because someone pushed to `data-update` by hand. The FRED verification ran only on the draft commit.
    - the `DESCRIPTION` version is already tagged, or isn't higher than the last release
    - `NEWS.md` has no entry for that version
 2. **Publish job** (write token, runs no R):
@@ -174,12 +177,16 @@ Sections:
      - the CPI-U-RS annual update
    - **Unexpected:** any change to historical CPI-U NSA values, which BLS never revises, or a change to a final C-CPI-U value.
 3. **Verification:**
-   - the latest 12 to 24 months of CPI-U NSA and SA, C-CPI-U, and PCE checked against FRED
-   - internal consistency checks:
-     - no gaps apart from the known missing October 2025
+   - **FRED comparison**, run only in the "Draft update" build job, which has `FRED_API_KEY` and runs code from `main`:
+     - CPI-U NSA (CPIAUCNS) and SA (CPIAUCSL), C-CPI-U (SUUR0000SA0), and PCE (PCEPI), monthly, for the latest 24 months that both sources have, to the precision each dataset publishes
+     - a month that FRED hasn't posted yet, usually the newest one on release day, is listed as "not yet on FRED" rather than failing. The memo says which months were verified.
+     - any other mismatch fails the build job, so no PR is opened
+     - PR checks don't call FRED. They need no secrets, so they work the same for bot, internal, and fork PRs, and their summary says that FRED wasn't checked. For hand-made PRs this costs little: FRED doesn't carry CPI-U-RS, CPI-U-X1, or the minimum wage, which are what those PRs usually change.
+   - **Internal consistency checks**, run by the PR check and in the pipeline, with no network:
+     - no gaps, apart from the known missing months (`bls_missing` in `data-raw/_targets.R`, currently October 2025). Those months are NA in CPI-U and C-CPI-U, and interpolated in the extended C-CPI-U.
      - no duplicate periods
-     - the extended C-CPI-U agreeing with C-CPI-U after 2000
-     - annual values only for complete years
+     - the extended C-CPI-U agrees with C-CPI-U where both have a value from 2000 on, within half a unit of the extended series' rounding (0.05 index points). For monthly data, compare NSA with NSA. Known missing months are skipped. (The extended series is rounded to one decimal; C-CPI-U keeps three.)
+     - annual and quarterly values only for complete periods, where a known missing month counts as present: 2025 averages 11 months. This matches `monthly_to_annual()` and `monthly_to_quarterly()` in `data-raw/R/aggregate.R`.
 4. **Stale manual inputs:** a warning when a hand-maintained file is overdue. For example, CPI-U-RS is missing last year's annual value after May, or the minimum wage file hasn't been touched in a year. The buttons can't update these; they come through hand-made PRs.
 5. **Check results:** R CMD check, the tests, and whether the README is current.
 
@@ -190,10 +197,11 @@ The memo becomes the PR body and the GitHub release notes. The terse `NEWS.md` e
 | Gate | Where | Blocks? |
 |---|---|---|
 | R CMD check, tests, and README current | PR check | Yes |
-| FRED mismatch, gaps, duplicate periods, changes to historical CPI-U NSA | PR check | Yes |
+| FRED mismatch | "Draft update" build job (no PR is opened) | Yes |
+| Gaps, duplicate periods, incomplete annual or quarterly periods, extended C-CPI-U disagreeing with C-CPI-U, changes to historical CPI-U NSA | PR check | Yes |
 | Expected revisions, stale manual inputs | Memo | No |
 | A maintainer's approval of the latest commit | Ruleset, on every merge into `main` | Yes |
-| PR checks passed, `main` unchanged since the draft | Publish update | Yes |
+| PR checks passed, `main` unchanged since the draft, latest commit is the bot's draft commit | Publish update | Yes |
 | Version not already released, `NEWS.md` entry present | Publish update | Yes |
 | Presser has the Maintain role or higher | Publish update | Yes |
 
