@@ -175,8 +175,9 @@ To keep the release history complete, a "Tag release" workflow runs on every pus
 
 **Shared tagging logic**, used by "Tag release" and by the tag job in "Publish update":
 
-1. **The version** is the one in `DESCRIPTION` on `main`.
-2. **The target commit** is the commit on `main`'s first-parent history where `DESCRIPTION` first has that version. Every change reaches `main` as a merge commit, so this is the merge that brought the version in, never a commit inside the PR. The "Publish update" tag job is given its merge commit directly, and checks that it matches.
+1. **The target commit and version:**
+   - **Given a commit** (the "Publish update" tag job passes its merge commit; a manual "Tag release" run can pass one too): the target is that commit, and the version is the one in `DESCRIPTION` at that commit, not on today's `main`. A later merge can't change what an earlier publish gets tagged as.
+   - **Not given one** (a push to `main`, or a manual run without input): the version is the one in `DESCRIPTION` on `main`, and the target is the commit on `main`'s first-parent history where `DESCRIPTION` first has that version. Every change reaches `main` as a merge commit, so this is the merge that brought the version in, never a commit inside the PR.
 3. **The tag:** if `v{version}` is missing, create it on the target commit. If it points at the target commit, it's done. If it points anywhere else, stop with an error.
 4. **The GitHub release**, checked separately from the tag: if no release exists for the tag, create it. The notes are the merged PR's memo when the target is a "Publish update" merge, and otherwise that version's `NEWS.md` entry. An existing release is left alone.
 
