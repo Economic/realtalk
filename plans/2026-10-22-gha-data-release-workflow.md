@@ -51,7 +51,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | Version | The draft date, `YYYY.M.D` in Eastern time, which reflects the data vintage. It stays the same even if the draft is published days later. If that version is already released (a second draft on a day something was already published), Draft update appends a suffix: `2026.10.22.1`, then `.2`. R orders these correctly. |
 | Offline rebuild check | Later, as its own phase after the buttons work. The pipeline would clean from the committed snapshots in `data-raw/raw/snapshots/` instead of straight from the API fetch, so a PR check can rebuild offline and fail if the committed data doesn't match the code, as in productivity_pay_gap. It mainly protects hand-made PRs; data PRs are built fresh by "Draft update". |
 | Hand-made PRs by maintainers | GitHub never counts a PR author's own approval. `realtalk-maintainers` has at least two members, so they approve each other's PRs. As a backup, admins can bypass the approval rule for pull requests only; the required check has no bypass. |
-| Team membership | `realtalk-maintainers`: benzipperer and zmokhiber, for now. Drafters are whoever has Write access; nothing in the workflows names them. |
+| Team membership | `realtalk-maintainers` has two members for now, including Ben. Drafters are whoever has Write access; nothing in the workflows names them. |
 | `_targets/meta/meta` | Stop committing it: add it to `data-raw/_targets/.gitignore` and remove it from the index. CI starts with an empty store, so it would change on every run and tell nobody anything. |
 | Reminder | A scheduled check every weekday that opens or updates one rolling issue when any fetched source has new data, and @-mentions `@economic/realtalk-maintainers`, who decide who drafts. |
 | API keys | Repository secrets. They are free BLS, BEA, and FRED keys that can be reissued in minutes, so a `main`-only Environment isn't worth its cost: no key-using workflow could be tested from a branch. (Revised 2026-10-23; design review job 208 had moved them to an Environment. See "Accepted risks".) |
@@ -62,7 +62,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 ## What's different from productivity_pay_gap
 
 1. **r-universe publishes the package.** productivity_pay_gap publishes files attached to a GitHub release. realtalk is an R package that users install from r-universe. With `"branch": "*release"`, r-universe builds the latest GitHub release, so the release is the publish step here too. Until that setting, r-universe built whatever was on `main`, and pkgdown deployed on every push to `main`.
-2. **Several people do the updates.** Recent updates were done by Emma Cohn, steviemarvin, zmokhiber, jfast13, and Ben. Notifications and permissions go to whoever pressed the button, not to one hard-coded assignee.
+2. **Several people do the updates.** Recent updates were done by several different RAs and maintainers. Notifications and permissions go to whoever pressed the button, not to one hard-coded assignee.
 3. **There is no branch protection and no renv.** People push straight to `main` today; the ruleset below ends that. Package versions come from CRAN or Posit Package Manager on each run, so there's no `renv::update()` step.
 4. **A monthly update already involves several steps:** fetch the data, bump the date-based version in `DESCRIPTION`, add a `NEWS.md` entry, rebuild the README (its table shows the latest dates, and `README.yaml` fails if it's stale), commit `data/`, `data-raw/processed/`, `data-raw/raw/snapshots/`, and `_targets/meta/meta`, and create the GitHub release. All of these can be automated.
 5. **Some verification already exists.** `tests/testthat/test-data-currency.R` checks the latest values of three monthly series against FRED. It's skipped unless `FRED_API_KEY` is set, so it probably never runs in CI.
@@ -272,7 +272,7 @@ Simplified on 2026-10-23. These are situations that need two people working at o
 - With `"*release"`, r-universe builds a release created by the built-in token, and the polling step can read the new version from the r-universe API.
 - Who in the Economic org can create the `realtalk-maintainers` team.
 - Whether an @-mention of `@economic/realtalk-maintainers` in an issue written by the built-in token notifies the team's members. A secret team can only be mentioned by its members, so the team must be visible. If it doesn't, the reminder mentions a list of usernames kept in the repo instead.
-- Current access on realtalk. On 2026-10-22, zmokhiber's role on the repo read as `admin` (through Ben's token). Admins pass the role check in "Publish update" and "Tag release" and can use the ruleset bypass, so check whether that admin role is intended before relying on the team for either.
+- Current access on realtalk: the second maintainer also has the Admin role, which passes the role check and can use the ruleset bypass. Confirmed as intended on 2026-10-23.
 - `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY` are set as repository secrets and work from CI. The local `gh` token can't read secret settings, so a test run confirms them, as in productivity_pay_gap's Phase 0.
 - The built-in token can read the presser's role (`GET /repos/{owner}/{repo}/collaborators/{username}/permission`).
 

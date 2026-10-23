@@ -17,7 +17,7 @@ This plan builds the design in `plans/2026-10-22-gha-data-release-workflow.md` (
 
 - Record results under the phase's "Results" heading in this plan, with dates and run IDs, as productivity_pay_gap's plan does.
 - Merging publishes nothing, since r-universe builds the latest release. No phase creates a tag or release, except the first real "Publish update" in Phase 5.
-- From Phase 3 on, merging needs a maintainer's approval: zmokhiber approves Ben's PRs, or Ben uses the admin bypass.
+- From Phase 3 on, merging needs a maintainer's approval: the other maintainer approves Ben's PRs, or Ben uses the admin bypass.
 
 ### Testing the workflows
 
@@ -39,7 +39,7 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
    - reports whether each key is set, never its value, and makes one small BLS, BEA, and FRED call
    - calls `GET /repos/{owner}/{repo}/collaborators/{actor}/permission` with `github.token` and prints `role_name` for the person who pushed
    - installs the pipeline's packages (see Phase 1, step 2) on `ubuntu-24.04` and loads them. Record the time and any missing system libraries, as productivity_pay_gap found with `libglpk`.
-4. **Access review.** Check zmokhiber's Admin role on realtalk, and whether it's intended (design, "To verify").
+4. **Access review.** Check that the repo's Admin roles are intended (design, "To verify").
 
 **Exit criteria:** the keys work from CI; the role lookup works with the built-in token; the pipeline's packages install on the runner.
 
@@ -140,7 +140,7 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
 
 Mostly GitHub settings, recorded here and in the README's maintainer section (Phase 7). The repo change is `CODEOWNERS`.
 
-1. **Team `realtalk-maintainers`** in the Economic org: visible, members benzipperer and zmokhiber, Maintain role on realtalk. May need an org owner; Ben as team maintainer.
+1. **Team `realtalk-maintainers`** in the Economic org: visible, two members, Maintain role on realtalk. May need an org owner; Ben as team maintainer.
 2. **`.github/CODEOWNERS`:** `* @economic/realtalk-maintainers`.
 3. **Ruleset "protect main"** and **ruleset "require check on main"**, exactly as the design's "Roles and repository settings" lists, with the `check` job from Phase 2 as the required check.
 4. **Repository variable** `REMINDER_MENTION` = `@economic/realtalk-maintainers`, for Phase 6.
