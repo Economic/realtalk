@@ -258,6 +258,15 @@ tar_assign({
   ) |>
     tar_file()
 
+  ## ── Verification against FRED (always reruns) ──
+  fred_verification <- verify_against_fred(list(
+    cpi_u_monthly_nsa = cpi_u_monthly_nsa,
+    cpi_u_monthly_sa = cpi_u_monthly_sa,
+    c_cpi_u_monthly_nsa = c_cpi_u_monthly_nsa,
+    pce_monthly_sa = pce_monthly_sa
+  )) |>
+    tar_target(cue = tar_cue(mode = "always"))
+
   ## ── Known missing months, for the package's tests ──
   known_missing_months_out <- export_known_missing_months(bls_missing) |>
     tar_file()
