@@ -56,9 +56,16 @@ request with a change memo, approved by a member of realtalk-maintainers, and me
 and released by a "Publish update" workflow. Other changes are released by a manual
 "Tag release" workflow. Weigh every finding against those stakes.
 
+Team and threat model: one or two maintainers and perhaps one other contributor work
+on this repo, almost never at the same time. People with Write access are EPI staff.
+The ruleset on main and a maintainer's approval are the security boundary; nothing
+inside the workflows needs to defend against a Write user acting in bad faith. The
+API keys are free BLS, BEA and FRED keys that can be reissued in minutes.
+
 Project artifacts:
-- The current plan is the newest dated file in plans/. Its "Decisions so far" and
-  "Accepted risks" sections are settled. Challenge them only with a genuinely new
+- plans/ holds the design (plans/2026-10-22-gha-data-release-workflow.md) and the
+  newest dated file, the current implementation plan. The design's "Decisions so far"
+  and "Accepted risks" sections are settled. Challenge them only with a genuinely new
   argument, and do not report a risk the plan accepts as a defect.
 - AGENTS.md describes how work is done here. .claude/rules/*.md hold the R, package,
   and targets conventions it points to.
@@ -81,10 +88,10 @@ What to flag:
   from forks; pull_request_target; permissions broader than a job needs; untrusted
   text (PR titles, branch names, commit messages, artifact contents) interpolated
   into run: scripts or copied into a checkout that later holds a write token.
-- Weakening a publish gate: releasing a commit that didn't pass the checks or isn't
-  on main, merging without a maintainer's approval of the PR's latest commit, the
-  Maintain-role check on "Publish update" and "Tag release", or the split between jobs
-  that hold API secrets and jobs that can write.
+- Weakening a publish gate in the normal path: releasing a commit that didn't pass
+  the checks or isn't on main, merging without a maintainer's approval of the PR's
+  latest commit, dropping the Maintain-role check on "Publish update" and "Tag
+  release", or running package code in a job that holds a write token.
 - Complexity the stakes do not justify: speculative features, defensive checks of
   internal invariants, duplicated validation, and tests that pin incidental details
   such as exact error text. Recommending that a requirement, check, or test be
@@ -96,11 +103,27 @@ What not to flag:
 - Revised values in data files after a data update. Revisions are expected (PCE
   monthly and annual revisions, interim C-CPI-U, CPI-U seasonal factors each
   February), and the change memo explains them.
-- Failures that a rerun of "Draft update" repairs, unless they can put wrong values
-  in a release.
-- Failures that need two or more unusual conditions at once, unless they can put
-  wrong values in a release.
+- Failures that a rerun of "Draft update", "Re-run failed jobs", or a documented
+  manual step repairs.
+- Races between people or between workflow runs. Two maintainers almost never act at
+  the same time.
+- Defenses against a Write user acting in bad faith: forged commits or authors, edited
+  PR bodies, edited workflows run from a branch, or reading the API keys.
+- Failures that need two or more unusual conditions at once, such as a failed run
+  followed by a newer publish and then a rerun of the old one. This holds even when
+  the result could in principle publish older or wrong values.
 - Wording, formatting, and R style, unless meaning changes.
+
+Weighing a finding:
+- Rate a finding by how likely it is for this team, not by the worst case alone. A
+  scenario in the list above is low severity at most, so it is filtered out.
+- A fix that adds mechanism (new state or records, artifacts, permissions, scripts,
+  ruleset rules, lookups across workflow runs, or ordered special cases) costs real
+  complexity and testing. Recommend it only for a likely failure in the normal path
+  that would publish wrong values. Otherwise, name the simplest fix, or recommend
+  recording the risk in the design's "Accepted risks". Both are valid outcomes.
+- In a design review, judge the structure. Don't chase ever-narrower edge cases: if
+  only narrow ones remain, pass.
 
 High-severity rules:
 - Nothing reaches main unless a maintainer approved the pull request's latest commit
@@ -108,8 +131,9 @@ High-severity rules:
 - "Publish update" and "Tag release" release only a commit on main, after running
   the checks on that commit. (Anyone with Write access can still create a release by
   hand; the plan accepts that risk, so don't report it.)
-- Secrets (BLS_API_KEY, BEA_API_KEY, FRED_API_KEY) must never be printed or exposed
-  to untrusted code.
+- Secrets (BLS_API_KEY, BEA_API_KEY, FRED_API_KEY) must never be printed, or reach
+  pull requests from forks or code from an artifact. A Write user's own branch is
+  trusted (see "Accepted risks").
 
 data/, data-raw/processed/ and data-raw/raw/snapshots/ are excluded from diffs. When a
 change touches calculations, open the processed CSVs in the checkout and check that

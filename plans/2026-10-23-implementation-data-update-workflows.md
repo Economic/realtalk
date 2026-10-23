@@ -1,7 +1,7 @@
 # Implementation plan: button-driven data updates
 
 Date: 2026-10-23
-Status: draft for review (open questions at the end)
+Status: simplified 2026-10-23 (see the design's "Accepted risks"); ready for review
 
 This plan builds the design in `plans/2026-10-22-gha-data-release-workflow.md` (the "design" below). The design's "Decisions so far" and "Accepted risks" are settled; this plan only orders the work and makes it concrete.
 
@@ -19,15 +19,11 @@ This plan builds the design in `plans/2026-10-22-gha-data-release-workflow.md` (
 - Merging publishes nothing, since r-universe builds the latest release. No phase creates a tag or release, except the first real "Publish update" in Phase 5.
 - From Phase 3 on, merging needs a maintainer's approval: zmokhiber approves Ben's PRs, or Ben uses the admin bypass.
 
-### A testing constraint
-
-The API keys live in the `data-apis` Environment, limited to `main`. A workflow that needs them can't run from a branch, which is the point. So for "Draft update" and the reminder:
+### Testing the workflows
 
 - The R functions are tested locally, with the keys from `.Renviron`, and with fixtures for failure cases.
 - The shell scripts are tested locally with a stand-in `gh` that logs its calls, as in productivity_pay_gap's Phase 6.
-- The workflows run for real only after merging, first as dry runs on `main`.
-
-GitHub also starts a `workflow_dispatch` workflow only once its file exists on the default branch. So every new button workflow ("Draft update", "Publish update", "Tag release", the reminder) is first run after its PR merges, as a dry run on `main`, before any real run. Merging a button workflow is safe: it does nothing until a maintainer presses it, and pressing it for real only matters once a draft PR exists. The PR check is triggered by `pull_request`, so it runs on its own PR before merging.
+- GitHub starts a `workflow_dispatch` workflow only once its file exists on the default branch. So each button workflow ("Draft update", "Publish update", "Tag release", the reminder) is first run after its PR merges, as a dry run, before any real run. After that, dry runs can also be started from a branch, to test changes before merging them. Merging a button workflow is safe: it does nothing until a maintainer presses it. The PR check is triggered by `pull_request`, so it runs on its own PR before merging.
 
 ## Before Phase 0: review harness (done 2026-10-22)
 
@@ -35,20 +31,17 @@ PR #34: `.roborev.toml`, `AGENTS.md`, the design, and its design review. Economi
 
 ## Phase 0: feasibility checks
 
-Settings and spikes that later phases depend on. Throwaway workflows that need no keys go on `spike/*` branches and are deleted afterward.
+Settings and spikes that later phases depend on. Throwaway workflows go on `spike/*` branches and are deleted afterward.
 
 1. **r-universe sync.** Confirm `https://economic.r-universe.dev/api/packages/realtalk` reports the release, not `HEAD` (it read `RemoteRef: HEAD` on 2026-10-23). Record the field names the poll step in Phase 5 will read.
-2. **Environment `data-apis`.** Create it with deployment branches limited to `main`, and add `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY`. Confirm there are no repository-level copies.
-3. **Keys from CI, from `main` only.** The Environment stays limited to `main` throughout; adding a branch to it, even briefly, would let any Write user run edited code on that branch with the keys.
-   - Merge a small `smoke-test.yml` (`workflow_dispatch`, Environment `data-apis`, `contents: read`) to `main` through a PR. It reports whether each key is set, never its value, and makes one small BLS, BEA, and FRED call. Merging publishes nothing.
-   - Run it from `main`: every call succeeds.
-   - Run it from a `spike/*` branch: the job must fail to reach the Environment. That confirms the branch limit.
-   - Remove `smoke-test.yml` in a follow-up PR, or keep it as a diagnostic (decide when recording the results).
-4. **Role lookup with the built-in token.** The spike calls `GET /repos/{owner}/{repo}/collaborators/{actor}/permission` with `github.token` and prints `role_name` for the person who started it.
-5. **Package install for the pipeline.** The spike installs the pipeline's packages (see Phase 1, step 2) on `ubuntu-24.04` and loads them. Record the time and any missing system libraries, as productivity_pay_gap found with `libglpk`.
-6. **Access review.** Check zmokhiber's Admin role on realtalk, and whether it's intended (design, "To verify").
+2. **Repository secrets.** Add `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY`.
+3. **One spike workflow** on a `spike/*` branch, triggered by a push to it:
+   - reports whether each key is set, never its value, and makes one small BLS, BEA, and FRED call
+   - calls `GET /repos/{owner}/{repo}/collaborators/{actor}/permission` with `github.token` and prints `role_name` for the person who pushed
+   - installs the pipeline's packages (see Phase 1, step 2) on `ubuntu-24.04` and loads them. Record the time and any missing system libraries, as productivity_pay_gap found with `libglpk`.
+4. **Access review.** Check zmokhiber's Admin role on realtalk, and whether it's intended (design, "To verify").
 
-**Exit criteria:** the keys work only from allowed branches; the role lookup works with the built-in token; the pipeline's packages install on the runner.
+**Exit criteria:** the keys work from CI; the role lookup works with the built-in token; the pipeline's packages install on the runner.
 
 **Results:** (to fill in)
 
@@ -62,9 +55,9 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
    - extended C-CPI-U against C-CPI-U from 2000, by frequency: monthly NSA and annual within 0.05, quarterly NSA within 0.1, skipping known missing months and the quarters that contain them
    - annual and quarterly price index values only for complete periods, counting a known missing month as present; not applied to the minimum wage
 4. **The memo**, as a `change_memo` target in `data-raw/R/memo.R`. It writes `reports/change_memo.md` (`reports/` ignored by git and `.Rbuildignore`).
-   - **Baseline:** the latest published release, the one r-universe builds, so the memo describes what users would receive. A tag without a published release (possible mid-recovery in Phase 5) is never the baseline. `REALTALK_BASELINE` overrides it. The workflows resolve the latest release with `gh release view --json tagName` and pass it in `REALTALK_BASELINE`. Locally, the memo does the same through `gh`, and stops with a clear message if `gh` isn't available and `REALTALK_BASELINE` isn't set. Baseline files come from `git show <ref>:data-raw/processed/<name>.csv`.
+   - **Baseline:** the highest `v*` tag, by R's version ordering, or `REALTALK_BASELINE` if set. That's the latest release, except in the middle of a failed publish, which doesn't matter for a memo. It needs only `git`, so it works the same locally and in CI. Baseline files come from `git show <ref>:data-raw/processed/<name>.csv`.
    - **Sections:** coverage, revisions (with expected and unexpected labels), verification, stale manual inputs, and check results, as in the design. Each section is a function that returns a small table, and one function assembles the Markdown, as productivity_pay_gap's `R/report.R` does.
-   - **Unexpected revisions:** a separate function, `find_unexpected_revisions(baseline, current)`, returns changed historical CPI-U NSA values and changed final C-CPI-U values. The memo lists them, and the PR check fails on them (Phase 2), with the same latest-release baseline.
+   - **Unexpected revisions:** a separate function, `find_unexpected_revisions(baseline, current)`, returns changed historical CPI-U NSA values and changed final C-CPI-U values. The memo lists them, and the PR check fails on them (Phase 2), with the same baseline.
      - **Final C-CPI-U** is judged in the **baseline** vintage: a value is final if it is 12 or more months older than the baseline's latest month. With the baseline through June 2026, June 2025 and earlier are final, and July 2025 is interim. BLS revises interim values quarterly and makes them final 10 to 12 months after first publication ([BLS](https://www.bls.gov/cpi/additional-resources/chained-cpi-questions-and-answers.htm)), so the newest revision a final value could get is already behind it. The history agrees: v2026.8.12 revised July 2025 to June 2026 (July 2025 from 179.236 to 179.272) against v2026.7.14, whose data ran through June 2026: those months were 0 to 11 months old there, all interim, and June 2025, 12 months old, wasn't revised. Releases from v2026.9.11 to v2026.10.14 revised none.
    - The target always reruns (`cue = tar_cue(mode = "always")`), since its baseline is outside the pipeline.
 5. **FRED verification**, as a `fred_verification` target in `data-raw/R/verify.R`:
@@ -99,7 +92,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
    - install the dependencies with `r-lib/actions/setup-r-dependencies`: the package's own, `needs: check, readme, pipeline` (`Config/Needs/readme` lists `tidyverse` and `hrbrthemes`), and `extra-packages: any::rcmdcheck, any::devtools, local::.`, as the current `R-CMD-check.yaml` and `README.yaml` do between them
    - R CMD check, with the tests, including the consistency tests
    - fail if the README is stale: `devtools::build_readme()`, then `git diff --exit-code -- README.md`
-   - fail on unexpected revisions: run `find_unexpected_revisions()` against the latest release tag
+   - fail on unexpected revisions: run `find_unexpected_revisions()` against the baseline (the highest `v*` tag)
    - write to the job summary that FRED wasn't checked here
 2. **Replace `R-CMD-check.yaml` and `README.yaml`** with `check.yml`, so one check named `check` can be required. Update the README badge.
 3. **`pkgdown.yaml`:**
@@ -133,7 +126,6 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - A direct `git push` to `main` is rejected.
 - A PR approved by a non-maintainer can't merge; approved by a maintainer, it can.
 - After approval, a new commit on the PR dismisses the approval.
-- A PR whose branch is behind `main` can't merge until updated.
 - The admin bypass lets Ben merge his own PR without approval, but not with a failing `check`.
 - Requesting a review from the team notifies both members.
 
@@ -142,47 +134,36 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 ## Phase 4: Draft update
 
 1. **`.github/workflows/draft-update.yml`** (`workflow_dispatch`, `dry_run` input), as the design describes:
-   - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It installs the same dependencies as `check.yml`, then runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact. Whether anything changed is decided in the PR job, which can see the open draft (step 3).
-   - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), and `actions: read` (to list earlier runs and download their `draft-commit` artifacts), no R. It runs after every successful build that isn't a dry run. The build job decides nothing about changes; the PR job makes the one decision, in step 3, from the artifact, the open draft, and `main`.
+   - **build job:** the API keys, `contents: read`. A real run refuses unless `github.ref` is `refs/heads/main`; a dry run can run from any branch. It installs the same dependencies as `check.yml`, then runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact.
+   - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run.
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
-3. **`.github/scripts/update-draft-pr.sh`** makes one decision, comparing the fresh `data-raw/processed/` files (F) with those on `main` (M) and on the open draft branch (D), if there is one. The cases are checked in this order, and the first that matches applies:
-   1. **F equals M:** `main` already has this data. If a draft PR is open, close it with "`main` already has these numbers" (for example after a hand-made PR brought the same data in). Otherwise do nothing.
-   2. **A draft is open, F equals D, the draft's base is still the current `main`, and the draft's head has a trusted `draft-commit` record** (the same lookup "Publish update" uses, in `.github/scripts/find-draft-record.sh`): leave the PR alone, so an approval stands. Only the date-based version would differ, and that isn't new data. This is how the design's "a new draft replaces the old one, because it has the newest data" applies when nothing is newer.
-   3. **Anything else:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`. This covers new data, unchanged data on a `main` that has moved since the draft, and a draft with no usable record, because its artifact upload failed or expired. "Publish update" would refuse all of those. Either way the push cancels any approval.
-   In case 3 only, the script records the new draft commit's SHA in a 90-day artifact named `draft-commit`, uploaded by this run. That is the trusted record for "Publish update"'s "bot's draft commit" guard. The SHA also goes in the PR body, for people to read; nothing trusts the body, because anyone with Write access can edit it.
+3. **`.github/scripts/update-draft-pr.sh`** compares the fresh `data-raw/processed/` files with `main`'s:
+   - **the same:** `main` already has this data. Close any open draft PR with "`main` already has these numbers", and stop.
+   - **different:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`. This happens even if the data equals the open draft's, and the push cancels any approval.
 
 **Verification:**
 
-- Local: both scripts against crafted artifacts (a `.git/config`, a symlink, a nested path, an unexpected file name) are rejected and copy nothing. `update-draft-pr.sh` with a stand-in `gh`: new PR, updated PR, stale PR closed.
+- Local: `copy-draft-files.sh` against crafted artifacts (a `.git/config`, a symlink, a nested path, an unexpected file name) rejects them and copies nothing. `update-draft-pr.sh` with a stand-in `gh`: new PR; updated PR; data equal to `main` with a draft open, so the draft is closed.
 - After merging, on `main`: a dry run writes the memo to the run summary and touches no branch.
 - The first real run, when new data is out: it opens the PR, assigned to whoever pressed it, with the memo; the held check appears, and approving the run makes `check` pass.
-- A second run before publishing, with no new source data: the PR's head SHA and its approval, if any, are unchanged, and the log says the data matches the open draft and found its record. This is the first real download of an earlier run's artifact with the PR job's permissions.
-- A code-only merge to `main` while a draft is open, then a run with no new source data: the draft is rebuilt on the new `main`, its approval is cancelled, and "Publish update" accepts the new draft. Locally, with a stand-in `gh` and a fixture where the data is unchanged but the base moved.
-- After the first draft is published (Phase 5), with no draft PR open: a run with no new data does nothing.
-- A draft whose `draft-commit` record is missing (upload failed) or expired, with unchanged data: the next run rebuilds it and records the new commit (case 3). Locally, with a stand-in `gh`.
-- The stale-draft cases, with `update-draft-pr.sh` and a stand-in `gh`, after `main` has taken in the old draft's data: with unchanged fresh data, the open draft is closed (case 1); with newer fresh data, the draft is replaced (case 3), not closed. This case needs a hand-made PR to bring the same data into `main`, which is rare, so it's tested locally rather than staged for real.
+- After the first draft is published (Phase 5): a run with no new data does nothing.
 
 **Results:** (to fill in)
 
 ## Phase 5: Publish update and Tag release
 
-1. **`.github/scripts/tag-release.sh`**, the shared tagging logic from the design: target and version, the superseded check, the tag, and the release, each checking what exists first.
+1. **`.github/scripts/tag-release.sh`**, the shared tagging logic from the design: target and version, the tag, and the release, each checking what exists first.
 2. **`.github/workflows/publish-update.yml`** (`workflow_dispatch`, `dry_run`), with the jobs from the design: plan, merge, check (calls `check.yml` with the merge commit), tag, and the follow-ups (pkgdown with the tag, and the r-universe poll). Concurrency group `publish`, `cancel-in-progress: false`.
-   - **`.github/scripts/publish-plan.sh`:** the guards: role, open PR, checks passed and maintainer approval on the latest commit, the latest commit is the draft commit, `main` hasn't moved, version not released and higher, `NEWS.md` entry.
-   - **The draft-commit guard**, in `.github/scripts/find-draft-record.sh` (shared with `update-draft-pr.sh`), looks through recent successful runs of `.github/workflows/draft-update.yml` on `main` (`gh run list --workflow draft-update.yml --branch main --status success`) for the one whose `draft-commit` artifact equals the PR head. Dry runs and runs that pushed nothing upload no artifact, so they are skipped, and a dry run after a draft doesn't hide the draft's record.
-     - **Only trusted runs count:** a run counts only if its `event` is `workflow_dispatch`, its `head_repository` is `Economic/realtalk`, and its `head_branch` is `main`. A pull request, including one from a fork, runs its own edited copy of the workflow, and a fork's branch can be named `main`. The event and repository fields rule those runs out.
-     - **The build commit:** the run's `head_sha` must be the PR's base, the commit the draft was built from. That ties the record to the code that built it.
-     - **Permission:** the job that runs the lookup needs `actions: read`, in "Publish update"'s plan job as in "Draft update"'s PR job. A Write user can edit the PR body, or run an edited copy of the workflow from another branch, but can't add an artifact to a run of the real workflow on `main`. If the artifact has expired, the guard refuses and asks for a new draft.
+   - **`.github/scripts/publish-plan.sh`:** the guards: role, open PR, checks passed and maintainer approval on the latest commit, the branch is exactly one commit beyond its base authored by `github-actions[bot]`, `main` hasn't moved, version not released and higher, `NEWS.md` entry.
    - **The merge job:** `PUT /repos/{owner}/{repo}/pulls/{n}/merge` with `merge_method=merge` and `sha` set to the checked head, then the tree comparison.
 3. **`.github/workflows/tag-release.yml`** (`workflow_dispatch` with an optional commit input, `dry_run`): the guards from the design, then `check.yml` on the target, `tag-release.sh`, and the follow-ups. Same concurrency group.
 4. **The r-universe poll:** reads the version from the API every 5 minutes, and fails after 3 hours.
 
 **Verification:**
 
-- Local, with a stand-in `gh`, for `tag-release.sh`: a new tag and release; a rerun with both existing; a tag on another commit stops; a newer release exists, so it stops as superseded; a release missing while the tag exists.
-- Local, for `publish-plan.sh`: each guard refuses on its own failing case, including a presser with Write only, a PR head that matches no `draft-commit` artifact, an artifact from a run on another branch, and no artifact. A matching artifact from a `pull_request` run whose fork branch is named `main` is refused. A draft followed by a dry run still passes.
-- After merging, before any real run: a dry run of each workflow on `main` shows the tag and notes, and creates nothing. The dry run of "Publish update", with a real draft open, finds its `draft-commit` record with the job's real permissions, which the stand-in `gh` tests can't show.
-- Two dry runs started together on `main`: the second waits for the first.
+- Local, with a stand-in `gh`, for `tag-release.sh`: a new tag and release; a rerun with both existing; a tag on another commit stops; a release missing while the tag exists.
+- Local, for `publish-plan.sh`: each guard refuses on its own failing case, including a presser with Write only and a branch with a second commit pushed by hand.
+- After merging, before any real run: a dry run of each workflow on `main` shows the tag and notes, and creates nothing.
 - The first real "Publish update", on the first draft from Phase 4. Afterward confirm:
   - the tag points at the merge commit
   - the release is marked latest, with the memo as notes
@@ -194,7 +175,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 ## Phase 6: new-data reminder
 
-1. **`.github/workflows/new-data-check.yml`:** `schedule` (`17 14 * * 1-5`) and `workflow_dispatch` with `dry_run`. Check job with Environment `data-apis`, `contents: read`: `tar_make(names = ends_with("_raw_csv"))`, then compares the snapshots with `main`'s and writes a one-line summary as a job output. Issue job with `issues: write` and no R.
+1. **`.github/workflows/new-data-check.yml`:** `schedule` (`17 14 * * 1-5`) and `workflow_dispatch` with `dry_run`. Check job with the API keys, `contents: read`: `tar_make(names = ends_with("_raw_csv"))`, then compares the snapshots with `main`'s and writes a one-line summary as a job output. Issue job with `issues: write` and no R.
 2. **`.github/scripts/update-reminder-issue.sh`:** opens, updates, or closes the one issue labeled `new-data`, mentioning `$REMINDER_MENTION`. It stays silent when nothing is new since the last notice, which it reads from the issue body.
 3. **Stale manual inputs:** the check job also runs the memo's stale-input function and adds its warnings to the summary.
 
@@ -207,8 +188,8 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 ## Phase 7: documentation
 
-1. **README.Rmd:** how updates work, in short (the click table from the design); that r-universe serves releases and `main` can be ahead; and a "Maintainer setup" section with the team, rulesets, Environment, variable, and the r-universe setting.
-2. **`AGENTS.md`:** the workflows, what each script does, and that the API-key jobs can only run from `main`.
+1. **README.Rmd:** how updates work, in short (the click table from the design); that r-universe serves releases and `main` can be ahead; that releases come only from the two workflows, never by hand; and a "Maintainer setup" section with the team, rulesets, secrets, variable, and the r-universe setting.
+2. **`AGENTS.md`:** the workflows, and what each script does.
 3. **`.roborev.toml`:** update the guidelines if the phases changed anything they describe.
 4. Mark this plan done, with a summary of what changed from the plan as built.
 
