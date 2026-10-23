@@ -47,7 +47,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | What reaches `main` | A PR approval enforced by a ruleset on `main`, not a GitHub Environment, so GitHub's merge button and direct pushes are gated too. |
 | Publish button | Keep "Publish update" rather than relying on GitHub's merge button. It's the one obvious publish action for rotating RAs, and the only path that checks the presser's role, that `main` hasn't moved, and that the PR is the bot's draft. |
 | Tag release | Manual only (`workflow_dispatch`), limited to the Maintain role. It publishes changes that reached `main` through hand-made PRs, and finishes a "Publish update" whose tag job failed. Nothing creates a release automatically on a push to `main`, so every publish is a deliberate act by a maintainer. |
-| pkgdown | Deploys when a release is created, not on every push to `main`, so the site matches what's published. "Publish update" and "Tag release" start it, because a release created with the built-in token doesn't trigger `release: published`. |
+| pkgdown | Deploys when a release is created, not on every push to `main`, so the site matches what's published. "Publish update" and "Tag release" start it with the release tag, and it builds that tag, because a release created with the built-in token doesn't trigger `release: published`. (After design review job 226.) |
 | Version | The draft date, `YYYY.M.D` in Eastern time, which reflects the data vintage. It stays the same even if the draft is published days later. If that version is already released (a second draft on a day something was already published), Draft update appends a suffix: `2026.10.22.1`, then `.2`. R orders these correctly. |
 | Offline rebuild check | Later, as its own phase after the buttons work. The pipeline would clean from the committed snapshots in `data-raw/raw/snapshots/` instead of straight from the API fetch, so a PR check can rebuild offline and fail if the committed data doesn't match the code, as in productivity_pay_gap. It mainly protects hand-made PRs; data PRs are built fresh by "Draft update". |
 | Hand-made PRs by maintainers | GitHub never counts a PR author's own approval. `realtalk-maintainers` has at least two members, so they approve each other's PRs. As a backup, admins can bypass the approval rule for pull requests only; the required check has no bypass. |
@@ -143,9 +143,10 @@ GitHub will probably hold the PR check on a bot-opened PR until someone with Wri
 2. **Merge job** (write token, runs no R):
    - merges the PR with a merge commit through the API, passing the PR head SHA that the plan job checked. GitHub refuses the merge if the head has changed since. The up-to-date rule in "require check on main" refuses it if `main` has moved. Both are enforced by GitHub at merge time, so a PR merged between the plan job and this one can't slip through.
    - compares the merge commit's tree with the checked head's, as a final verification. With both rules above, they are always identical.
-3. **Tag job** (write token, runs no R), separate from the merge job. It runs the shared tagging logic (see "Tag release" below) with the merge commit the merge job recorded. Creating the release is the step that publishes.
-4. **Follow-up jobs:**
-   - start the pkgdown workflow with `workflow_dispatch`. A push or release made with the built-in token doesn't trigger other workflows, so `pkgdown.yaml` wouldn't fire on its own. r-universe isn't affected, because it reads releases from GitHub rather than reacting to GitHub events.
+3. **Check job:** runs the PR check workflow (through `workflow_call`) on the merge commit. The built-in token's merge triggers no workflows, so without this job no check would ever run on the commit that gets released. If it fails, the update is on `main` but not published.
+4. **Tag job** (write token, runs no R), after the check job. It runs the shared tagging logic (see "Tag release" below) with the merge commit the merge job recorded. Creating the release is the step that publishes.
+5. **Follow-up jobs:**
+   - start the pkgdown workflow with `workflow_dispatch`, passing the release tag. pkgdown gets a `ref` input and builds that ref, not the branch it was started on, so the site matches the release even when `main` is ahead of it. A push or release made with the built-in token doesn't trigger other workflows, so `pkgdown.yaml` wouldn't fire on its own. r-universe isn't affected, because it reads releases from GitHub rather than reacting to GitHub events.
    - poll r-universe until the new version appears, and fail after a time limit, so a failed build there sends a failure email. Right now nobody would notice one.
 
 With `dry_run`, it runs the guards and shows the tag and notes, and merges and creates nothing.
@@ -163,9 +164,9 @@ A maintainer runs it to publish what's on `main` when it didn't come through "Pu
 - **Guards** (plan job, read-only). It refuses if:
   - the person who pressed the button has a role below Maintain
   - the target commit isn't on `main`'s first-parent history
-  - the required checks haven't passed on the target commit
-  - the `DESCRIPTION` version at the target commit is already released to a different commit, or isn't higher than the last release
-  - `NEWS.md` at the target commit has no entry for that version
+  - the tag `v{version}` already exists on a different commit
+  - for a version not yet released: the version isn't higher than the last release, or `NEWS.md` at the target commit has no entry for it. A version already released on the target commit skips these two guards, so a rerun can finish the follow-up jobs.
+- **Check job:** runs the PR check workflow (through `workflow_call`) on the target commit, and stops if it fails. A merge made by "Publish update" uses the built-in token, so GitHub ran no checks on the merge commit itself; this job runs them.
 - **Then** the shared tagging logic, and the same follow-up jobs as "Publish update": pkgdown and the r-universe check.
 
 **Shared tagging logic**, used by "Tag release" and by the tag job in "Publish update":
@@ -243,7 +244,7 @@ The memo becomes the PR body and the GitHub release notes. The terse `NEWS.md` e
 | PR checks passed, `main` unchanged since the draft, latest commit is the bot's draft commit | Publish update | Yes |
 | Version not already released, `NEWS.md` entry present | Publish update, Tag release | Yes |
 | Presser has the Maintain role or higher | Publish update, Tag release | Yes |
-| Checks passed on the commit to release | Tag release | Yes |
+| Checks run and passed on the commit to release | Publish update, Tag release | Yes |
 
 ## Accepted risks
 
