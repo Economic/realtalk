@@ -211,7 +211,7 @@ Sections:
        - **quarterly NSA:** within 0.1, one rounding unit, because the extended quarterly values average monthly values that were already rounded. Five quarters differ by exactly 0.1 today, for example 2012 Q2 (132.1 against 132.2). Quarters that contain a known missing month are skipped, because the extended series interpolates that month and C-CPI-U leaves it out.
 
        (On 2026-10-22, the committed data passed these tolerances, apart from December 1999, which comes before 2000 and is built from CPI-U-RS by design.)
-     - annual and quarterly values only for complete periods, where a known missing month counts as present: 2025 averages 11 months. This matches `monthly_to_annual()` and `monthly_to_quarterly()` in `data-raw/R/aggregate.R`.
+     - annual and quarterly price index values only for complete periods, where a known missing month counts as present: 2025 averages 11 months. This matches `monthly_to_annual()` and `monthly_to_quarterly()` in `data-raw/R/aggregate.R`. It doesn't apply to the minimum wage, whose annual value is the year's highest rate (`create_fed_mw_annual()`), including the partial first year, 1938.
 4. **Stale manual inputs:** a warning when a hand-maintained file is overdue. For example, CPI-U-RS is missing last year's annual value after May, or the minimum wage file hasn't been touched in a year. The buttons can't update these; they come through hand-made PRs.
 5. **Check results:** R CMD check, the tests, and whether the README is current.
 
@@ -245,7 +245,7 @@ The memo becomes the PR body and the GitHub release notes. The terse `NEWS.md` e
 - Who in the Economic org can create the `realtalk-maintainers` team.
 - Whether an @-mention of `@economic/realtalk-maintainers` in an issue written by the built-in token notifies the team's members. A secret team can only be mentioned by its members, so the team must be visible. If it doesn't, the reminder mentions a list of usernames kept in the repo instead.
 - Current access on realtalk. On 2026-10-22, zmokhiber's role on the repo read as `admin` (through Ben's token). Admins pass the "Publish update" role check and can use the ruleset bypass, so check whether that admin role is intended before relying on the team for either.
-- The repository secrets `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY` are set and work from CI. The local `gh` token can't read secret settings, so a test run confirms them, as in productivity_pay_gap's Phase 0. None of realtalk's current workflows use them, so they're probably not set yet.
+- `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY` are set in the `data-apis` environment, limited to `main`, and work from a job there. No repository-level copies exist; remove any found. The local `gh` token can't read secret settings, so a test run confirms them, as in productivity_pay_gap's Phase 0.
 - The built-in token can read the presser's role (`GET /repos/{owner}/{repo}/collaborators/{username}/permission`).
 
 ## Open questions
