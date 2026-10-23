@@ -295,4 +295,8 @@ tar_assign({
     pce_annual_out
   ) |>
     tar_file()
+
+  ## ── Change memo (always reruns: its baseline comes from git) ──
+  change_memo <- write_change_memo(available_data, fred_verification) |>
+    tar_file(cue = tar_cue(mode = "always"))
 })

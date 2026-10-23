@@ -11,3 +11,4 @@ altdoc/freeze.rds
 .DS_Store
 # roborev snapshots
 /.roborev/
+reports/
