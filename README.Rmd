@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 [![check](https://github.com/Economic/realtalk/actions/workflows/check.yml/badge.svg)](https://github.com/Economic/realtalk/actions/workflows/check.yml)
 <!-- badges: end -->
 
-realtalk makes it easy to use common US price indexes in R.
+realtalk makes it easy to use common US price indexes in R. (throwaway test)
 
 ```{r, fig.width = 10, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
