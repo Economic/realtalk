@@ -4,7 +4,7 @@ library(tarchetypes)
 
 # conflicts and other options
 library(conflicted)
-conflicts_prefer(dplyr::filter(), .quiet = TRUE)
+conflicts_prefer(dplyr::filter(), dplyr::desc(), .quiet = TRUE)
 options(usethis.quiet = TRUE, tidyverse.quiet = TRUE)
 
 # packages for this analysis
@@ -15,3 +15,4 @@ library(epitargets)
 library(tsibble)
 library(cli)
 library(assertr)
+library(desc)

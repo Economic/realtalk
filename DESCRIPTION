@@ -18,9 +18,19 @@ URL: https://economic.github.io/realtalk/, https://github.com/economic/realtalk
 BugReports: https://github.com/economic/realtalk/issues
 Config/Needs/website: economic/epitemplate
 Config/Needs/readme: tidyverse, hrbrthemes
+Config/Needs/pipeline:
+    targets,
+    tarchetypes,
+    tidyverse,
+    readxl,
+    economic/epidatatools,
+    economic/epitargets,
+    tsibble,
+    cli,
+    assertr,
+    conflicted,
+    usethis,
+    desc
 Suggests: 
-    epidatatools,
     testthat (>= 3.0.0)
-Remotes:
-    economic/epidatatools
 Config/testthat/edition: 3

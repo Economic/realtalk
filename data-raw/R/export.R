@@ -19,3 +19,15 @@ export_dataset <- function(data, name) {
 
   c(csv_path, rda_path)
 }
+
+export_known_missing_months <- function(months) {
+  # Internal data, so the package's tests can check gaps against the same list
+  # the pipeline uses
+  known_missing_months <- tibble(
+    year = as.integer(year(months)),
+    month = as.integer(month(months))
+  )
+  usethis::use_data(known_missing_months, internal = TRUE, overwrite = TRUE)
+
+  "R/sysdata.rda"
+}

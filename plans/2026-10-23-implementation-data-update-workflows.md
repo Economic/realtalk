@@ -83,7 +83,30 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
 - `next_version()`: today's date; a same-day suffix; a date in daylight saving time and one not.
 - Run `tar_make()` scoped to the changed targets, as `.claude/rules/r_targets.md` requires, and confirm no committed data changes.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **Built:**
+  - `data-raw/_targets/meta/meta` is no longer committed.
+  - `Config/Needs/pipeline` in `DESCRIPTION`.
+  - `R/sysdata.rda` holds `known_missing_months`, written by the `known_missing_months_out` target from `bls_missing`.
+  - `tests/testthat/test-data-consistency.R`, with its checks in `helper-data-checks.R`.
+  - `fred_verification` (`data-raw/R/verify.R`) and `change_memo` (`data-raw/R/memo.R`) targets.
+  - `data-raw/R/update.R` and `data-raw/prepare_update.R`.
+  - `test-data-currency.R` removed, with `epidatatools` dropped from `Suggests` and `Remotes`.
+- **Memo against v2026.9.11:** September CPI added, PCE revised from 2021 (largest: July 2026, 131.659 to 131.172), no unexpected revisions. Against `HEAD`: "No changes".
+- **Unexpected revisions:** the real v2026.7.14 to v2026.8.12 transition returns nothing. Planted changes to June 2025 C-CPI-U (final in that vintage), March 1990 CPI-U NSA, and a removed CPI-U NSA row are each returned. A planted change to July 2025 C-CPI-U (interim) isn't. A ref like `$(touch …)` runs nothing, because git arguments are quoted.
+- **FRED:** all four series match for the latest 24 months (2024m9 to 2026m9, PCE to 2026m8). A planted PCE value fails with a message naming it. Without a key, it records "not run"; with `REALTALK_REQUIRE_FRED=true` and no key, it fails.
+- **Consistency tests:** 67 expectations pass, including each check failing on deliberately broken data.
+- **`next_version()`:** `2026.10.23`; `2026.10.14.1` and `.2` on the same day; `2026.2.13.1` against the zero-padded `v2026.02.13`. `today_eastern()` turns 03:30 UTC on July 1 into June 30, and 04:30 UTC on December 1 into November 30. `prepare_update.R` changes only the `Version` line and adds the NEWS entry.
+- **Full `tar_make()`:** the processed CSVs were unchanged. Every `.rda` differed byte for byte but held identical objects: `.rda` files record the R version that wrote them. So a draft PR will show every `.rda` as changed. That's why "Draft update" decides on `data-raw/processed/`, not `data/`.
+- **Checks:** `devtools::check()` 0 errors, 0 warnings, 0 notes; `pkgdown::check_pkgdown()` no problems.
+- **Departures from the plan:**
+  - The memo has no "check results" section. The memo target runs before R CMD check, so "Draft update" will append the check results to the PR body (Phase 4).
+  - The stale-input warning for the minimum wage checks whether the monthly series reaches the current year (`final_year` in `data-raw/R/fed_mw.R` is hard-coded to 2026), not the file's age. The federal minimum wage hasn't changed since 2009, so a file-age warning would fire every month.
+  - Git is read with `system2()` and quoted arguments, not `gert`.
+  - The pipeline's functions got their own tests, `data-raw/tests/`, run with `Rscript data-raw/tests/run.R`: 37 expectations covering the unexpected-revision rule (including the 12-month boundary), the change summary, the stale-input warnings, the FRED verification with a stand-in fetch, `next_version()`, `today_eastern()`, and `news_entry()`. The ad hoc checks above became these tests.
+  - The memo target now also depends on the minimum wage exports, which aren't in the catalog (per-commit review job 302).
+  - The local roxygen is 8.1.1 and the repo was built with 7.3.3. `devtools::document()` would change `DESCRIPTION` and `man/realtalk-package.Rd`, unrelated to this phase, so those changes are left out.
 
 ## Phase 2: the PR check and pkgdown
 
@@ -91,6 +114,7 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
    - check out `ref` (or the event's commit) with full history and tags, for the revision check, and `persist-credentials: false`
    - install the dependencies with `r-lib/actions/setup-r-dependencies`: the package's own, `needs: check, readme, pipeline` (`Config/Needs/readme` lists `tidyverse` and `hrbrthemes`), and `extra-packages: any::rcmdcheck, any::devtools, local::.`, as the current `R-CMD-check.yaml` and `README.yaml` do between them
    - R CMD check, with the tests, including the consistency tests
+   - the pipeline's own tests: `Rscript data-raw/tests/run.R` (added in Phase 1, after per-commit review jobs 300, 302, and 304)
    - fail if the README is stale: `devtools::build_readme()`, then `git diff --exit-code -- README.md`
    - fail on unexpected revisions: run `find_unexpected_revisions()` against the baseline (the highest `v*` tag)
    - write to the job summary that FRED wasn't checked here
