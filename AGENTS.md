@@ -48,6 +48,16 @@ It has one exported function:
   finding that needs several unusual conditions at once, record it as an
   accepted risk in the current plan rather than adding code. Then close
   the job with `roborev comment <job> "..."` and `roborev close <job>`.
+- Before acting on a finding, weigh how likely it is for this repo: one
+  or two maintainers, almost never working at the same time, and trusted
+  Write users. A fix that adds mechanism (new records, artifacts,
+  permissions, scripts, ruleset rules, or special cases) needs a likely
+  failure that would publish wrong values. Otherwise, record an accepted
+  risk.
+- A design review is done when its findings get narrower each round.
+  Record what’s left as accepted risks instead of running another round.
+- After a few phases, run `roborev insights` and use its noise
+  candidates to tune the guidelines in `.roborev.toml`.
 
 ## Common commands
 
@@ -70,7 +80,7 @@ Rscript -e 'targets::tar_make()'
 - **data/**: 23 `.rda` dataset files built by the data pipeline
 - **data-raw/**: Targets-based pipeline that fetches data from BLS and
   BEA APIs, processes it, and writes `.rda` files via
-  `usethis::use_data()`
+  [`usethis::use_data()`](https://usethis.r-lib.org/reference/use_data.html)
   - `_targets.R` + `packages.R`: pipeline definition and dependencies
   - `R/`: processing functions (fetchers, helpers, per-index logic)
   - `raw/` and `processed/`: intermediate data files

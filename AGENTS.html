@@ -65,6 +65,9 @@
 <li>At the end of each plan phase, run <code>roborev review --branch --base main --panel checkpoint_panel --wait</code>. That panel covers code, design, and security. Run <code>--panel design_only_panel</code> on a new plan.</li>
 <li>
 <code>.roborev.toml</code> tells reviewers what matters here: wrong published values, calculation changes nobody declared, breaking changes to <code><a href="reference/get_price_index.html">get_price_index()</a></code>, and the security of the GitHub workflows. Fix real findings. For a finding that needs several unusual conditions at once, record it as an accepted risk in the current plan rather than adding code. Then close the job with <code>roborev comment &lt;job&gt; "..."</code> and <code>roborev close &lt;job&gt;</code>.</li>
+<li>Before acting on a finding, weigh how likely it is for this repo: one or two maintainers, almost never working at the same time, and trusted Write users. A fix that adds mechanism (new records, artifacts, permissions, scripts, ruleset rules, or special cases) needs a likely failure that would publish wrong values. Otherwise, record an accepted risk.</li>
+<li>A design review is done when its findings get narrower each round. Record what’s left as accepted risks instead of running another round.</li>
+<li>After a few phases, run <code>roborev insights</code> and use its noise candidates to tune the guidelines in <code>.roborev.toml</code>.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="common-commands">Common commands<a class="anchor" aria-label="anchor" href="#common-commands"></a></h2>
@@ -84,7 +87,7 @@
 <li>
 <strong>data/</strong>: 23 <code>.rda</code> dataset files built by the data pipeline</li>
 <li>
-<strong>data-raw/</strong>: Targets-based pipeline that fetches data from BLS and BEA APIs, processes it, and writes <code>.rda</code> files via <code>usethis::use_data()</code>
+<strong>data-raw/</strong>: Targets-based pipeline that fetches data from BLS and BEA APIs, processes it, and writes <code>.rda</code> files via <code><a href="https://usethis.r-lib.org/reference/use_data.html" class="external-link">usethis::use_data()</a></code>
 <ul><li>
 <code>_targets.R</code> + <code>packages.R</code>: pipeline definition and dependencies</li>
 <li>
