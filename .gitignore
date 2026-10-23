@@ -9,3 +9,5 @@ altdoc/freeze.rds
 
 /.quarto/
 .DS_Store
+# roborev snapshots
+/.roborev/
