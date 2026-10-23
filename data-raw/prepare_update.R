@@ -14,7 +14,12 @@ version <- next_version(today_eastern(), run_git(c("tag", "--list", "v*")))
 desc_set_version(version)
 
 write_lines(
-  c(paste("## Version", version), news_entry(baseline, current), "", read_lines("NEWS.md")),
+  c(
+    paste("## Version", version),
+    news_entry(baseline, current),
+    "",
+    read_lines("NEWS.md")
+  ),
   "NEWS.md"
 )
 

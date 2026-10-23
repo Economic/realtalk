@@ -272,7 +272,7 @@ build_memo <- function(
   )
 }
 
-# `outputs` (the catalog's files) is only there so the memo runs after every
+# `outputs` (the exported files) is only there so the memo runs after every
 # dataset is written.
 write_change_memo <- function(
   outputs,

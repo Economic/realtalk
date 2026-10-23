@@ -297,6 +297,13 @@ tar_assign({
     tar_file()
 
   ## ── Change memo (always reruns: its baseline comes from git) ──
-  change_memo <- write_change_memo(available_data, fred_verification) |>
+  change_memo <- write_change_memo(
+    c(
+      available_data,
+      us_minimum_wage_monthly_out,
+      us_minimum_wage_annual_out
+    ),
+    fred_verification
+  ) |>
     tar_file(cue = tar_cue(mode = "always"))
 })

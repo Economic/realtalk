@@ -13,7 +13,8 @@ verify_against_fred <- function(
   datasets,
   months = 24,
   api_key = Sys.getenv("FRED_API_KEY"),
-  require_key = Sys.getenv("REALTALK_REQUIRE_FRED") == "true"
+  require_key = Sys.getenv("REALTALK_REQUIRE_FRED") == "true",
+  fetch = get_fred
 ) {
   if (!nzchar(api_key)) {
     if (require_key) {
@@ -40,7 +41,7 @@ verify_against_fred <- function(
     summarize(start = min(make_date(year, month, 1))) |>
     pull(start)
 
-  fred <- get_fred(
+  fred <- fetch(
     fred_series$series_id,
     start = start,
     fred_api_key = api_key
