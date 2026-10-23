@@ -172,8 +172,9 @@ A maintainer runs it to publish what's on `main` when it didn't come through "Pu
 **Shared tagging logic**, used by "Tag release" and by the tag job in "Publish update":
 
 1. **The target commit and version:** the given commit (the "Publish update" tag job always passes its merge commit), or the current `main` when "Tag release" is run without one. The version is the one in `DESCRIPTION` at the target commit, not on today's `main`, so a later merge can't change what an earlier publish gets tagged as. Every change reaches `main` as a merge commit, so the target is never a commit inside a PR.
-2. **The tag:** if `v{version}` is missing, create it on the target commit. If it points at the target commit, it's done. If it points anywhere else, stop with an error.
-3. **The GitHub release**, checked separately from the tag: if no release exists for the tag, create it and mark it latest. The notes are the merged PR's memo when the target is a "Publish update" merge, and otherwise that version's `NEWS.md` entry. An existing release is left alone.
+2. **Superseded check**, before the tag and on every run, including reruns of failed jobs: if a release with a higher version already exists, stop with "superseded by v{newer}", and create no tag, release, or pkgdown deploy. Otherwise a rerun of an old, failed publish could mark older data as latest, and r-universe would build it.
+3. **The tag:** if `v{version}` is missing, create it on the target commit. If it points at the target commit, it's done. If it points anywhere else, stop with an error.
+4. **The GitHub release**, checked separately from the tag: if no release exists for the tag, create it and mark it latest. The notes are the merged PR's memo when the target is a "Publish update" merge, and otherwise that version's `NEWS.md` entry. An existing release is left alone.
 
 Each step checks what already exists, so any run can be repeated safely.
 
