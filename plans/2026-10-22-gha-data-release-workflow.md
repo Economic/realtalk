@@ -1,7 +1,7 @@
 # Proposal: button-driven data updates for realtalk
 
 Date: 2026-10-22
-Status: design settled 2026-10-22, revised 2026-10-23 so that r-universe builds releases; next, an implementation plan with phases
+Status: design settled 2026-10-22, revised 2026-10-23 so that r-universe builds releases, and simplified 2026-10-23 (see "Accepted risks"); implemented by `plans/2026-10-23-implementation-data-update-workflows.md`
 
 Based on the CI, refresh, and release design in `~/projects/productivity_pay_gap` (see its `plans/2026-10-21-ci-data-release-workflow.md`), adapted for an R data package that is updated by hand about once a month.
 
@@ -45,7 +45,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | Who publishes | Only `realtalk-maintainers` can run "Publish update" and "Tag release", the two workflows that create releases. The team has the Maintain role, drafters have Write, and each workflow's plan job refuses anyone below Maintain (admins pass too). GitHub lets anyone with Write run any workflow button, and the built-in token can read a user's repo role but not their team membership, so the role stands in for the team. Maintain adds a few low-risk settings (description, topics, features such as issues) but can't change rulesets, access, or secrets, and doesn't bypass the ruleset. |
 | How many approvals | One maintainer's approval is enough, even when that maintainer also pressed "Draft update". The bot is the PR's author, so GitHub allows it. |
 | What reaches `main` | A PR approval enforced by a ruleset on `main`, not a GitHub Environment, so GitHub's merge button and direct pushes are gated too. |
-| Publish button | Keep "Publish update" rather than relying on GitHub's merge button. It's the one obvious publish action for rotating RAs, and the only path that checks the presser's role, that `main` hasn't moved, and that the PR is the bot's draft. |
+| Publish button | Keep "Publish update" rather than relying on GitHub's merge button. It's the one obvious publish action for rotating RAs, and the only path that checks the presser's role, that `main` hasn't moved, and that the branch is the bot's draft. |
 | Tag release | Manual only (`workflow_dispatch`), limited to the Maintain role. It publishes changes that reached `main` through hand-made PRs, and finishes a "Publish update" whose tag job failed. Nothing creates a release automatically on a push to `main`, so every publish is a deliberate act by a maintainer. |
 | pkgdown | Deploys when a release is created, not on every push to `main`, so the site matches what's published. "Publish update" and "Tag release" start it with the release tag, and it builds that tag, because a release created with the built-in token doesn't trigger `release: published`. (After design review job 226.) |
 | Version | The draft date, `YYYY.M.D` in Eastern time, which reflects the data vintage. It stays the same even if the draft is published days later. If that version is already released (a second draft on a day something was already published), Draft update appends a suffix: `2026.10.22.1`, then `.2`. R orders these correctly. |
@@ -54,9 +54,9 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | Team membership | `realtalk-maintainers`: benzipperer and zmokhiber, for now. Drafters are whoever has Write access; nothing in the workflows names them. |
 | `_targets/meta/meta` | Stop committing it: add it to `data-raw/_targets/.gitignore` and remove it from the index. CI starts with an empty store, so it would change on every run and tell nobody anything. |
 | Reminder | A scheduled check every weekday that opens or updates one rolling issue when any fetched source has new data, and @-mentions `@economic/realtalk-maintainers`, who decide who drafts. |
-| API keys | In an Environment, `data-apis`, limited to `main`, not in repository secrets. Only jobs running from `main` can read them, so an edited workflow on another branch can't. (After design review job 208.) |
+| API keys | Repository secrets. They are free BLS, BEA, and FRED keys that can be reissued in minutes, so a `main`-only Environment isn't worth its cost: no key-using workflow could be tested from a branch. (Revised 2026-10-23; design review job 208 had moved them to an Environment. See "Accepted risks".) |
 | FRED verification | Runs only in "Draft update", which has the key and runs code from `main`. A mismatch stops the draft. PR checks need no secrets and don't call FRED. (After design review job 200.) |
-| Merging and tagging | GitHub enforces the merge guards at merge time: the merge passes the checked head SHA, and the ruleset requires branches to be up to date. Everything after the merge is in separate jobs that are safe to repeat. The up-to-date rule applies to hand-made PRs too: when `main` moves, they need "Update branch" and a fresh approval. `main` moves about once a month, so that's rare. (After design review job 204.) |
+| Merging and tagging | The merge passes the checked head SHA, and the plan job checks that `main` hasn't moved. Everything after the merge is in separate jobs, so "Re-run failed jobs" can finish a failed publish. (After design review job 204; the up-to-date rule it added was dropped 2026-10-23.) |
 | Names | The workflows are "Draft update", "Publish update", and "Tag release". "Release" means only the GitHub release page. |
 
 ## What's different from productivity_pay_gap
@@ -86,11 +86,10 @@ Settings:
   - merge commits only
   - force pushes and branch deletion blocked
 - **Ruleset "require check on main"** (no bypass):
-  - the check required
-  - branches must be up to date before merging ("Require branches to be up to date before merging"). GitHub then refuses, at merge time, any merge whose branch doesn't include the current `main`.
+  - the check required. Branches don't have to be up to date before merging, so hand-made PRs don't need "Update branch" and a fresh approval each time `main` moves.
 
   A bypass skips every rule in its ruleset, so the check sits in a ruleset of its own. That way an admin's bypass skips the approval, but never the check.
-- **Environment `data-apis`:** holds `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY`, with deployment branches limited to `main` and no required reviewers. Only jobs running from `main` can read the keys: the "Draft update" build job and the reminder's check job. GitHub enforces this outside the workflow files, so a Write user who runs an edited workflow from their own branch can't reach the keys. The keys are not repository secrets.
+- **Repository secrets:** `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY`. Only the "Draft update" build job and the reminder's check job use them.
 - **The team:** at least two members, created in the Economic org and given the Maintain role on realtalk. Depending on the org's settings, creating it may need an org owner, who can then let Ben manage its membership. (GitHub calls that being the team's "team maintainer", which is unrelated to the repo's Maintain role.)
 
 ## The workflows
@@ -111,7 +110,7 @@ Settings:
 
 ### Draft update (`workflow_dispatch`, with a `dry_run` input)
 
-- **Build job** (environment `data-apis`, read-only token). Runs only from `main`:
+- **Build job** (the API keys, read-only token). Runs only from `main`, so drafts are always built from `main`'s code:
   - fetches fresh data and rebuilds, with an empty targets store
   - sets the version to today's date, with a suffix if that version is already released (see "Version" above)
   - writes the `NEWS.md` entry from the dataset end dates ("update CPI-based data through September 2026", "update PCE through August 2026")
@@ -124,7 +123,7 @@ Settings:
   - copies only allowlisted files from the build's artifact, as productivity_pay_gap's `copy-refresh-files.sh` does
   - creates the `data-update` branch from the commit the build job used (`github.sha`), not from the current `main`, so the outputs always sit on the code that built them. It then force-pushes the branch. If `main` moved during the build, the PR's base is out of date, and "Publish update" refuses it.
   - opens or updates the PR, assigned to `github.actor`, with the memo as the body
-- **If no new data arrived:** it opens no PR, and the run summary says so and shows each dataset's latest period. If a PR is open and `main` already has the same data, it closes that PR.
+- **Two cases, compared with `main` only:** if the fresh data equals `main`'s, it opens no PR, closes any open draft PR with "`main` already has these numbers", and the run summary shows each dataset's latest period. Otherwise it force-pushes a new draft, even if the data equals the open draft's. That cancels any approval, which costs one re-approval in the rare case of a re-run with nothing new.
 - **With `dry_run`:** it builds the memo and writes it to the run summary, and touches no branch or PR.
 
 GitHub will probably hold the PR check on a bot-opened PR until someone with Write access clicks "Approve and run workflows", as it does in productivity_pay_gap. That's an extra click, but it's also a deliberate gate: the PR's files come from a job that ran package code.
@@ -137,12 +136,12 @@ GitHub will probably hold the PR check on a bot-opened PR until someone with Wri
    - the PR's required checks haven't passed on its latest commit
    - no maintainer has approved the PR's latest commit. The ruleset would refuse the merge anyway; checking first gives a clearer message.
    - `main` has moved since the draft, meaning the commit the draft was built from isn't the current `main`. Then the merge commit would contain files nobody checked. Re-run "Draft update".
-   - the PR's latest commit isn't the draft commit that "Draft update" pushed, for example because someone pushed to `data-update` by hand. The FRED verification ran only on the draft commit.
+   - the branch doesn't hold exactly one commit beyond its base, authored by `github-actions[bot]`, for example because someone pushed to `data-update` by hand. The FRED verification ran only on the bot's commit. This catches accidents; it doesn't stop a deliberately forged commit (see "Accepted risks").
    - the `DESCRIPTION` version is already tagged, or isn't higher than the last release
    - `NEWS.md` has no entry for that version
 2. **Merge job** (write token, runs no R):
-   - merges the PR with a merge commit through the API, passing the PR head SHA that the plan job checked. GitHub refuses the merge if the head has changed since. The up-to-date rule in "require check on main" refuses it if `main` has moved. Both are enforced by GitHub at merge time, so a PR merged between the plan job and this one can't slip through.
-   - compares the merge commit's tree with the checked head's, as a final verification. With both rules above, they are always identical.
+   - merges the PR with a merge commit through the API, passing the PR head SHA that the plan job checked, so GitHub refuses the merge if the head changed in between
+   - compares the merge commit's tree with the checked head's and notes the result in the run summary. They match unless something merged into `main` in the seconds since the plan job. Either way, the check job then runs on the merge commit, which is what gets released.
 3. **Check job:** runs the PR check workflow (through `workflow_call`) on the merge commit. The built-in token's merge triggers no workflows, so without this job no check would ever run on the commit that gets released. If it fails, the update is on `main` but not published.
 4. **Tag job** (write token, runs no R), after the check job. It runs the shared tagging logic (see "Tag release" below) with the merge commit the merge job recorded. Creating the release is the step that publishes.
 5. **Follow-up jobs:**
@@ -154,7 +153,7 @@ With `dry_run`, it runs the guards and shows the tag and notes, and merges and c
 **Recovery after a failure past the merge.** Once the merge succeeds, a new "Publish update" run would refuse, because the PR is closed. Until the tag job creates the release, the update is on `main` but not published. Everything after the merge is in separate jobs that are safe to repeat:
 
 - In the failed run, click "Re-run failed jobs". GitHub reruns only the failed jobs and the ones after them, not the plan or merge jobs.
-- If the run can't be rerun, run "Tag release" with the merge commit shown in the failed run's summary. It creates whatever tag or release is missing.
+- If the run can't be rerun and no release exists yet, run "Tag release" with the merge commit shown in the failed run's summary.
 
 ### Tag release (`workflow_dispatch` only)
 
@@ -164,21 +163,22 @@ A maintainer runs it to publish what's on `main` when it didn't come through "Pu
 - **Guards** (plan job, read-only). It refuses if:
   - the person who pressed the button has a role below Maintain
   - the target commit isn't on `main`'s first-parent history
-  - the tag `v{version}` already exists on a different commit
-  - for a version not yet released: the version isn't higher than the last release, or `NEWS.md` at the target commit has no entry for it. A version already released on the target commit skips these two guards, so a rerun can finish the follow-up jobs.
+  - the version is already released, or isn't higher than the last release
+  - `NEWS.md` at the target commit has no entry for that version
+
+  If a follow-up job fails after the release exists (pkgdown, say), use "Re-run failed jobs" in that run, or start pkgdown by hand with the tag.
 - **Check job:** runs the PR check workflow (through `workflow_call`) on the target commit, and stops if it fails. A merge made by "Publish update" uses the built-in token, so GitHub ran no checks on the merge commit itself; this job runs them.
 - **Then** the shared tagging logic, and the same follow-up jobs as "Publish update": pkgdown and the r-universe check.
 
 **Shared tagging logic**, used by "Tag release" and by the tag job in "Publish update":
 
 1. **The target commit and version:** the given commit (the "Publish update" tag job always passes its merge commit), or the current `main` when "Tag release" is run without one. The version is the one in `DESCRIPTION` at the target commit, not on today's `main`, so a later merge can't change what an earlier publish gets tagged as. Every change reaches `main` as a merge commit, so the target is never a commit inside a PR.
-2. **Superseded check**, before the tag and on every run, including reruns of failed jobs: if a release with a higher version already exists, stop with "superseded by v{newer}", and create no tag, release, or pkgdown deploy. Otherwise a rerun of an old, failed publish could mark older data as latest, and r-universe would build it.
-3. **The tag:** if `v{version}` is missing, create it on the target commit. If it points at the target commit, it's done. If it points anywhere else, stop with an error.
-4. **The GitHub release**, checked separately from the tag: if no release exists for the tag, create it and mark it latest. The notes are the merged PR's memo when the target is a "Publish update" merge, and otherwise that version's `NEWS.md` entry. An existing release is left alone.
+2. **The tag:** if `v{version}` is missing, create it on the target commit. If it points at the target commit, it's done. If it points anywhere else, stop with an error.
+3. **The GitHub release**, checked separately from the tag: if no release exists for the tag, create it and mark it latest. The notes are the merged PR's memo when the target is a "Publish update" merge, and otherwise that version's `NEWS.md` entry. An existing release is left alone.
 
 Each step checks what already exists, so any run can be repeated safely.
 
-**One publish at a time.** "Publish update" and "Tag release" share one workflow-level concurrency group, `publish`, with `cancel-in-progress: false`. GitHub then runs at most one of them at a time, so the superseded check and the release creation can't interleave with another run's. A run started while another is going waits. GitHub keeps only one waiting run per group, so a third run started meanwhile replaces the waiting one; that one then shows as canceled and needs starting again. (After design review job 238.)
+**One publish at a time.** "Publish update" and "Tag release" share one workflow-level concurrency group, `publish`, with `cancel-in-progress: false`. GitHub then runs at most one of them at a time. It's one line of YAML. (After design review job 238.)
 
 ### New-data reminder (scheduled)
 
@@ -186,7 +186,7 @@ A scheduled workflow, `new-data-check`, tells people when an update is worth dra
 
 - **What it checks:** every source the pipeline fetches: CPI-U NSA and SA and C-CPI-U from the BLS API, and monthly, quarterly, and annual PCE from the BEA API. It runs the pipeline's own fetch and snapshot targets (`tar_make()` limited to the `*_raw_csv` targets) and compares the fresh snapshots with those committed on `main`. Using the same fetch code as "Draft update" means it catches new periods and revisions alike.
 - **Hand-maintained files** (CPI-U-RS, the minimum wage, CPI-U-X1) aren't fetched, so the check can't see new releases of them. The issue repeats the memo's stale-input warnings instead, for example CPI-U-RS missing last year's annual value after May.
-- **Jobs:** as with "Draft update", the **check job** runs R with the API keys (environment `data-apis`) and a read-only token, and passes a short summary to the **issue job** as a job output. The issue job has `issues: write` and runs no R.
+- **Jobs:** as with "Draft update", the **check job** runs R with the API keys and a read-only token, and passes a short summary to the **issue job** as a job output. The issue job has `issues: write` and runs no R.
 - **The issue:** one rolling issue, labeled `new-data`:
   - **New data, no open issue:** it opens one titled with what's new, for example "New data: CPI through Oct 2026, PCE through Sep 2026", with a checklist pointing to "Draft update". The body @-mentions `@economic/realtalk-maintainers`, which notifies its members. The handle is kept in a repository variable, so changing who's notified doesn't need a code change.
   - **More new data while the issue is open:** it updates the title and body, and comments, which sends one email.
@@ -244,18 +244,25 @@ The memo becomes the PR body and the GitHub release notes. The terse `NEWS.md` e
 | Gaps, duplicate periods, incomplete annual or quarterly periods, extended C-CPI-U disagreeing with C-CPI-U, changes to historical CPI-U NSA | PR check | Yes |
 | Expected revisions, stale manual inputs | Memo | No |
 | A maintainer's approval of the latest commit | Ruleset, on every merge into `main` | Yes |
-| PR checks passed, `main` unchanged since the draft, latest commit is the bot's draft commit | Publish update | Yes |
+| PR checks passed, `main` unchanged since the draft, the branch is one commit by the bot | Publish update | Yes |
 | Version not already released, `NEWS.md` entry present | Publish update, Tag release | Yes |
 | Presser has the Maintain role or higher | Publish update, Tag release | Yes |
 | Checks run and passed on the commit to release | Publish update, Tag release | Yes |
 
 ## Accepted risks
 
+Simplified on 2026-10-23. These are situations that need two people working at once, a Write user acting in bad faith, or a rare failure followed by an unusual recovery. One or two maintainers work on this repo, almost never at the same time, so each was judged not worth its mechanism.
+
+- **API keys readable by a Write user.** A Write user could run an edited workflow from a branch that prints the repository secrets. The keys are free and can be reissued in minutes.
+- **A forged draft commit.** The "one commit by the bot" guard can be fooled by a commit whose author is set to `github-actions[bot]` by hand. Pushing it would still cancel the maintainer's approval, and the maintainer sees the new commit before approving again.
+- **A merge in the seconds between "Publish update"'s plan and merge jobs.** The released commit would then include that other change. The check still runs on the merge commit, and the run summary notes the tree mismatch.
+- **Rerunning an old, failed publish after a newer one.** If publish A's tag job fails, publish B succeeds, and someone then reruns A's failed jobs, A would be marked latest and r-universe would build the older data. Don't rerun a publish after a newer one went out; the concurrency group prevents the overlapping version of this.
+
 - **A release created by hand.** Anyone with Write access can create a GitHub release from the Releases page or the API, pointing at any branch or commit, and r-universe would build it. That skips every gate: the ruleset on `main`, the checks, and the role check. Nothing enforces "releases come only from 'Publish update' and 'Tag release'". People with Write access are EPI staff, so the realistic risk is a mistake, and the Releases form targets `main` unless someone picks another branch. Once the workflows exist, the README and `AGENTS.md` say that releases come only from them, never by hand. If this ever matters, a tag ruleset on `v*` with a GitHub App as the only bypass, its key in an Environment limited to `main`, would enforce it without changing anything else. (Accepted 2026-10-23, after design review job 226.)
 
-- **The Maintain-role check is a convenience, not a security boundary.** It protects the copies of "Publish update" and "Tag release" on `main`. A Write user could run an edited copy from their own branch that skips it. That copy still can't merge without a maintainer's approval of the latest commit and the required check, because the ruleset applies to the bot's merge too, and it can't read the API keys. The ruleset is the boundary for `main`. Creating a release is covered by the risk above.
+- **The Maintain-role check is a convenience, not a security boundary.** It protects the copies of "Publish update" and "Tag release" on `main`. A Write user could run an edited copy from their own branch that skips it. That copy still can't merge without a maintainer's approval of the latest commit and the required check, because the ruleset applies to the bot's merge too. The ruleset is the boundary for `main`. Creating a release is covered by the risk above.
 
-- **The merge button on an approved data PR.** Once a maintainer has approved the `data-update` PR, anyone with Write access could press GitHub's merge button instead of "Publish update". That skips the role check and the check that the latest commit is the bot's draft commit. It doesn't skip the maintainer's approval, the required check, or the up-to-date rule, and it publishes nothing: the update waits on `main` until a maintainer runs "Tag release". So this is accepted.
+- **The merge button on an approved data PR.** Once a maintainer has approved the `data-update` PR, anyone with Write access could press GitHub's merge button instead of "Publish update". That skips the role check and the check that the branch is one commit by the bot. It doesn't skip the maintainer's approval or the required check, and it publishes nothing: the update waits on `main` until a maintainer runs "Tag release". So this is accepted.
 
 ## To verify before building
 
@@ -266,7 +273,7 @@ The memo becomes the PR body and the GitHub release notes. The terse `NEWS.md` e
 - Who in the Economic org can create the `realtalk-maintainers` team.
 - Whether an @-mention of `@economic/realtalk-maintainers` in an issue written by the built-in token notifies the team's members. A secret team can only be mentioned by its members, so the team must be visible. If it doesn't, the reminder mentions a list of usernames kept in the repo instead.
 - Current access on realtalk. On 2026-10-22, zmokhiber's role on the repo read as `admin` (through Ben's token). Admins pass the role check in "Publish update" and "Tag release" and can use the ruleset bypass, so check whether that admin role is intended before relying on the team for either.
-- `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY` are set in the `data-apis` environment, limited to `main`, and work from a job there. No repository-level copies exist; remove any found. The local `gh` token can't read secret settings, so a test run confirms them, as in productivity_pay_gap's Phase 0.
+- `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY` are set as repository secrets and work from CI. The local `gh` token can't read secret settings, so a test run confirms them, as in productivity_pay_gap's Phase 0.
 - The built-in token can read the presser's role (`GET /repos/{owner}/{repo}/collaborators/{username}/permission`).
 
 ## Open questions

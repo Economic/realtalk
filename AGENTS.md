@@ -23,6 +23,9 @@ Guidance for coding agents working in this repository.
 - A post-commit hook sends every commit to one code reviewer automatically. See the results with `roborev list` and `roborev show <job>`. Only commits made locally are reviewed, not commits pulled from `main`.
 - At the end of each plan phase, run `roborev review --branch --base main --panel checkpoint_panel --wait`. That panel covers code, design, and security. Run `--panel design_only_panel` on a new plan.
 - `.roborev.toml` tells reviewers what matters here: wrong published values, calculation changes nobody declared, breaking changes to `get_price_index()`, and the security of the GitHub workflows. Fix real findings. For a finding that needs several unusual conditions at once, record it as an accepted risk in the current plan rather than adding code. Then close the job with `roborev comment <job> "..."` and `roborev close <job>`.
+- Before acting on a finding, weigh how likely it is for this repo: one or two maintainers, almost never working at the same time, and trusted Write users. A fix that adds mechanism (new records, artifacts, permissions, scripts, ruleset rules, or special cases) needs a likely failure that would publish wrong values. Otherwise, record an accepted risk.
+- A design review is done when its findings get narrower each round. Record what's left as accepted risks instead of running another round.
+- After a few phases, run `roborev insights` and use its noise candidates to tune the guidelines in `.roborev.toml`.
 
 ## Common commands
 
