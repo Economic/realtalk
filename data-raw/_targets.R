@@ -258,6 +258,10 @@ tar_assign({
   ) |>
     tar_file()
 
+  ## ── Known missing months, for the package's tests ──
+  known_missing_months_out <- export_known_missing_months(bls_missing) |>
+    tar_file()
+
   ## ── Catalog ──
   available_data <- catalog_data(
     cpi_u_monthly_nsa_out,
