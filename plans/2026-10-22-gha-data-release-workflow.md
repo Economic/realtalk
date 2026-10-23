@@ -178,6 +178,8 @@ A maintainer runs it to publish what's on `main` when it didn't come through "Pu
 
 Each step checks what already exists, so any run can be repeated safely.
 
+**One publish at a time.** "Publish update" and "Tag release" share one workflow-level concurrency group, `publish`, with `cancel-in-progress: false`. GitHub then runs at most one of them at a time, so the superseded check and the release creation can't interleave with another run's. A run started while another is going waits. GitHub keeps only one waiting run per group, so a third run started meanwhile replaces the waiting one; that one then shows as canceled and needs starting again. (After design review job 238.)
+
 ### New-data reminder (scheduled)
 
 A scheduled workflow, `new-data-check`, tells people when an update is worth drafting. It never opens a PR or changes a branch.
