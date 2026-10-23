@@ -105,8 +105,9 @@ What not to flag:
 High-severity rules:
 - Nothing reaches main unless a maintainer approved the pull request's latest commit
   and its required checks passed.
-- A release is created only for a commit on main whose checks passed, and only by
-  "Publish update" or "Tag release".
+- "Publish update" and "Tag release" release only a commit on main, after running
+  the checks on that commit. (Anyone with Write access can still create a release by
+  hand; the plan accepts that risk, so don't report it.)
 - Secrets (BLS_API_KEY, BEA_API_KEY, FRED_API_KEY) must never be printed or exposed
   to untrusted code.
 
