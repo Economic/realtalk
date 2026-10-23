@@ -4,7 +4,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/Economic/realtalk/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Economic/realtalk/actions/workflows/R-CMD-check.yaml)
+[![check](https://github.com/Economic/realtalk/actions/workflows/check.yml/badge.svg)](https://github.com/Economic/realtalk/actions/workflows/check.yml)
 <!-- badges: end -->
 
 realtalk makes it easy to use common US price indexes in R.

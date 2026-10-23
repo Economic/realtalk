@@ -1,0 +1,68 @@
+# The required check (Phase 2 of plans/2026-10-23-implementation-data-update-workflows.md).
+# One job, so the ruleset requires one check, and "Publish update" and "Tag
+# release" can run it on the commit they release. It needs no secrets: FRED is
+# checked by "Draft update", not here.
+name: check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to check (default, the commit that triggered the run)
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      # setup-r-dependencies installs economic/epitargets and economic/epidatatools
+      # from GitHub
+      GITHUB_PAT: ${{ github.token }}
+      R_KEEP_PKG_SOURCE: yes
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          # full history and tags, for the revision check's baseline
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          extra-packages: any::rcmdcheck, any::devtools, local::.
+          needs: check, readme, pipeline
+
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      - name: Test the pipeline's functions
+        run: Rscript data-raw/tests/run.R
+
+      - name: Fail if README.md is stale
+        run: |
+          Rscript -e 'devtools::build_readme()'
+          git diff --exit-code -- README.md
+
+      - name: Fail on unexpected revisions since the latest release
+        run: Rscript data-raw/check_revisions.R
+
+      - name: Note what this check doesn't cover
+        run: echo "This check doesn't compare with FRED. \"Draft update\" does, before it opens a draft." >> "$GITHUB_STEP_SUMMARY"
