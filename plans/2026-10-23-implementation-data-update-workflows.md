@@ -65,7 +65,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
    - **Baseline:** the latest published release, the one r-universe builds, so the memo describes what users would receive. A tag without a published release (possible mid-recovery in Phase 5) is never the baseline. `REALTALK_BASELINE` overrides it. The workflows resolve the latest release with `gh release view --json tagName` and pass it in `REALTALK_BASELINE`. Locally, the memo does the same through `gh`, and stops with a clear message if `gh` isn't available and `REALTALK_BASELINE` isn't set. Baseline files come from `git show <ref>:data-raw/processed/<name>.csv`.
    - **Sections:** coverage, revisions (with expected and unexpected labels), verification, stale manual inputs, and check results, as in the design. Each section is a function that returns a small table, and one function assembles the Markdown, as productivity_pay_gap's `R/report.R` does.
    - **Unexpected revisions:** a separate function, `find_unexpected_revisions(baseline, current)`, returns changed historical CPI-U NSA values and changed final C-CPI-U values. The memo lists them, and the PR check fails on them (Phase 2), with the same latest-release baseline.
-     - **Final C-CPI-U** is judged in the **baseline** vintage: a value is final if it was more than 12 months older than the baseline's latest month. BLS revises interim values quarterly and makes them final 10 to 12 months after first publication ([BLS](https://www.bls.gov/cpi/additional-resources/chained-cpi-questions-and-answers.htm)), so the newest revision a final value could get is already behind it. The history agrees: v2026.8.12 revised July 2025 to June 2026 (July 2025 from 179.236 to 179.272) against v2026.7.14, whose data ran through June 2026, so all of those months were interim there. Releases from v2026.9.11 to v2026.10.14 revised none.
+     - **Final C-CPI-U** is judged in the **baseline** vintage: a value is final if it is 12 or more months older than the baseline's latest month. With the baseline through June 2026, June 2025 and earlier are final, and July 2025 is interim. BLS revises interim values quarterly and makes them final 10 to 12 months after first publication ([BLS](https://www.bls.gov/cpi/additional-resources/chained-cpi-questions-and-answers.htm)), so the newest revision a final value could get is already behind it. The history agrees: v2026.8.12 revised July 2025 to June 2026 (July 2025 from 179.236 to 179.272) against v2026.7.14, whose data ran through June 2026: those months were 0 to 11 months old there, all interim, and June 2025, 12 months old, wasn't revised. Releases from v2026.9.11 to v2026.10.14 revised none.
    - The target always reruns (`cue = tar_cue(mode = "always")`), since its baseline is outside the pipeline.
 5. **FRED verification**, as a `fred_verification` target in `data-raw/R/verify.R`:
    - compares CPIAUCNS, CPIAUCSL, SUUR0000SA0, and PCEPI with the matching monthly datasets for the latest 24 months both have, through `epidatatools::get_fred()`, at each dataset's precision
@@ -149,7 +149,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
    - builds `data-update` from the build's commit, commits as `github-actions[bot]`, and force-pushes
    - opens the PR, or updates its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`
    - closes an open draft PR when `main` already has the same data
-   - records the draft commit's SHA in the PR body, for "Publish update"'s "bot's draft commit" guard
+   - records the draft commit's SHA in a 90-day artifact named `draft-commit`, uploaded by this run. That is the trusted record for "Publish update"'s "bot's draft commit" guard. The SHA also goes in the PR body, for people to read; nothing trusts the body, because anyone with Write access can edit it.
 
 **Verification:**
 
@@ -165,7 +165,8 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 1. **`.github/scripts/tag-release.sh`**, the shared tagging logic from the design: target and version, the superseded check, the tag, and the release, each checking what exists first.
 2. **`.github/workflows/publish-update.yml`** (`workflow_dispatch`, `dry_run`), with the jobs from the design: plan, merge, check (calls `check.yml` with the merge commit), tag, and the follow-ups (pkgdown with the tag, and the r-universe poll). Concurrency group `publish`, `cancel-in-progress: false`.
-   - **`.github/scripts/publish-plan.sh`:** the guards: role, open PR, checks passed and maintainer approval on the latest commit, the latest commit is the recorded draft commit, `main` hasn't moved, version not released and higher, `NEWS.md` entry.
+   - **`.github/scripts/publish-plan.sh`:** the guards: role, open PR, checks passed and maintainer approval on the latest commit, the latest commit is the draft commit, `main` hasn't moved, version not released and higher, `NEWS.md` entry.
+   - **The draft-commit guard** reads the `draft-commit` artifact from the most recent successful run of `.github/workflows/draft-update.yml` on `main` (`gh run list --workflow draft-update.yml --branch main --status success`), and requires the PR head to equal it. A Write user can edit the PR body, or run an edited copy of the workflow from another branch, but can't add an artifact to a run of the real workflow on `main`. If the artifact has expired, the guard refuses and asks for a new draft.
    - **The merge job:** `PUT /repos/{owner}/{repo}/pulls/{n}/merge` with `merge_method=merge` and `sha` set to the checked head, then the tree comparison.
 3. **`.github/workflows/tag-release.yml`** (`workflow_dispatch` with an optional commit input, `dry_run`): the guards from the design, then `check.yml` on the target, `tag-release.sh`, and the follow-ups. Same concurrency group.
 4. **The r-universe poll:** reads the version from the API every 5 minutes, and fails after 3 hours (open question 5).
@@ -173,7 +174,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 **Verification:**
 
 - Local, with a stand-in `gh`, for `tag-release.sh`: a new tag and release; a rerun with both existing; a tag on another commit stops; a newer release exists, so it stops as superseded; a release missing while the tag exists.
-- Local, for `publish-plan.sh`: each guard refuses on its own failing case, including a presser with Write only.
+- Local, for `publish-plan.sh`: each guard refuses on its own failing case, including a presser with Write only, a PR head that differs from the `draft-commit` artifact, an artifact from a run on another branch, and no artifact.
 - Dry runs from the branch for both workflows: they show the tag and notes, and create nothing.
 - Two dry runs started together: the second waits for the first.
 - The first real "Publish update", on the first draft from Phase 4. Afterward confirm:
