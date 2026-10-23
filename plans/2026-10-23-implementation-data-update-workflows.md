@@ -145,16 +145,11 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
    - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It installs the same dependencies as `check.yml`, then runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact. Whether anything changed is decided in the PR job, which can see the open draft (step 3).
    - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run. The build job decides nothing about changes; the PR job makes the one decision, in step 3, from the artifact, the open draft, and `main`.
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
-3. **`.github/scripts/update-draft-pr.sh`:**
-   - builds `data-update` from the build's commit, commits as `github-actions[bot]`, and force-pushes
-   - opens the PR, or updates its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`
-   - **decides what to do** by comparing the fresh `data-raw/processed/` files with the newest data already proposed: the open draft branch if there is one, otherwise `main`:
-     - **different:** force-push the new draft and update the PR. The newer data replaces the old draft, which also cancels its approval.
-     - **same as the open draft, and the draft's base is still the current `main`:** leave the PR alone, so an approval stands. Only the date-based version would differ, and that isn't new data. This is how the design's "a new draft replaces the old one, because it has the newest data" applies when nothing is newer.
-     - **same as the open draft, but `main` has moved** (a code-only merge since the draft): rebuild the draft on the new base, as for "different". "Publish update" would refuse the old draft, so keeping it would leave no way forward. This cancels the approval and makes a new `draft-commit` record.
-     - **no open draft, and same as `main`:** do nothing
-     - **an open draft whose data `main` already has** (for example after a hand-made PR brought the same data in): close it with "`main` already has these numbers"
-   - records the draft commit's SHA in a 90-day artifact named `draft-commit`, uploaded by this run. That is the trusted record for "Publish update"'s "bot's draft commit" guard. The SHA also goes in the PR body, for people to read; nothing trusts the body, because anyone with Write access can edit it.
+3. **`.github/scripts/update-draft-pr.sh`** makes one decision, comparing the fresh `data-raw/processed/` files (F) with those on `main` (M) and on the open draft branch (D), if there is one. The cases are checked in this order, and the first that matches applies:
+   1. **F equals M:** `main` already has this data. If a draft PR is open, close it with "`main` already has these numbers" (for example after a hand-made PR brought the same data in). Otherwise do nothing.
+   2. **A draft is open, F equals D, and the draft's base is still the current `main`:** leave the PR alone, so an approval stands. Only the date-based version would differ, and that isn't new data. This is how the design's "a new draft replaces the old one, because it has the newest data" applies when nothing is newer.
+   3. **Anything else:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`. This covers new data, and unchanged data on a `main` that has moved since the draft (which "Publish update" would refuse). Either way the push cancels any approval.
+   In case 3 only, the script records the new draft commit's SHA in a 90-day artifact named `draft-commit`, uploaded by this run. That is the trusted record for "Publish update"'s "bot's draft commit" guard. The SHA also goes in the PR body, for people to read; nothing trusts the body, because anyone with Write access can edit it.
 
 **Verification:**
 
@@ -164,7 +159,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - A second run before publishing, with no new source data: the PR's head SHA and its approval, if any, are unchanged, and the log says the data matches the open draft.
 - A code-only merge to `main` while a draft is open, then a run with no new source data: the draft is rebuilt on the new `main`, its approval is cancelled, and "Publish update" accepts the new draft. Locally, with a stand-in `gh` and a fixture where the data is unchanged but the base moved.
 - After the first draft is published (Phase 5), with no draft PR open: a run with no new data does nothing.
-- The stale-draft case, with `update-draft-pr.sh` and a stand-in `gh`: an open draft whose data `main` already has is closed. This case needs a hand-made PR to bring the same data into `main`, which is rare, so it's tested locally rather than staged for real.
+- The stale-draft cases, with `update-draft-pr.sh` and a stand-in `gh`, after `main` has taken in the old draft's data: with unchanged fresh data, the open draft is closed (case 1); with newer fresh data, the draft is replaced (case 3), not closed. This case needs a hand-made PR to bring the same data into `main`, which is rare, so it's tested locally rather than staged for real.
 
 **Results:** (to fill in)
 
