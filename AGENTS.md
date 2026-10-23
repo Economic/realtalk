@@ -9,7 +9,8 @@ Guidance for coding agents working in this repository.
 ## Working here
 
 - **Plans:** the newest dated file in `plans/` is the current plan. Its "Decisions so far" and "Accepted risks" sections are settled: don't reopen them without a new argument. New plans go in `plans/YEAR-MM-DD-short-description.md`.
-- **Changes:** make each change on a branch and open a pull request, merged with a merge commit. Merging to `main` publishes: r-universe builds whatever is on `main`. Ask the maintainer when a PR is ready.
+- **Changes:** make each change on a branch and open a pull request, merged with a merge commit. Ask the maintainer when a PR is ready.
+- **Publishing:** merging to `main` publishes nothing. r-universe builds the latest GitHub release (`"branch": "*release"` in `economic.r-universe.dev`), so creating a release is what publishes. Never create a tag or release without being asked.
 - **Commits:** commit early and often. Give each self-contained change its own commit; small commits get faster, more focused reviews.
 - **Conventions:** follow the rules in `.claude/rules/`:
   - `r_package.md`: package development, documentation, and tests

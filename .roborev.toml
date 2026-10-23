@@ -49,10 +49,12 @@ Project context: realtalk is EPI's R data package of US price indexes (CPI-U, C-
 the extended C-CPI-U, CPI-U-RS, CPI-U-X1, PCE) and the federal minimum wage, with one
 exported function, get_price_index(). EPI staff and outside users install it from
 r-universe and use it to deflate dollar values, so a wrong value spreads silently into
-other people's published work. r-universe builds whatever is on main: merging to main
-publishes. Data updates are prepared by a "Draft update" workflow as a pull request
-with a change memo, approved by a member of realtalk-maintainers, and merged and
-tagged by a "Publish update" workflow. Weigh every finding against those stakes.
+other people's published work. r-universe builds the latest GitHub release, so
+creating a release publishes; merging to main does not, and main may be ahead of the
+latest release. Data updates are prepared by a "Draft update" workflow as a pull
+request with a change memo, approved by a member of realtalk-maintainers, and merged
+and released by a "Publish update" workflow. Other changes are released by a manual
+"Tag release" workflow. Weigh every finding against those stakes.
 
 Project artifacts:
 - The current plan is the newest dated file in plans/. Its "Decisions so far" and
@@ -79,10 +81,10 @@ What to flag:
   from forks; pull_request_target; permissions broader than a job needs; untrusted
   text (PR titles, branch names, commit messages, artifact contents) interpolated
   into run: scripts or copied into a checkout that later holds a write token.
-- Weakening a publish gate: publishing a commit that didn't pass the checks, merging
-  without a maintainer's approval of the PR's latest commit, the Maintain-role check
-  on "Publish update", or the split between jobs that hold API secrets and jobs that
-  can write.
+- Weakening a publish gate: releasing a commit that didn't pass the checks or isn't
+  on main, merging without a maintainer's approval of the PR's latest commit, the
+  Maintain-role check on "Publish update" and "Tag release", or the split between jobs
+  that hold API secrets and jobs that can write.
 - Complexity the stakes do not justify: speculative features, defensive checks of
   internal invariants, duplicated validation, and tests that pin incidental details
   such as exact error text. Recommending that a requirement, check, or test be
@@ -95,14 +97,16 @@ What not to flag:
   monthly and annual revisions, interim C-CPI-U, CPI-U seasonal factors each
   February), and the change memo explains them.
 - Failures that a rerun of "Draft update" repairs, unless they can put wrong values
-  on main.
+  in a release.
 - Failures that need two or more unusual conditions at once, unless they can put
-  wrong values on main.
+  wrong values in a release.
 - Wording, formatting, and R style, unless meaning changes.
 
 High-severity rules:
 - Nothing reaches main unless a maintainer approved the pull request's latest commit
   and its required checks passed.
+- A release is created only for a commit on main whose checks passed, and only by
+  "Publish update" or "Tag release".
 - Secrets (BLS_API_KEY, BEA_API_KEY, FRED_API_KEY) must never be printed or exposed
   to untrusted code.
 
