@@ -43,7 +43,15 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
 
 **Exit criteria:** the keys work from CI; the role lookup works with the built-in token; the pipeline's packages install on the runner.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **r-universe:** it synced the registry at 13:47 UTC (commit "Sync registry" in `r-universe/economic`, whose `.gitmodules` shows `branch = *release` for realtalk), and it has built nothing since, though #34, #35, and #36 merged to `main`. The API's `RemoteRef: HEAD` and `RemoteSha` describe the last build (v2026.10.14), not the setting. The poll in Phase 5 reads `Version`.
+- **Secrets and team:** the repository secrets and the `realtalk-maintainers` team were set up by Ben. The repo's Admin roles are intended.
+- **Spike** (runs 40031111574, 40031650572, and 40032329169 on `spike/phase-0`, now deleted):
+  - the built-in token reads the presser's role: `role_name=admin permission=admin`
+  - all three keys are set. Through `epidatatools`, BLS returned 9 rows, BEA 248, and FRED 3.
+  - the pipeline's packages install and load on `ubuntu-24.04`. `setup-r-dependencies` with `needs: check, readme, pipeline` took about 3.5 minutes. No missing system libraries.
+  - **BEA was inconsistent.** The second run's `get_bea_nipa()` failed because BEA returned an error instead of data. In the third run, a direct call with the same key got "This UserId is not active", and `get_bea_nipa()` then succeeded. A failed BEA call stops "Draft update" visibly, and a rerun repairs it.
 
 ## Phase 1: pipeline changes (local)
 
