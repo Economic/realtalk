@@ -35,11 +35,15 @@ PR #34: `.roborev.toml`, `AGENTS.md`, the design, and its design review. Economi
 
 ## Phase 0: feasibility checks
 
-Settings and spikes that later phases depend on. Throwaway workflows go on `spike/*` branches and are deleted afterward.
+Settings and spikes that later phases depend on. Throwaway workflows that need no keys go on `spike/*` branches and are deleted afterward.
 
 1. **r-universe sync.** Confirm `https://economic.r-universe.dev/api/packages/realtalk` reports the release, not `HEAD` (it read `RemoteRef: HEAD` on 2026-10-23). Record the field names the poll step in Phase 5 will read.
 2. **Environment `data-apis`.** Create it with deployment branches limited to `main`, and add `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY`. Confirm there are no repository-level copies.
-3. **Keys from CI.** Temporarily add `spike/*` to the Environment's allowed branches. A spike workflow reports whether each key is set (never its value) and makes one small BLS, BEA, and FRED call. Then remove `spike/*` and rerun: the job must fail to reach the Environment. That confirms the branch limit.
+3. **Keys from CI, from `main` only.** The Environment stays limited to `main` throughout; adding a branch to it, even briefly, would let any Write user run edited code on that branch with the keys.
+   - Merge a small `smoke-test.yml` (`workflow_dispatch`, Environment `data-apis`, `contents: read`) to `main` through a PR. It reports whether each key is set, never its value, and makes one small BLS, BEA, and FRED call. Merging publishes nothing.
+   - Run it from `main`: every call succeeds.
+   - Run it from a `spike/*` branch: the job must fail to reach the Environment. That confirms the branch limit.
+   - Remove `smoke-test.yml` in a follow-up PR, or keep it as a diagnostic (decide when recording the results).
 4. **Role lookup with the built-in token.** The spike calls `GET /repos/{owner}/{repo}/collaborators/{actor}/permission` with `github.token` and prints `role_name` for the person who started it.
 5. **Package install for the pipeline.** The spike installs the pipeline's packages (see Phase 1, step 2) on `ubuntu-24.04` and loads them. Record the time and any missing system libraries, as productivity_pay_gap found with `libglpk`.
 6. **Access review.** Check zmokhiber's Admin role on realtalk, and whether it's intended (design, "To verify").
@@ -58,9 +62,10 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
    - extended C-CPI-U against C-CPI-U from 2000, by frequency: monthly NSA and annual within 0.05, quarterly NSA within 0.1, skipping known missing months and the quarters that contain them
    - annual and quarterly price index values only for complete periods, counting a known missing month as present; not applied to the minimum wage
 4. **The memo**, as a `change_memo` target in `data-raw/R/memo.R`. It writes `reports/change_memo.md` (`reports/` ignored by git and `.Rbuildignore`).
-   - **Baseline:** the highest `v*` tag reachable from `HEAD`, read with `git` through `gert` or `processx`, or `REALTALK_BASELINE` if set. Baseline files come from `git show <ref>:data-raw/processed/<name>.csv`.
+   - **Baseline:** the latest published release, the one r-universe builds, so the memo describes what users would receive. A tag without a published release (possible mid-recovery in Phase 5) is never the baseline. `REALTALK_BASELINE` overrides it. The workflows resolve the latest release with `gh release view --json tagName` and pass it in `REALTALK_BASELINE`. Locally, the memo does the same through `gh`, and stops with a clear message if `gh` isn't available and `REALTALK_BASELINE` isn't set. Baseline files come from `git show <ref>:data-raw/processed/<name>.csv`.
    - **Sections:** coverage, revisions (with expected and unexpected labels), verification, stale manual inputs, and check results, as in the design. Each section is a function that returns a small table, and one function assembles the Markdown, as productivity_pay_gap's `R/report.R` does.
-   - **Unexpected revisions:** a separate function, `find_unexpected_revisions()`, returns the changed historical CPI-U NSA values and changed final C-CPI-U values. The memo lists them, and the PR check fails on them (Phase 2). "Final" C-CPI-U means older than the latest 12 months (open question 4).
+   - **Unexpected revisions:** a separate function, `find_unexpected_revisions(baseline, current)`, returns changed historical CPI-U NSA values and changed final C-CPI-U values. The memo lists them, and the PR check fails on them (Phase 2), with the same latest-release baseline.
+     - **Final C-CPI-U** is judged in the **baseline** vintage: a value is final if it was more than 12 months older than the baseline's latest month. BLS revises interim values quarterly and makes them final 10 to 12 months after first publication ([BLS](https://www.bls.gov/cpi/additional-resources/chained-cpi-questions-and-answers.htm)), so the newest revision a final value could get is already behind it. The history agrees: v2026.8.12 revised July 2025 to June 2026 (July 2025 from 179.236 to 179.272) against v2026.7.14, whose data ran through June 2026, so all of those months were interim there. Releases from v2026.9.11 to v2026.10.14 revised none.
    - The target always reruns (`cue = tar_cue(mode = "always")`), since its baseline is outside the pipeline.
 5. **FRED verification**, as a `fred_verification` target in `data-raw/R/verify.R`:
    - compares CPIAUCNS, CPIAUCSL, SUUR0000SA0, and PCEPI with the matching monthly datasets for the latest 24 months both have, through `epidatatools::get_fred()`, at each dataset's precision
@@ -79,6 +84,7 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
 - `tar_make(names = c(change_memo))` with `REALTALK_BASELINE=v2026.9.11` against the v2026.10.14 working tree: the memo shows CPI-based data through September 2026, PCE through August 2026, PCE revisions labeled expected, and no unexpected revisions.
 - The same with the baseline at `HEAD`: the memo reports no changes.
 - A copy of the data with one historical CPI-U NSA value changed: `find_unexpected_revisions()` returns it.
+- The real v2026.7.14 to v2026.8.12 transition: `find_unexpected_revisions()` returns nothing, though 11 C-CPI-U months were revised. A copy of v2026.8.12 with June 2025 C-CPI-U changed (final in the v2026.7.14 vintage) returns that month.
 - `fred_verification` passes on today's data with the key, records "not run" without it, and fails with `REALTALK_REQUIRE_FRED=true` and no key. A fixture with one value changed fails with a message naming it.
 - `devtools::test()` and `devtools::check()` pass. Each consistency test fails on its broken-data fixture.
 - `next_version()`: today's date; a same-day suffix; a date in daylight saving time and one not.
@@ -137,7 +143,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 1. **`.github/workflows/draft-update.yml`** (`workflow_dispatch`, `dry_run` input), as the design describes:
    - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary, decides whether anything changed (`git diff --quiet` on `data-raw/processed/` against the build commit), and uploads the changed files as an artifact.
-   - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs only if something changed and it isn't a dry run.
+   - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run, and gets the build's "changed" result as a job output. When something changed, it creates or updates the draft PR. When nothing did, it only closes an open draft PR that `main` already matches, and otherwise does nothing.
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
 3. **`.github/scripts/update-draft-pr.sh`:**
    - builds `data-update` from the build's commit, commits as `github-actions[bot]`, and force-pushes
@@ -150,7 +156,8 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - Local: both scripts against crafted artifacts (a `.git/config`, a symlink, a nested path, an unexpected file name) are rejected and copy nothing. `update-draft-pr.sh` with a stand-in `gh`: new PR, updated PR, stale PR closed.
 - After merging, on `main`: a dry run writes the memo to the run summary and touches no branch.
 - The first real run, when new data is out: it opens the PR, assigned to whoever pressed it, with the memo; the held check appears, and approving the run makes `check` pass.
-- A second run with no new data opens nothing.
+- A second run with no new data opens nothing, and the PR job's log says "nothing changed".
+- After the first draft is published (Phase 5), with a draft PR left open on purpose, for example a re-draft opened just before: a run with no new data closes it with "`main` already has these numbers". This tests the workflow's condition as well as the script.
 
 **Results:** (to fill in)
 
@@ -209,6 +216,5 @@ As the design describes: clean from the committed snapshots instead of the fetch
 1. **One check or three?** This plan replaces `R-CMD-check.yaml` and `README.yaml` with one `check.yml`, so the ruleset requires a single check named `check`. The alternative keeps the r-lib workflows and requires each by name. One check is simpler to require and to call from the publishing workflows.
 2. **`test-data-currency.R`:** the FRED verification in Phase 1 does the same job, better (24 months, four series, failing loudly in "Draft update"). Remove the old test, or keep it as a local convenience?
 3. **Known missing months:** `bls_missing` sits in `data-raw/_targets.R`. The consistency tests need the same list but can't read pipeline code, since `data-raw/` isn't in the built package. Options: an internal dataset (`R/sysdata.rda`) written by the pipeline, or a short list duplicated in the test with a comment pointing to the pipeline. I lean toward the internal dataset.
-4. **"Final" C-CPI-U:** BLS revises interim C-CPI-U values for 10 to 12 months. I've written "older than the latest 12 months" as final. Is that the rule you want the revision check to enforce?
-5. **r-universe poll limit:** 3 hours, checking every 5 minutes. r-universe usually rebuilds within an hour of a release, but I haven't measured it for this universe. OK as a starting point?
-6. **Timing:** the October CPI comes out around November 12. Phases 0 to 3 can likely be done before then, but "Draft update" (Phase 4) probably can't. The November update would then follow the manual routine. Is that acceptable, or should Phase 4 be squeezed in first?
+4. **r-universe poll limit:** 3 hours, checking every 5 minutes. r-universe usually rebuilds within an hour of a release, but I haven't measured it for this universe. OK as a starting point?
+5. **Timing:** the October CPI comes out around November 12. Phases 0 to 3 can likely be done before then, but "Draft update" (Phase 4) probably can't. The November update would then follow the manual routine. Is that acceptable, or should Phase 4 be squeezed in first?
