@@ -57,7 +57,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
 1. **Stop committing `_targets/meta/meta`.** Change `data-raw/_targets/.gitignore` to ignore everything but itself, and `git rm --cached data-raw/_targets/meta/meta`.
 2. **Declare the pipeline's packages.** Add `Config/Needs/pipeline:` to `DESCRIPTION`, listing what `data-raw/packages.R` loads (`targets`, `tarchetypes`, `tidyverse`, `readxl`, `economic/epidatatools`, `economic/epitargets`, `tsibble`, `cli`, `assertr`, `conflicted`, `usethis`, plus `desc` and `gert` if steps 5 and 6 use them). CI installs them with `setup-r-dependencies` and `needs: pipeline`.
 3. **Consistency tests**, in `tests/testthat/test-data-consistency.R`. They read the package's own datasets, need no network, and so run in R CMD check, in the PR check, and in r-universe's own check. Each check from the design's "Internal consistency checks" gets its own test, and each test is first shown to fail on deliberately broken data:
-   - no gaps apart from the known missing months. The pipeline and the test must read the list from one place (open question 3).
+   - no gaps apart from the known missing months. The pipeline and the test read the list from one place: the pipeline writes it as the package's internal data (`R/sysdata.rda`, object `known_missing_months`, not exported), and `data-raw/_targets.R` and the test both use it. Today the list is `bls_missing` in `data-raw/_targets.R`.
    - no duplicate periods, in every dataset
    - extended C-CPI-U against C-CPI-U from 2000, by frequency: monthly NSA and annual within 0.05, quarterly NSA within 0.1, skipping known missing months and the quarters that contain them
    - annual and quarterly price index values only for complete periods, counting a known missing month as present; not applied to the minimum wage
@@ -77,7 +77,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
    - `next_version(date, released_tags)`: `YYYY.M.D` in Eastern time, with `.1`, `.2` when that version is already released
    - `news_entry(available_before, available_after)`: the terse lines, for example "update CPI-based data through September 2026", from the coverage diff
    - writing the version to `DESCRIPTION` and the entry to `NEWS.md` happens in a small script, `data-raw/prepare_update.R`, not in a target, because it changes files outside the pipeline's outputs
-7. **`test-data-currency.R`:** keep or remove (open question 2).
+7. **Remove `tests/testthat/test-data-currency.R`.** The FRED verification in step 5 replaces it: 24 months instead of the latest value, four series instead of three, and it fails "Draft update" instead of skipping silently without a key.
 
 **Verification:**
 
@@ -101,7 +101,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
    - fail if the README is stale: `devtools::build_readme()`, then `git diff --exit-code -- README.md`
    - fail on unexpected revisions: run `find_unexpected_revisions()` against the latest release tag
    - write to the job summary that FRED wasn't checked here
-2. **Replace `R-CMD-check.yaml` and `README.yaml`** with `check.yml`, so one check named `check` can be required (open question 1). Update the README badge.
+2. **Replace `R-CMD-check.yaml` and `README.yaml`** with `check.yml`, so one check named `check` can be required. Update the README badge.
 3. **`pkgdown.yaml`:**
    - on pull requests: build only, as now
    - on `workflow_dispatch` with a `ref` input: check out that ref, build, and deploy. "Publish update" and "Tag release" pass the release tag.
@@ -220,8 +220,5 @@ As the design describes: clean from the committed snapshots instead of the fetch
 
 ## Open questions
 
-1. **One check or three?** This plan replaces `R-CMD-check.yaml` and `README.yaml` with one `check.yml`, so the ruleset requires a single check named `check`. The alternative keeps the r-lib workflows and requires each by name. One check is simpler to require and to call from the publishing workflows.
-2. **`test-data-currency.R`:** the FRED verification in Phase 1 does the same job, better (24 months, four series, failing loudly in "Draft update"). Remove the old test, or keep it as a local convenience?
-3. **Known missing months:** `bls_missing` sits in `data-raw/_targets.R`. The consistency tests need the same list but can't read pipeline code, since `data-raw/` isn't in the built package. Options: an internal dataset (`R/sysdata.rda`) written by the pipeline, or a short list duplicated in the test with a comment pointing to the pipeline. I lean toward the internal dataset.
-4. **r-universe poll limit:** 3 hours, checking every 5 minutes. r-universe usually rebuilds within an hour of a release, but I haven't measured it for this universe. OK as a starting point?
-5. **Timing:** the October CPI comes out around November 12. Phases 0 to 3 can likely be done before then, but "Draft update" (Phase 4) probably can't. The November update would then follow the manual routine. Is that acceptable, or should Phase 4 be squeezed in first?
+1. **r-universe poll limit:** 3 hours, checking every 5 minutes. r-universe usually rebuilds within an hour of a release, but I haven't measured it for this universe. OK as a starting point?
+2. **Timing:** the October CPI comes out around November 12. Phases 0 to 3 can likely be done before then, but "Draft update" (Phase 4) probably can't. The November update would then follow the manual routine. Is that acceptable, or should Phase 4 be squeezed in first?
