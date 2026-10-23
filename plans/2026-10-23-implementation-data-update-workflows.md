@@ -96,7 +96,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
 
 1. **`.github/workflows/check.yml`**, one job named `check`, on `ubuntu-24.04`, triggered by `pull_request` to `main`, `push` to `main`, `workflow_dispatch`, and `workflow_call` with a `ref` input. No secrets; `contents: read`.
    - check out `ref` (or the event's commit) with full history and tags, for the revision check, and `persist-credentials: false`
-   - install the package's and the pipeline's dependencies
+   - install the dependencies with `r-lib/actions/setup-r-dependencies`: the package's own, `needs: check, readme, pipeline` (`Config/Needs/readme` lists `tidyverse` and `hrbrthemes`), and `extra-packages: any::rcmdcheck, any::devtools, local::.`, as the current `R-CMD-check.yaml` and `README.yaml` do between them
    - R CMD check, with the tests, including the consistency tests
    - fail if the README is stale: `devtools::build_readme()`, then `git diff --exit-code -- README.md`
    - fail on unexpected revisions: run `find_unexpected_revisions()` against the latest release tag
@@ -112,7 +112,7 @@ Settings and spikes that later phases depend on. Throwaway workflows that need n
 **Verification:**
 
 - This phase's own PR: `check` passes.
-- A throwaway PR that changes `README.Rmd` without rebuilding: `check` fails on the README step.
+- A throwaway PR that changes `README.Rmd` without rebuilding: `check` fails on the README step. On this phase's own PR, the README rebuild succeeds on a clean runner, which shows the readme dependencies install.
 - A throwaway PR that changes one historical CPI-U NSA value in `data-raw/processed/` and `data/`: `check` fails on the revision step and names the value.
 - A throwaway PR that breaks a consistency rule: `check` fails in the tests.
 - After merging: a manual pkgdown run with `ref` set to `v2026.10.14` deploys the site from that tag.
@@ -142,7 +142,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 ## Phase 4: Draft update
 
 1. **`.github/workflows/draft-update.yml`** (`workflow_dispatch`, `dry_run` input), as the design describes:
-   - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact. Whether anything changed is decided in the PR job, which can see the open draft (step 3).
+   - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It installs the same dependencies as `check.yml`, then runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact. Whether anything changed is decided in the PR job, which can see the open draft (step 3).
    - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run. The build job decides nothing about changes; the PR job makes the one decision, in step 3, from the artifact, the open draft, and `main`.
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
 3. **`.github/scripts/update-draft-pr.sh`:**
