@@ -199,17 +199,12 @@ find_stale_inputs <- function(current, today = Sys.Date()) {
 
 # ── The memo ──
 
-month_name_of <- function(period) {
-  date <- ym(str_replace(period, "m", "-"))
-  paste(month(date, label = TRUE, abbr = FALSE), year(date))
-}
-
 memo_headline <- function(current) {
   paste0(
     "CPI-based data through ",
-    month_name_of(latest_period(current$cpi_u_monthly_nsa)),
+    month_label(latest_period(current$cpi_u_monthly_nsa)),
     "; PCE through ",
-    month_name_of(latest_period(current$pce_monthly_sa))
+    month_label(latest_period(current$pce_monthly_sa))
   )
 }
 
