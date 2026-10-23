@@ -1,0 +1,165 @@
+# .roborev.toml
+#
+# Adapted from ~/projects/productivity_pay_gap/.roborev.toml on 2026-10-22.
+#
+# Naming convention: names ending in _reviewer or _panel are labels chosen for this
+# repo. roborev attaches no meaning to them; they only connect the sections below.
+# Everything else (section names, keys, and values such as review_type = "design")
+# is roborev's own vocabulary.
+
+# ---- Default agent (used by manual `roborev review` without --panel) ----
+agent = "codex"
+model = "gpt-6.1-sol"
+review_reasoning = "high"
+
+# ---- Which agent runs `--type design` reviews ----
+design_agent = "codex"
+design_model = "gpt-6.1-sol"
+
+# ---- Review behavior ----
+review_min_severity = "medium"
+auto_close_passing_reviews = true
+
+# Review each commit in a temporary daemon-owned checkout of that commit, so
+# reviewers never see uncommitted edits, untracked files, or later work.
+# (`roborev review --dirty` still uses the live working tree.)
+isolate_reviews = true
+
+# Files left out of review diffs (added to roborev's built-in exclusions).
+# Reviewers can still open them in the review checkout. Security reviews ignore
+# this list by design.
+# - _targets/, man/, NAMESPACE and README.md are generated (by targets, roxygen2,
+#   and devtools::build_readme() from README.Rmd).
+# - data/, data-raw/processed/ and data-raw/raw/snapshots/ are pipeline outputs
+#   that change with every data update; the change memo explains those changes.
+#   The hand-maintained inputs in data-raw/raw/static/ stay in diffs, since a hand
+#   edit there changes published numbers directly.
+exclude_patterns = [
+  "_targets/",
+  "man/",
+  "NAMESPACE",
+  "README.md",
+  "data/",
+  "data-raw/processed/",
+  "data-raw/raw/snapshots/",
+]
+
+review_guidelines = """
+Project context: realtalk is EPI's R data package of US price indexes (CPI-U, C-CPI-U,
+the extended C-CPI-U, CPI-U-RS, CPI-U-X1, PCE) and the federal minimum wage, with one
+exported function, get_price_index(). EPI staff and outside users install it from
+r-universe and use it to deflate dollar values, so a wrong value spreads silently into
+other people's published work. r-universe builds whatever is on main: merging to main
+publishes. Data updates are prepared by a "Draft update" workflow as a pull request
+with a change memo, approved by a member of realtalk-maintainers, and merged and
+tagged by a "Publish update" workflow. Weigh every finding against those stakes.
+
+Project artifacts:
+- The current plan is the newest dated file in plans/. Its "Decisions so far" and
+  "Accepted risks" sections are settled. Challenge them only with a genuinely new
+  argument, and do not report a risk the plan accepts as a defect.
+- AGENTS.md describes how work is done here. .claude/rules/*.md hold the R, package,
+  and targets conventions it points to.
+- R/ is the package source. data-raw/_targets.R, data-raw/packages.R and data-raw/R/
+  are the targets pipeline that fetches from the BLS and BEA APIs and builds data/.
+  data-raw/raw/static/ holds hand-maintained inputs.
+
+What to flag:
+- Anything that can change published values unintentionally: the wrong BLS or BEA
+  series, or seasonal adjustment; months misaligned in joins; errors in monthly to
+  quarterly or annual aggregation, including the handling of known missing months
+  (October 2025); errors in splicing the extended C-CPI-U from C-CPI-U, CPI-U,
+  CPI-U-X1 and CPI-U-RS; base periods or rebasing in get_price_index().
+- Calculation changes in data-raw/R/ or R/get.R that neither the commit message nor
+  the plan describes as intended. These are high severity.
+- Changes to get_price_index()'s interface or behavior, or to dataset names and
+  columns, that would break existing users' code without a NEWS.md entry.
+- targets dependencies that miss an input, so that tar_make() can serve stale results.
+- GitHub Actions security: secrets printed or reachable from pull requests opened
+  from forks; pull_request_target; permissions broader than a job needs; untrusted
+  text (PR titles, branch names, commit messages, artifact contents) interpolated
+  into run: scripts or copied into a checkout that later holds a write token.
+- Weakening a publish gate: publishing a commit that didn't pass the checks, merging
+  without a maintainer's approval of the PR's latest commit, the Maintain-role check
+  on "Publish update", or the split between jobs that hold API secrets and jobs that
+  can write.
+- Complexity the stakes do not justify: speculative features, defensive checks of
+  internal invariants, duplicated validation, and tests that pin incidental details
+  such as exact error text. Recommending that a requirement, check, or test be
+  deleted is a valid finding.
+- Deviations from the plan, and changes that add requirements the plan does not ask
+  for.
+
+What not to flag:
+- Revised values in data files after a data update. Revisions are expected (PCE
+  monthly and annual revisions, interim C-CPI-U, CPI-U seasonal factors each
+  February), and the change memo explains them.
+- Failures that a rerun of "Draft update" repairs, unless they can put wrong values
+  on main.
+- Failures that need two or more unusual conditions at once, unless they can put
+  wrong values on main.
+- Wording, formatting, and R style, unless meaning changes.
+
+High-severity rules:
+- Nothing reaches main unless a maintainer approved the pull request's latest commit
+  and its required checks passed.
+- Secrets (BLS_API_KEY, BEA_API_KEY, FRED_API_KEY) must never be printed or exposed
+  to untrusted code.
+
+data/, data-raw/processed/ and data-raw/raw/snapshots/ are excluded from diffs. When a
+change touches calculations, open the processed CSVs in the checkout and check that
+they move the way the change intends.
+"""
+
+# ---- Reviewers (subagents) ----
+[review.subagents.codex_code_reviewer]
+review_type = "default"   # roborev's standard correctness review
+agent = "codex"
+model = "gpt-6.1-sol"
+reasoning = "high"
+
+[review.subagents.claude_code_reviewer]
+review_type = "default"
+agent = "claude-code"
+model = "opus"
+reasoning = "high"
+
+[review.subagents.codex_design_reviewer]
+review_type = "design"    # roborev's design-focused review
+agent = "codex"
+model = "gpt-6.1-sol"
+reasoning = "high"
+
+[review.subagents.codex_security_reviewer]
+review_type = "security"  # roborev's security-focused review
+agent = "codex"
+model = "gpt-6.1-sol"
+reasoning = "high"
+
+# ---- Panels (groups of reviewers) ----
+# Runs on every commit (see hook_review_panel below).
+[review.panels.every_commit_panel]
+members = ["codex_code_reviewer"]
+
+# Manual, at the end of each plan phase:
+#   roborev review --branch --base main --panel checkpoint_panel --wait
+# The security reviewer matters most for .github/workflows/, where the secrets and
+# the publishing write permission live.
+[review.panels.checkpoint_panel]
+members = ["codex_code_reviewer", "claude_code_reviewer", "codex_design_reviewer",
+           "codex_security_reviewer"]
+synthesis_agent = "codex"
+synthesis_model = "gpt-6.1-sol"
+
+# Manual design review, for example of a new plan.
+[review.panels.design_only_panel]
+members = ["codex_design_reviewer"]
+
+[review]
+hook_review_panel = "every_commit_panel"
+
+# ---- Automatic extra design review on post-commit hooks ----
+# Off, as in productivity_pay_gap: run design reviews by hand at milestones instead
+# (roborev review --branch --panel design_only_panel).
+[auto_design_review]
+hook_enabled = false

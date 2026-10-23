@@ -12,4 +12,6 @@
 ^_quarto$
 ^.vscode$
 ^\.claude$
-^CLAUDE\.md$
+^AGENTS\.md$
+^\.roborev\.toml$
+^plans$
