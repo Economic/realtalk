@@ -142,13 +142,17 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 ## Phase 4: Draft update
 
 1. **`.github/workflows/draft-update.yml`** (`workflow_dispatch`, `dry_run` input), as the design describes:
-   - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary, decides whether anything changed (`git diff --quiet` on `data-raw/processed/` against the build commit), and uploads the changed files as an artifact.
+   - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact. Whether anything changed is decided in the PR job, which can see the open draft (step 3).
    - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run, and gets the build's "changed" result as a job output. When something changed, it creates or updates the draft PR. When nothing did, it only closes an open draft PR that `main` already matches, and otherwise does nothing.
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
 3. **`.github/scripts/update-draft-pr.sh`:**
    - builds `data-update` from the build's commit, commits as `github-actions[bot]`, and force-pushes
    - opens the PR, or updates its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`
-   - closes an open draft PR when `main` already has the same data
+   - **decides what to do** by comparing the fresh `data-raw/processed/` files with the newest data already proposed: the open draft branch if there is one, otherwise `main`:
+     - **different:** force-push the new draft and update the PR. The newer data replaces the old draft, which also cancels its approval.
+     - **same as the open draft:** leave the PR alone, so an approval stands. Only the date-based version would differ, and that isn't new data. This is how the design's "a new draft replaces the old one, because it has the newest data" applies when nothing is newer.
+     - **no open draft, and same as `main`:** do nothing
+     - **an open draft whose data `main` already has** (for example after a hand-made PR brought the same data in): close it with "`main` already has these numbers"
    - records the draft commit's SHA in a 90-day artifact named `draft-commit`, uploaded by this run. That is the trusted record for "Publish update"'s "bot's draft commit" guard. The SHA also goes in the PR body, for people to read; nothing trusts the body, because anyone with Write access can edit it.
 
 **Verification:**
@@ -156,8 +160,9 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - Local: both scripts against crafted artifacts (a `.git/config`, a symlink, a nested path, an unexpected file name) are rejected and copy nothing. `update-draft-pr.sh` with a stand-in `gh`: new PR, updated PR, stale PR closed.
 - After merging, on `main`: a dry run writes the memo to the run summary and touches no branch.
 - The first real run, when new data is out: it opens the PR, assigned to whoever pressed it, with the memo; the held check appears, and approving the run makes `check` pass.
-- A second run with no new data opens nothing, and the PR job's log says "nothing changed".
-- After the first draft is published (Phase 5), with a draft PR left open on purpose, for example a re-draft opened just before: a run with no new data closes it with "`main` already has these numbers". This tests the workflow's condition as well as the script.
+- A second run before publishing, with no new source data: the PR's head SHA and its approval, if any, are unchanged, and the log says the data matches the open draft.
+- After the first draft is published (Phase 5), with no draft PR open: a run with no new data does nothing.
+- The stale-draft case, with `update-draft-pr.sh` and a stand-in `gh`: an open draft whose data `main` already has is closed. This case needs a hand-made PR to bring the same data into `main`, which is rare, so it's tested locally rather than staged for real.
 
 **Results:** (to fill in)
 
