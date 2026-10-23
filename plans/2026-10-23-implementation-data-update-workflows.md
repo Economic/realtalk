@@ -175,7 +175,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
      - **Permission:** the job that runs the lookup needs `actions: read`, in "Publish update"'s plan job as in "Draft update"'s PR job. A Write user can edit the PR body, or run an edited copy of the workflow from another branch, but can't add an artifact to a run of the real workflow on `main`. If the artifact has expired, the guard refuses and asks for a new draft.
    - **The merge job:** `PUT /repos/{owner}/{repo}/pulls/{n}/merge` with `merge_method=merge` and `sha` set to the checked head, then the tree comparison.
 3. **`.github/workflows/tag-release.yml`** (`workflow_dispatch` with an optional commit input, `dry_run`): the guards from the design, then `check.yml` on the target, `tag-release.sh`, and the follow-ups. Same concurrency group.
-4. **The r-universe poll:** reads the version from the API every 5 minutes, and fails after 3 hours (open question 5).
+4. **The r-universe poll:** reads the version from the API every 5 minutes, and fails after 3 hours.
 
 **Verification:**
 
@@ -218,7 +218,10 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 As the design describes: clean from the committed snapshots instead of the fetched data, add an offline `targets` project, and add a step to `check.yml` that rebuilds offline and fails if `data/` or `data-raw/processed/` differ from the committed files. Planned in detail when it starts.
 
+## Timing
+
+The goal is to finish within a few days, so the November update (October CPI, mid-November) uses "Draft update" and "Publish update". If a phase slips, that update follows the current routine: update locally, merge, and create the release by hand.
+
 ## Open questions
 
-1. **r-universe poll limit:** 3 hours, checking every 5 minutes. r-universe usually rebuilds within an hour of a release, but I haven't measured it for this universe. OK as a starting point?
-2. **Timing:** the October CPI comes out around November 12. Phases 0 to 3 can likely be done before then, but "Draft update" (Phase 4) probably can't. The November update would then follow the manual routine. Is that acceptable, or should Phase 4 be squeezed in first?
+None.
