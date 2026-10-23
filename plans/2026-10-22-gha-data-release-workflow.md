@@ -52,6 +52,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | `_targets/meta/meta` | Stop committing it: add it to `data-raw/_targets/.gitignore` and remove it from the index. CI starts with an empty store, so it would change on every run and tell nobody anything. |
 | Reminder | A scheduled check every weekday that opens or updates one rolling issue when any fetched source has new data, and @-mentions `@economic/realtalk-maintainers`, who decide who drafts. |
 | FRED verification | Runs only in "Draft update", which has the key and runs code from `main`. A mismatch stops the draft. PR checks need no secrets and don't call FRED. (After design review job 200.) |
+| Merging and tagging | GitHub enforces the publish guards at merge time: the merge passes the checked head SHA, and the ruleset requires branches to be up to date. Everything after the merge is in separate jobs that are safe to repeat. The up-to-date rule applies to hand-made PRs too: when `main` moves, they need "Update branch" and a fresh approval. `main` moves about once a month, so that's rare. (After design review job 204.) |
 | Names | The workflows are "Draft update" and "Publish update". "Release" means only the GitHub release page. |
 
 ## What's different from productivity_pay_gap
@@ -79,6 +80,7 @@ Settings:
   - force pushes and branch deletion blocked
 - **Ruleset "require check on main"** (no bypass):
   - the check required
+  - branches must be up to date before merging ("Require branches to be up to date before merging"). GitHub then refuses, at merge time, any merge whose branch doesn't include the current `main`.
 
   A bypass skips every rule in its ruleset, so the check sits in a ruleset of its own. That way an admin's bypass skips the approval, but never the check.
 - **The team:** at least two members, created in the Economic org and given the Maintain role on realtalk. Depending on the org's settings, creating it may need an org owner, who can then let Ben manage its membership. (GitHub calls that being the team's "team maintainer", which is unrelated to the repo's Maintain role.)
@@ -131,14 +133,21 @@ GitHub will probably hold the PR check on a bot-opened PR until someone with Wri
    - the `DESCRIPTION` version is already tagged, or isn't higher than the last release
    - `NEWS.md` has no entry for that version
 2. **Publish job** (write token, runs no R):
-   - merges the PR with a merge commit. Since `main` hadn't moved, the merge commit's files are identical to the checked commit's, and the job confirms that by comparing the two trees.
-   - creates the tag `v{version}` on the merge commit through the API, which refuses a tag that already exists
-   - creates the GitHub release with the memo as notes
-3. **Follow-up jobs:**
+   - merges the PR with a merge commit through the API, passing the PR head SHA that the plan job checked. GitHub refuses the merge if the head has changed since. The up-to-date rule in "require check on main" refuses it if `main` has moved. Both are enforced by GitHub at merge time, so a PR merged between the plan job and this one can't slip through.
+   - compares the merge commit's tree with the checked head's, as a final verification. With both rules above, they are always identical.
+3. **Tag job** (write token, runs no R), separate from the publish job: creates the tag `v{version}` on the merge commit, and the GitHub release with the memo as notes. It is safe to run again: a tag that already points at the merge commit, or a release that already exists, counts as done, and a tag pointing anywhere else stops it.
+4. **Follow-up jobs:**
    - start the pkgdown workflow with `workflow_dispatch`. A push or release made with the built-in token doesn't trigger other workflows, so `pkgdown.yaml` wouldn't fire on its own. r-universe isn't affected, because it watches the git repository rather than GitHub events.
    - poll r-universe until the new version appears, and fail after a time limit, so a failed build there sends a failure email. Right now nobody would notice one.
 
 With `dry_run`, it runs the guards and shows the tag and notes, and merges and creates nothing.
+
+**Recovery after a failure past the merge.** Once the merge succeeds, the update is published, and a new "Publish update" run would refuse, because the PR is closed. So everything after the merge is in separate jobs that are safe to repeat:
+
+- In the failed run, click "Re-run failed jobs". GitHub reruns only the failed jobs and the ones after them, not the plan or publish jobs.
+- If the run can't be rerun, run the "Tag release" workflow (below) from `main`. It creates whatever tag or release is missing.
+
+The job on pushes to `main` won't fire as a fallback, because a merge made with the built-in token triggers no workflows.
 
 ### New-data reminder (scheduled)
 
@@ -160,7 +169,7 @@ A scheduled workflow, `new-data-check`, tells people when an update is worth dra
 
 Code fixes (for example to `get_price_index()`) and updates to hand-maintained files (`us_minimum_wage.csv`, `r-cpi-u-rs-allitems.csv`, `cpi_u_x1.csv`) go through ordinary PRs. They need a maintainer's approval like any other PR, and are merged with GitHub's merge button. They publish to r-universe as soon as they merge.
 
-To keep the release history complete, a small job runs on every push to `main`. If `DESCRIPTION` has a version with no tag yet, it creates the tag and a GitHub release, with that version's `NEWS.md` entry as notes. After a "Publish update" run, the tag already exists, so this job does nothing.
+To keep the release history complete, a "Tag release" workflow runs on every push to `main` and by hand (`workflow_dispatch`). If `DESCRIPTION` has a version with no tag yet, it tags the commit where that version first appeared, and creates a GitHub release with that version's `NEWS.md` entry as notes. Merges made through GitHub's merge button trigger it. After a "Publish update" run, the tag already exists, so it does nothing. It shares the tag job's logic with "Publish update", and is also the manual way to finish a publish whose tag job failed.
 
 ## The memo: what changed
 
@@ -185,7 +194,12 @@ Sections:
    - **Internal consistency checks**, run by the PR check and in the pipeline, with no network:
      - no gaps, apart from the known missing months (`bls_missing` in `data-raw/_targets.R`, currently October 2025). Those months are NA in CPI-U and C-CPI-U, and interpolated in the extended C-CPI-U.
      - no duplicate periods
-     - the extended C-CPI-U agrees with C-CPI-U where both have a value from 2000 on, within half a unit of the extended series' rounding (0.05 index points). For monthly data, compare NSA with NSA. Known missing months are skipped. (The extended series is rounded to one decimal; C-CPI-U keeps three.)
+     - the extended C-CPI-U agrees with C-CPI-U from 2000 on, the period where the extended series is built from C-CPI-U itself, with a tolerance set by frequency:
+       - **monthly NSA:** within 0.05 index points, half a unit of the extended series' one-decimal rounding. Known missing months are skipped.
+       - **annual:** within 0.05. They agree exactly today.
+       - **quarterly NSA:** within 0.1, one rounding unit, because the extended quarterly values average monthly values that were already rounded. Five quarters differ by exactly 0.1 today, for example 2012 Q2 (132.1 against 132.2). Quarters that contain a known missing month are skipped, because the extended series interpolates that month and C-CPI-U leaves it out.
+
+       (On 2026-10-22, the committed data passed these tolerances, apart from December 1999, which comes before 2000 and is built from CPI-U-RS by design.)
      - annual and quarterly values only for complete periods, where a known missing month counts as present: 2025 averages 11 months. This matches `monthly_to_annual()` and `monthly_to_quarterly()` in `data-raw/R/aggregate.R`.
 4. **Stale manual inputs:** a warning when a hand-maintained file is overdue. For example, CPI-U-RS is missing last year's annual value after May, or the minimum wage file hasn't been touched in a year. The buttons can't update these; they come through hand-made PRs.
 5. **Check results:** R CMD check, the tests, and whether the README is current.
@@ -207,7 +221,7 @@ The memo becomes the PR body and the GitHub release notes. The terse `NEWS.md` e
 
 ## Accepted risks
 
-- **The merge button on an approved data PR.** Once a maintainer has approved the `data-update` PR, anyone with Write access could press GitHub's merge button instead of "Publish update". That skips the role check and the "main hasn't moved" guard, but not the maintainer's approval or the required check. The job on pushes to `main` still creates the tag and GitHub release. A maintainer has already approved the numbers, so this is accepted. If it becomes a problem, "Publish update" could set a required status that only it can satisfy on `data-update` PRs.
+- **The merge button on an approved data PR.** Once a maintainer has approved the `data-update` PR, anyone with Write access could press GitHub's merge button instead of "Publish update". That skips the role check, the check that the latest commit is the bot's draft commit, and the tag job. It doesn't skip the maintainer's approval, the required check, or the up-to-date rule. "Tag release" still creates the tag and GitHub release, because a merge made by a person triggers it. A maintainer has already approved the numbers, so this is accepted. If it becomes a problem, "Publish update" could set a required status that only it can satisfy on `data-update` PRs.
 
 ## To verify before building
 
