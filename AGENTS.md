@@ -70,6 +70,9 @@ Rscript -e "pkgdown::check_pkgdown()"
 
 # Data pipeline (uses _targets.yaml to find data-raw/_targets.R)
 Rscript -e 'targets::tar_make()'
+
+# Tests for the pipeline's functions in data-raw/R (no network)
+Rscript data-raw/tests/run.R
 ```
 
 ## Architecture
