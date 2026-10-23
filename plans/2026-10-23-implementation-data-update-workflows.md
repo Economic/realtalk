@@ -27,7 +27,7 @@ The API keys live in the `data-apis` Environment, limited to `main`. A workflow 
 - The shell scripts are tested locally with a stand-in `gh` that logs its calls, as in productivity_pay_gap's Phase 6.
 - The workflows run for real only after merging, first as dry runs on `main`.
 
-Workflows that need no keys ("Publish update", "Tag release", the PR check) can run from a branch, as dry runs.
+GitHub also starts a `workflow_dispatch` workflow only once its file exists on the default branch. So every new button workflow ("Draft update", "Publish update", "Tag release", the reminder) is first run after its PR merges, as a dry run on `main`, before any real run. Merging a button workflow is safe: it does nothing until a maintainer presses it, and pressing it for real only matters once a draft PR exists. The PR check is triggered by `pull_request`, so it runs on its own PR before merging.
 
 ## Before Phase 0: review harness (done 2026-10-22)
 
@@ -143,14 +143,15 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 1. **`.github/workflows/draft-update.yml`** (`workflow_dispatch`, `dry_run` input), as the design describes:
    - **build job:** Environment `data-apis`, `contents: read`, refuses to run unless `github.ref` is `refs/heads/main`. It runs `tar_make()` with an empty store and `REALTALK_REQUIRE_FRED=true`, then `data-raw/prepare_update.R`, `devtools::build_readme()`, and R CMD check. It writes the memo to the run summary and uploads the changed files as an artifact. Whether anything changed is decided in the PR job, which can see the open draft (step 3).
-   - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run, and gets the build's "changed" result as a job output. When something changed, it creates or updates the draft PR. When nothing did, it only closes an open draft PR that `main` already matches, and otherwise does nothing.
+   - **PR job:** `contents: write`, `pull-requests: write`, `issues: write` (for the assignee), no R. It runs after every successful build that isn't a dry run. The build job decides nothing about changes; the PR job makes the one decision, in step 3, from the artifact, the open draft, and `main`.
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
 3. **`.github/scripts/update-draft-pr.sh`:**
    - builds `data-update` from the build's commit, commits as `github-actions[bot]`, and force-pushes
    - opens the PR, or updates its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`
    - **decides what to do** by comparing the fresh `data-raw/processed/` files with the newest data already proposed: the open draft branch if there is one, otherwise `main`:
      - **different:** force-push the new draft and update the PR. The newer data replaces the old draft, which also cancels its approval.
-     - **same as the open draft:** leave the PR alone, so an approval stands. Only the date-based version would differ, and that isn't new data. This is how the design's "a new draft replaces the old one, because it has the newest data" applies when nothing is newer.
+     - **same as the open draft, and the draft's base is still the current `main`:** leave the PR alone, so an approval stands. Only the date-based version would differ, and that isn't new data. This is how the design's "a new draft replaces the old one, because it has the newest data" applies when nothing is newer.
+     - **same as the open draft, but `main` has moved** (a code-only merge since the draft): rebuild the draft on the new base, as for "different". "Publish update" would refuse the old draft, so keeping it would leave no way forward. This cancels the approval and makes a new `draft-commit` record.
      - **no open draft, and same as `main`:** do nothing
      - **an open draft whose data `main` already has** (for example after a hand-made PR brought the same data in): close it with "`main` already has these numbers"
    - records the draft commit's SHA in a 90-day artifact named `draft-commit`, uploaded by this run. That is the trusted record for "Publish update"'s "bot's draft commit" guard. The SHA also goes in the PR body, for people to read; nothing trusts the body, because anyone with Write access can edit it.
@@ -161,6 +162,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - After merging, on `main`: a dry run writes the memo to the run summary and touches no branch.
 - The first real run, when new data is out: it opens the PR, assigned to whoever pressed it, with the memo; the held check appears, and approving the run makes `check` pass.
 - A second run before publishing, with no new source data: the PR's head SHA and its approval, if any, are unchanged, and the log says the data matches the open draft.
+- A code-only merge to `main` while a draft is open, then a run with no new source data: the draft is rebuilt on the new `main`, its approval is cancelled, and "Publish update" accepts the new draft. Locally, with a stand-in `gh` and a fixture where the data is unchanged but the base moved.
 - After the first draft is published (Phase 5), with no draft PR open: a run with no new data does nothing.
 - The stale-draft case, with `update-draft-pr.sh` and a stand-in `gh`: an open draft whose data `main` already has is closed. This case needs a hand-made PR to bring the same data into `main`, which is rare, so it's tested locally rather than staged for real.
 
@@ -171,7 +173,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 1. **`.github/scripts/tag-release.sh`**, the shared tagging logic from the design: target and version, the superseded check, the tag, and the release, each checking what exists first.
 2. **`.github/workflows/publish-update.yml`** (`workflow_dispatch`, `dry_run`), with the jobs from the design: plan, merge, check (calls `check.yml` with the merge commit), tag, and the follow-ups (pkgdown with the tag, and the r-universe poll). Concurrency group `publish`, `cancel-in-progress: false`.
    - **`.github/scripts/publish-plan.sh`:** the guards: role, open PR, checks passed and maintainer approval on the latest commit, the latest commit is the draft commit, `main` hasn't moved, version not released and higher, `NEWS.md` entry.
-   - **The draft-commit guard** reads the `draft-commit` artifact from the most recent successful run of `.github/workflows/draft-update.yml` on `main` (`gh run list --workflow draft-update.yml --branch main --status success`), and requires the PR head to equal it. A Write user can edit the PR body, or run an edited copy of the workflow from another branch, but can't add an artifact to a run of the real workflow on `main`. If the artifact has expired, the guard refuses and asks for a new draft.
+   - **The draft-commit guard** looks through recent successful runs of `.github/workflows/draft-update.yml` on `main` (`gh run list --workflow draft-update.yml --branch main --status success`) for the one whose `draft-commit` artifact equals the PR head. Dry runs and runs that pushed nothing upload no artifact, so they are skipped, and a dry run after a draft doesn't hide the draft's record. A Write user can edit the PR body, or run an edited copy of the workflow from another branch, but can't add an artifact to a run of the real workflow on `main`. If the artifact has expired, the guard refuses and asks for a new draft.
    - **The merge job:** `PUT /repos/{owner}/{repo}/pulls/{n}/merge` with `merge_method=merge` and `sha` set to the checked head, then the tree comparison.
 3. **`.github/workflows/tag-release.yml`** (`workflow_dispatch` with an optional commit input, `dry_run`): the guards from the design, then `check.yml` on the target, `tag-release.sh`, and the follow-ups. Same concurrency group.
 4. **The r-universe poll:** reads the version from the API every 5 minutes, and fails after 3 hours (open question 5).
@@ -179,9 +181,9 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 **Verification:**
 
 - Local, with a stand-in `gh`, for `tag-release.sh`: a new tag and release; a rerun with both existing; a tag on another commit stops; a newer release exists, so it stops as superseded; a release missing while the tag exists.
-- Local, for `publish-plan.sh`: each guard refuses on its own failing case, including a presser with Write only, a PR head that differs from the `draft-commit` artifact, an artifact from a run on another branch, and no artifact.
-- Dry runs from the branch for both workflows: they show the tag and notes, and create nothing.
-- Two dry runs started together: the second waits for the first.
+- Local, for `publish-plan.sh`: each guard refuses on its own failing case, including a presser with Write only, a PR head that matches no `draft-commit` artifact, an artifact from a run on another branch, and no artifact. A draft followed by a dry run still passes.
+- After merging, before any real run: a dry run of each workflow on `main` shows the tag and notes, and creates nothing.
+- Two dry runs started together on `main`: the second waits for the first.
 - The first real "Publish update", on the first draft from Phase 4. Afterward confirm:
   - the tag points at the merge commit
   - the release is marked latest, with the memo as notes
