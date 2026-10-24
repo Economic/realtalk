@@ -96,7 +96,7 @@ jobs:
             DESCRIPTION
             NEWS.md
             README.md
-            man/figures/
+            man/figures/README-*.png
             reports/change_memo.md
 
   pr:
