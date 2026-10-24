@@ -209,6 +209,8 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - **Draft script, locally,** with a bare repo standing in for `origin` and a stand-in `gh`: data equal to `main` with no draft does nothing; with a draft open it closes the draft. New data with no draft pushes one commit and opens the PR; with a draft open it edits the PR and comments. The commit's author and committer are `github-actions[bot]` even when the environment sets other git identities.
 - **Checkpoint review** (job 357): the artifact uploaded all of `man/figures/`, including `logo.png`, which the copy script rejects, so every real run would have failed. Now only `README-*.png` is uploaded.
 - **Dry run on `main`** (run 40054388646): the build job passed in about 2 minutes, including the fresh fetch, the FRED verification required, the version (2026.10.23 at 02:29 UTC on October 24, Eastern time), README, R CMD check, and the pipeline tests. The PR job was skipped.
+- **Real run on `main`** (run 40054912032): both jobs passed. The PR job copied 57 files from the artifact and ended with "No new data: the fresh data matches main", touching no branch or PR.
+- **Still to see, with the first new data:** the first real draft PR; the held check and "Approve and run workflows"; whether `require_extra_approval_for_unattributed_changes` affects the bot's commit; and an approval cancelled by a re-draft.
 
 ## Phase 5: Publish update and Tag release
 
