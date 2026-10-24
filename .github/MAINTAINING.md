@@ -1,7 +1,5 @@
 # Maintaining realtalk
 
-How realtalk's data gets updated and published. The design and its reasons are in `plans/2026-10-22-gha-data-release-workflow.md`.
-
 ## How publishing works
 
 - **A GitHub release publishes.** r-universe builds the latest GitHub release of realtalk, not `main`. Merging to `main` publishes nothing, so `main` can be ahead of what users install.
@@ -24,7 +22,7 @@ Every Friday morning, the **New data check** looks for BLS or BEA data that isn'
 | 3 | A maintainer | The PR → Files changed → **Review changes** → **Approve** | The sign-off. Read the memo first: coverage, revisions, unexpected revisions, the FRED comparison, and stale inputs. |
 | 4 | A maintainer | Actions → **Publish update** → Run workflow | Merges the PR, checks the merge commit, tags it, and creates the release, which publishes. Then it deploys the site and waits for r-universe to serve the new version. |
 
-The reminder issue closes itself once the draft or `main` has the newest data.
+If a reminder issue is open, the draft PR's description says `Closes #N`, so publishing the draft closes the issue. Otherwise the next Friday check closes it once the draft or `main` has the newest data.
 
 **Notes:**
 

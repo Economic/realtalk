@@ -192,6 +192,7 @@ A scheduled workflow, `new-data-check`, tells people when an update is worth dra
   - **More new data while the issue is open:** it updates the title and body, and comments, which sends one email.
   - **Nothing new since the last notice:** it does nothing, so no email.
   - **The open draft or `main` has the newest data:** it closes the issue.
+  - **Closing on publish:** "Draft update" adds `Closes #N` to the draft PR's description when a reminder issue is open, so the issue closes when "Publish update" merges the draft. The Friday check is the fallback. (Added 2026-10-24.)
 - **Failures:** if a fetch fails, the run fails, and GitHub emails whoever last changed the workflow's schedule.
 - **Schedule:** every Friday at 14:17 UTC (10:17 a.m. EDT, 9:17 a.m. EST; cron runs in UTC, so the Eastern time shifts by an hour in winter). Weekly is enough: BLS and BEA release CPI and PCE monthly, so a reminder is at most a week late, and anyone can still draft unprompted. (Decided 2026-10-24; the first version checked every weekday.)
 - **Manual run:** `workflow_dispatch` too, with a `dry_run` input that writes the summary to the run page and touches no issue.

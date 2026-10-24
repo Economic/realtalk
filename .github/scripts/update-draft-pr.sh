@@ -55,6 +55,13 @@ body=$(mktemp)
   echo "### Checks"
   echo
   echo "In the build: FRED verification, R CMD check (with the consistency tests), and the pipeline tests all passed."
+  # Link the open reminder issue, if any, so publishing this draft closes it.
+  # The Friday check closes it otherwise.
+  reminder=$(gh issue list --label new-data --state open --json number --jq '.[0].number // empty')
+  if [ -n "$reminder" ]; then
+    echo
+    echo "Closes #$reminder"
+  fi
 } > "$body"
 
 if [ -z "$pr" ]; then
