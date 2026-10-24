@@ -67,6 +67,7 @@ Project artifacts:
   newest dated file, the current implementation plan. The design's "Decisions so far"
   and "Accepted risks" sections are settled. Challenge them only with a genuinely new
   argument, and do not report a risk the plan accepts as a defect.
+- .github/MAINTAINING.md describes the update and release workflows for maintainers.
 - AGENTS.md describes how work is done here. .claude/rules/*.md hold the R, package,
   and targets conventions it points to.
 - R/ is the package source. data-raw/_targets.R, data-raw/packages.R and data-raw/R/
