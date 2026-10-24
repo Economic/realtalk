@@ -258,6 +258,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - **`check_new_data.R`:** against `origin/main`, "No new data". Against `v2026.9.11`, all six snapshots changed, with the title "New data: CPI through September 2026, PCE through August 2026".
 - **`new_data_notice()`:** 3 tests in `data-raw/tests/` (42 pipeline expectations in all).
 - **`update-reminder-issue.sh`,** with a stand-in `gh`: no new data and no issue does nothing; new data opens the issue (creating the label); the same fingerprint again is silent; a new fingerprint edits the issue and comments; no new data with an issue open closes it.
+- **Dry run on `main`** (run 40059172334): with no draft open, it compared with `origin/main` and reported "No new data compared with origin/main". The issue job was skipped.
 
 ## Phase 7: documentation
 
