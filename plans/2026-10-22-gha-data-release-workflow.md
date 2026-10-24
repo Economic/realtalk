@@ -188,7 +188,7 @@ A scheduled workflow, `new-data-check`, tells people when an update is worth dra
 - **Hand-maintained files** (CPI-U-RS, the minimum wage, CPI-U-X1) aren't fetched, so the check can't see new releases of them. The issue repeats the memo's stale-input warnings instead, for example CPI-U-RS missing last year's annual value after May.
 - **Jobs:** as with "Draft update", the **check job** runs R with the API keys and a read-only token, and passes a short summary to the **issue job** as a job output. The issue job has `issues: write` and runs no R.
 - **The issue:** one rolling issue, labeled `new-data`:
-  - **New data, no open issue:** it opens one titled with what's new, for example "New data: CPI through Oct 2026, PCE through Sep 2026", with a checklist pointing to "Draft update". The body @-mentions `@economic/realtalk-maintainers`, which notifies its members. The handle is kept in a repository variable, so changing who's notified doesn't need a code change.
+  - **New data, no open issue:** it opens one titled with what's new, for example "New data: CPI through Oct 2026, PCE through Sep 2026", with a checklist pointing to "Draft update". The body @-mentions `@economic/realtalk-maintainers`, which notifies its members. The mention is written in the reminder script; changing who's notified is an ordinary PR. (Decided 2026-10-23, instead of a repository variable that would have to be created in Settings.)
   - **More new data while the issue is open:** it updates the title and body, and comments, which sends one email.
   - **Nothing new since the last notice:** it does nothing, so no email.
   - **`main` has caught up** (after an update is merged): it closes the issue.
