@@ -17,7 +17,7 @@ This plan builds the design in `plans/2026-10-22-gha-data-release-workflow.md` (
 
 - Record results under the phase's "Results" heading in this plan, with dates and run IDs, as productivity_pay_gap's plan does.
 - Merging publishes nothing, since r-universe builds the latest release. No phase creates a tag or release, except the first real "Publish update" in Phase 5.
-- From Phase 3 on, merging needs a maintainer's approval: zmokhiber approves Ben's PRs, or Ben uses the admin bypass.
+- From Phase 3 on, merging needs a maintainer's approval: the other maintainer approves Ben's PRs, or Ben uses the admin bypass.
 
 ### Testing the workflows
 
@@ -39,11 +39,19 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
    - reports whether each key is set, never its value, and makes one small BLS, BEA, and FRED call
    - calls `GET /repos/{owner}/{repo}/collaborators/{actor}/permission` with `github.token` and prints `role_name` for the person who pushed
    - installs the pipeline's packages (see Phase 1, step 2) on `ubuntu-24.04` and loads them. Record the time and any missing system libraries, as productivity_pay_gap found with `libglpk`.
-4. **Access review.** Check zmokhiber's Admin role on realtalk, and whether it's intended (design, "To verify").
+4. **Access review.** Check that the repo's Admin roles are intended (design, "To verify").
 
 **Exit criteria:** the keys work from CI; the role lookup works with the built-in token; the pipeline's packages install on the runner.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **r-universe:** it synced the registry at 13:47 UTC (commit "Sync registry" in `r-universe/economic`, whose `.gitmodules` shows `branch = *release` for realtalk), and it has built nothing since, though #34, #35, and #36 merged to `main`. The API's `RemoteRef: HEAD` and `RemoteSha` describe the last build (v2026.10.14), not the setting. The poll in Phase 5 reads `Version`.
+- **Secrets and team:** the repository secrets and the `realtalk-maintainers` team were set up by Ben. The repo's Admin roles are intended.
+- **Spike** (runs 40031111574, 40031650572, and 40032329169 on `spike/phase-0`, now deleted):
+  - the built-in token reads the presser's role: `role_name=admin permission=admin`
+  - all three keys are set. Through `epidatatools`, BLS returned 9 rows, BEA 248, and FRED 3.
+  - the pipeline's packages install and load on `ubuntu-24.04`. `setup-r-dependencies` with `needs: check, readme, pipeline` took about 3.5 minutes. No missing system libraries.
+  - **BEA was inconsistent.** The second run's `get_bea_nipa()` failed because BEA returned an error instead of data. In the third run, a direct call with the same key got "This UserId is not active", and `get_bea_nipa()` then succeeded. A failed BEA call stops "Draft update" visibly, and a rerun repairs it.
 
 ## Phase 1: pipeline changes (local)
 
@@ -134,13 +142,26 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
 - A throwaway PR that breaks a consistency rule: `check` fails in the tests.
 - After merging: a manual pkgdown run with `ref` set to `v2026.10.14` deploys the site from that tag.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **Built:**
+  - `.github/workflows/check.yml`: R CMD check, `data-raw/tests/run.R`, the stale-README check, and `data-raw/check_revisions.R`
+  - `R-CMD-check.yaml` and `README.yaml` removed, and the README badge points at `check`
+  - `pkgdown.yaml` deploys only for a published release or a `workflow_dispatch` with a tag
+  - actions pinned to commit SHAs: `actions/checkout` v7.0.1, `r-lib/actions` v2.14.0, and `JamesIves/github-pages-deploy-action` v4.9.0
+- **PR #37** (this phase): `check` passed.
+- **PR #38** (README.Rmd changed without rebuilding): R CMD check and the pipeline tests passed, then `check` failed at the README step (run 40031343266).
+- **PR #39** (March 1990 CPI-U NSA changed to 999 in `data-raw/processed/` only): R CMD check, the pipeline tests, and the README step passed, then `check` failed at the revision step with "1 unexpected revision since v2026.10.14", naming `cpi_u_monthly_nsa 1990m3` (run 40031349650). The baseline tag was found, so `fetch-depth: 0` brings the tags.
+- **Not run:** the plan's third throwaway PR, a broken consistency rule. The consistency tests already show each check failing on broken data, and they run inside R CMD check.
+- **Slow runners:** `setup-r` took about 17 minutes on #37 and #38 and about 1 minute on #39, all started within the same minute. It's the step that downloads R, and it also hung on PR #35 earlier the same day. If it keeps happening, pinning an R version would let `setup-r` use its cache.
+- **Checkpoint review** (job 340): no findings.
+- **After merging:** a manual pkgdown run with `ref` set to `v2026.10.14`.
 
 ## Phase 3: team, rulesets, and settings
 
 Mostly GitHub settings, recorded here and in the README's maintainer section (Phase 7). The repo change is `CODEOWNERS`.
 
-1. **Team `realtalk-maintainers`** in the Economic org: visible, members benzipperer and zmokhiber, Maintain role on realtalk. May need an org owner; Ben as team maintainer.
+1. **Team `realtalk-maintainers`** in the Economic org: visible, two members, Maintain role on realtalk. May need an org owner; Ben as team maintainer.
 2. **`.github/CODEOWNERS`:** `* @economic/realtalk-maintainers`.
 3. **Ruleset "protect main"** and **ruleset "require check on main"**, exactly as the design's "Roles and repository settings" lists, with the `check` job from Phase 2 as the required check.
 4. **Repository variable** `REMINDER_MENTION` = `@economic/realtalk-maintainers`, for Phase 6.
