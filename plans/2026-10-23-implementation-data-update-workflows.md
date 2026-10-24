@@ -155,7 +155,7 @@ Settings and spikes that later phases depend on. Throwaway workflows go on `spik
 - **Not run:** the plan's third throwaway PR, a broken consistency rule. The consistency tests already show each check failing on broken data, and they run inside R CMD check.
 - **Slow runners:** `setup-r` took about 17 minutes on #37 and #38 and about 1 minute on #39, all started within the same minute. It's the step that downloads R, and it also hung on PR #35 earlier the same day. If it keeps happening, pinning an R version would let `setup-r` use its cache.
 - **Checkpoint review** (job 340): no findings.
-- **After merging:** a manual pkgdown run with `ref` set to `v2026.10.14`.
+- **After merging:** a manual pkgdown run with `ref` set to `v2026.10.14` checked out that tag ("HEAD is now at 91bde98 v2026.10.14"), built the site, and deployed it (run 40051999869).
 
 ## Phase 3: team, rulesets, and settings
 
@@ -174,7 +174,16 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - The admin bypass lets Ben merge his own PR without approval, but not with a failing `check`.
 - Requesting a review from the team notifies both members.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **Rulesets:** created by Ben in Settings, because the local `gh` token lacks the Administration permission to create them through the API. Read back through the API, they match the design. GitHub added `require_extra_approval_for_unattributed_changes: true` on its own; its effect on the bot's draft PRs is checked in Phase 4.
+- **`CODEOWNERS`:** PR #40, merged by Ben with the admin bypass and no approval. So the bypass for pull requests works. At first GitHub rejected the line ("Unknown owner… make sure the team exists, is publicly visible, and has write access"), because the team had no access to realtalk yet, so no review was requested on #41. After Ben gave the team the Maintain role, `GET /repos/Economic/realtalk/codeowners/errors` reported no errors.
+- **A direct `git push` to `main`** of an empty commit: "push declined due to repository rule violations", naming the required `check`.
+- **The `REMINDER_MENTION` variable:** to be set by Ben in Settings, for the same token reason.
+- **Not tested here:**
+  - a non-maintainer's approval not counting: needs a Write user outside the team
+  - a new commit dismissing an approval: the first re-draft in Phase 4 shows it
+  - the team being notified of a review request: the first PR after #40 shows it
 
 ## Phase 4: Draft update
 
@@ -184,7 +193,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
 3. **`.github/scripts/update-draft-pr.sh`** compares the fresh `data-raw/processed/` files with `main`'s:
    - **the same:** `main` already has this data. Close any open draft PR with "`main` already has these numbers", and stop.
-   - **different:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`. This happens even if the data equals the open draft's, and the push cancels any approval.
+   - **different:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`. `CODEOWNERS` requests the maintainers' review automatically, so the script doesn't. This happens even if the data equals the open draft's, and the push cancels any approval.
 
 **Verification:**
 
