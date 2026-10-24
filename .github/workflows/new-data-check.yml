@@ -1,5 +1,5 @@
 # The new-data reminder (Phase 6 of plans/2026-10-23-implementation-data-update-workflows.md).
-# Every weekday, fetches every source the pipeline fetches and compares it with
+# Every Friday, fetches every source the pipeline fetches and compares it with
 # the newest proposed data: the open draft PR's branch, or main. Opens, updates,
 # or closes one issue labeled `new-data`. It never opens a PR or changes a
 # branch.
@@ -10,9 +10,10 @@ name: New data check
 
 on:
   schedule:
-    # 14:17 UTC on weekdays: 10:17 a.m. EDT, 9:17 a.m. EST, after the 8:30 a.m.
-    # Eastern BLS and BEA releases. The odd minute avoids the top-of-hour rush.
-    - cron: "17 14 * * 1-5"
+    # Fridays at 14:17 UTC: 10:17 a.m. EDT, 9:17 a.m. EST. Cron runs in UTC,
+    # so the Eastern time shifts by an hour in winter. The odd minute avoids the
+    # top-of-hour rush.
+    - cron: "17 14 * * 5"
   workflow_dispatch:
     inputs:
       dry_run:

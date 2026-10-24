@@ -53,7 +53,7 @@ Only steps 1 and 4 make commits. Step 1 commits to the `data-update` branch, and
 | Hand-made PRs by maintainers | GitHub never counts a PR author's own approval. `realtalk-maintainers` has at least two members, so they approve each other's PRs. As a backup, admins can bypass the approval rule for pull requests only; the required check has no bypass. |
 | Team membership | `realtalk-maintainers` has two members for now, including Ben. Drafters are whoever has Write access; nothing in the workflows names them. |
 | `_targets/meta/meta` | Stop committing it: add it to `data-raw/_targets/.gitignore` and remove it from the index. CI starts with an empty store, so it would change on every run and tell nobody anything. |
-| Reminder | A scheduled check every weekday that opens or updates one rolling issue when any fetched source has new data, and @-mentions `@economic/realtalk-maintainers`, who decide who drafts. |
+| Reminder | A scheduled check every Friday that opens or updates one rolling issue when any fetched source has data not yet in a draft, and @-mentions `@economic/realtalk-maintainers`, who decide who drafts. (Weekly, not daily: decided 2026-10-24.) |
 | API keys | Repository secrets. They are free BLS, BEA, and FRED keys that can be reissued in minutes, so a `main`-only Environment isn't worth its cost: no key-using workflow could be tested from a branch. (Revised 2026-10-23; design review job 208 had moved them to an Environment. See "Accepted risks".) |
 | FRED verification | Runs only in "Draft update", which has the key and runs code from `main`. A mismatch stops the draft. PR checks need no secrets and don't call FRED. (After design review job 200.) |
 | Merging and tagging | The merge passes the checked head SHA, and the plan job checks that `main` hasn't moved. Everything after the merge is in separate jobs, so "Re-run failed jobs" can finish a failed publish. (After design review job 204; the up-to-date rule it added was dropped 2026-10-23.) |
@@ -193,7 +193,7 @@ A scheduled workflow, `new-data-check`, tells people when an update is worth dra
   - **Nothing new since the last notice:** it does nothing, so no email.
   - **The open draft or `main` has the newest data:** it closes the issue.
 - **Failures:** if a fetch fails, the run fails, and GitHub emails whoever last changed the workflow's schedule.
-- **Schedule:** every weekday at 14:17 UTC (10:17 a.m. EDT, 9:17 a.m. EST), after the 8:30 a.m. Eastern BLS and BEA releases. BLS publishes CPI around mid-month and BEA publishes PCE near the end of the month, so a reminder is at most a day late. The odd minute avoids the top-of-hour rush, when GitHub delays scheduled runs.
+- **Schedule:** every Friday at 14:17 UTC (10:17 a.m. EDT, 9:17 a.m. EST; cron runs in UTC, so the Eastern time shifts by an hour in winter). Weekly is enough: BLS and BEA release CPI and PCE monthly, so a reminder is at most a week late, and anyone can still draft unprompted. (Decided 2026-10-24; the first version checked every weekday.)
 - **Manual run:** `workflow_dispatch` too, with a `dry_run` input that writes the summary to the run page and touches no issue.
 
 ### Hand-made PRs

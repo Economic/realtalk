@@ -243,7 +243,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 ## Phase 6: new-data reminder
 
-1. **`.github/workflows/new-data-check.yml`:** `schedule` (`17 14 * * 1-5`) and `workflow_dispatch` with `dry_run`. Check job with the API keys, `contents: read`: `tar_make(names = ends_with("_raw_csv"))`, then compares the snapshots with the open draft's branch if a draft PR is open, otherwise with `main`, and passes the title, body, and a fingerprint of the snapshots to the issue job. Issue job with `issues: write` and no R.
+1. **`.github/workflows/new-data-check.yml`:** `schedule` (`17 14 * * 5`, Fridays) and `workflow_dispatch` with `dry_run`. Check job with the API keys, `contents: read`: `tar_make(names = ends_with("_raw_csv"))`, then compares the snapshots with the open draft's branch if a draft PR is open, otherwise with `main`, and passes the title, body, and a fingerprint of the snapshots to the issue job. Issue job with `issues: write` and no R.
 2. **`.github/scripts/update-reminder-issue.sh`:** opens, updates, or closes the one issue labeled `new-data`, mentioning `@economic/realtalk-maintainers`, written in the script. It stays silent when nothing is new since the last notice, which it reads from the issue body.
 3. **Stale manual inputs:** the check job also runs the memo's stale-input function and adds its warnings to the summary.
 
