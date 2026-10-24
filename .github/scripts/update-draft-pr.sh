@@ -50,18 +50,19 @@ body=$(mktemp)
   echo
   echo "To publish: click \"Approve and run workflows\" so the check runs, have a maintainer approve the PR, then run \"Publish update\"."
   echo
+  # Link the open reminder issue, if any, so publishing this draft closes it.
+  # It goes above the memo, which becomes the release notes. The Friday check
+  # closes the issue otherwise.
+  reminder=$(gh issue list --label new-data --state open --json number --jq '.[0].number // empty')
+  if [ -n "$reminder" ]; then
+    echo "Closes #$reminder"
+    echo
+  fi
   cat "$memo"
   echo
   echo "### Checks"
   echo
   echo "In the build: FRED verification, R CMD check (with the consistency tests), and the pipeline tests all passed."
-  # Link the open reminder issue, if any, so publishing this draft closes it.
-  # The Friday check closes it otherwise.
-  reminder=$(gh issue list --label new-data --state open --json number --jq '.[0].number // empty')
-  if [ -n "$reminder" ]; then
-    echo
-    echo "Closes #$reminder"
-  fi
 } > "$body"
 
 if [ -z "$pr" ]; then

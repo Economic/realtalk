@@ -6,7 +6,9 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r}
+#| include: false
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -28,7 +30,12 @@ knitr::opts_chunk$set(
 
 realtalk makes it easy to use common US price indexes in R.
 
-```{r, fig.width = 10, echo = FALSE, message = FALSE, warning = FALSE}
+```{r}
+#| fig-width: 10
+#| echo: false
+#| message: false
+#| warning: false
+
 library(tidyverse)
 library(realtalk)
 
@@ -81,30 +88,36 @@ us_minimum_wage_annual |>
 ```
 
 ## Loading the data
+
 `realtalk` is mostly a data package and includes several datasets of common US
 price indexes, like the CPI-U-RS:
+
 ```{r}
 library(realtalk)
 cpi_u_rs_annual
 ```
 
 You can see what datasets are available by loading `available_price_indexes`:
+
 ```{r}
 available_price_indexes
 ```
 The `package_data_name` column contains the internal name of each dataset:
+
 ```{r}
 pce_monthly_sa
 ```
 You can also use `get_price_index()`:
+
 ```{r}
 get_price_index("PCE", "monthly", "SA")
 ```
 
 ## Installation
+
 Install realtalk from r-universe:
 
-``` r
+```r
 install.packages(
   "realtalk",
   repos = c("https://economic.r-universe.dev", getOption("repos"))
@@ -112,7 +125,8 @@ install.packages(
 ```
 
 If you add the EPI r-universe repository to your `.Rprofile` with
-``` r
+
+```r
 # Example .Rprofile
 options(repos = c(
   EPI = "https://economic.r-universe.dev",
@@ -120,20 +134,13 @@ options(repos = c(
 ))
 ```
 then you can simply
-``` r
+
+```r
 install.packages("realtalk")
 ```
+
 ## Updates
-realtalk is updated about once a month, after the Bureau of Labor Statistics
-publishes new CPI data and the Bureau of Economic Analysis publishes new PCE
-data. Each version is named for the date its data was pulled, such as
-`2026.10.14`. The [releases](https://github.com/Economic/realtalk/releases) list
-every version with a summary of what changed, and `NEWS.md` has a short entry
-for each.
 
-Install from r-universe, as above, to get the latest release. The GitHub
-repository's `main` branch can be ahead of the latest release, so installing
-from GitHub directly may give you data that hasn't been checked and published
-yet.
-
-Maintainers: see [`MAINTAINING.md`](https://github.com/Economic/realtalk/blob/main/.github/MAINTAINING.md).
+realtalk is usually updated one-to-two times a month, after the Bureau of Labor
+Statistics publishes new CPI data and the Bureau of Economic Analysis publishes
+new PCE data.
