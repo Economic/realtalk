@@ -1,0 +1,3 @@
+# Every file is owned by the maintainers team. With the "protect main" ruleset,
+# only their approval lets a pull request merge, and every PR requests their review.
+* @economic/realtalk-maintainers
