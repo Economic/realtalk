@@ -132,3 +132,21 @@ then you can simply
 ``` r
 install.packages("realtalk")
 ```
+
+## Updates
+
+realtalk is updated about once a month, after the Bureau of Labor
+Statistics publishes new CPI data and the Bureau of Economic Analysis
+publishes new PCE data. Each version is named for the date its data was
+pulled, such as `2026.10.14`. The
+[releases](https://github.com/Economic/realtalk/releases) list every
+version with a summary of what changed, and `NEWS.md` has a short entry
+for each.
+
+Install from r-universe, as above, to get the latest release. The GitHub
+repository’s `main` branch can be ahead of the latest release, so
+installing from GitHub directly may give you data that hasn’t been
+checked and published yet.
+
+Maintainers: see
+[`MAINTAINING.md`](https://github.com/Economic/realtalk/blob/main/.github/MAINTAINING.md).
