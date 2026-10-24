@@ -184,14 +184,14 @@ Each step checks what already exists, so any run can be repeated safely.
 
 A scheduled workflow, `new-data-check`, tells people when an update is worth drafting. It never opens a PR or changes a branch.
 
-- **What it checks:** every source the pipeline fetches: CPI-U NSA and SA and C-CPI-U from the BLS API, and monthly, quarterly, and annual PCE from the BEA API. It runs the pipeline's own fetch and snapshot targets (`tar_make()` limited to the `*_raw_csv` targets) and compares the fresh snapshots with those committed on `main`. Using the same fetch code as "Draft update" means it catches new periods and revisions alike.
+- **What it checks:** every source the pipeline fetches: CPI-U NSA and SA and C-CPI-U from the BLS API, and monthly, quarterly, and annual PCE from the BEA API. It runs the pipeline's own fetch and snapshot targets (`tar_make()` limited to the `*_raw_csv` targets) and compares the fresh snapshots with the newest proposed data: the open draft PR's branch if there is one, otherwise `main`. So the issue means "there's data nobody has drafted yet": a draft made before the check, unprompted, doesn't trigger it. (Decided 2026-10-23.) Using the same fetch code as "Draft update" means it catches new periods and revisions alike.
 - **Hand-maintained files** (CPI-U-RS, the minimum wage, CPI-U-X1) aren't fetched, so the check can't see new releases of them. The issue repeats the memo's stale-input warnings instead, for example CPI-U-RS missing last year's annual value after May.
 - **Jobs:** as with "Draft update", the **check job** runs R with the API keys and a read-only token, and passes a short summary to the **issue job** as a job output. The issue job has `issues: write` and runs no R.
 - **The issue:** one rolling issue, labeled `new-data`:
   - **New data, no open issue:** it opens one titled with what's new, for example "New data: CPI through Oct 2026, PCE through Sep 2026", with a checklist pointing to "Draft update". The body @-mentions `@economic/realtalk-maintainers`, which notifies its members. The mention is written in the reminder script; changing who's notified is an ordinary PR. (Decided 2026-10-23, instead of a repository variable that would have to be created in Settings.)
   - **More new data while the issue is open:** it updates the title and body, and comments, which sends one email.
   - **Nothing new since the last notice:** it does nothing, so no email.
-  - **`main` has caught up** (after an update is merged): it closes the issue.
+  - **The open draft or `main` has the newest data:** it closes the issue.
 - **Failures:** if a fetch fails, the run fails, and GitHub emails whoever last changed the workflow's schedule.
 - **Schedule:** every weekday at 14:17 UTC (10:17 a.m. EDT, 9:17 a.m. EST), after the 8:30 a.m. Eastern BLS and BEA releases. BLS publishes CPI around mid-month and BEA publishes PCE near the end of the month, so a reminder is at most a day late. The odd minute avoids the top-of-hour rush, when GitHub delays scheduled runs.
 - **Manual run:** `workflow_dispatch` too, with a `dry_run` input that writes the summary to the run page and touches no issue.
