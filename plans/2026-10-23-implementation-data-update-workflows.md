@@ -304,4 +304,5 @@ These need the first real data update:
 - an approval cancelled by a re-draft
 - the first real "Publish update": that the built-in token's merge goes through after a maintainer's approval, the tag points at the merge commit, the release is latest with the memo as notes, pkgdown deploys from the tag, and r-universe builds a release created by the bot
 - the first real reminder: that the bot's mention of `@economic/realtalk-maintainers` notifies both members
+- that `Closes #N` in the draft PR closes the reminder issue when "Publish update" merges it with the built-in token. If it doesn't, the Friday check closes the issue, so nothing breaks.
 - a non-maintainer's approval not counting (needs a Write user outside the team)
