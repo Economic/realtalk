@@ -164,7 +164,6 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 1. **Team `realtalk-maintainers`** in the Economic org: visible, two members, Maintain role on realtalk. May need an org owner; Ben as team maintainer.
 2. **`.github/CODEOWNERS`:** `* @economic/realtalk-maintainers`.
 3. **Ruleset "protect main"** and **ruleset "require check on main"**, exactly as the design's "Roles and repository settings" lists, with the `check` job from Phase 2 as the required check.
-4. **Repository variable** `REMINDER_MENTION` = `@economic/realtalk-maintainers`, for Phase 6.
 
 **Verification**, with throwaway PRs closed afterward:
 
@@ -179,7 +178,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - **Rulesets:** created by Ben in Settings, because the local `gh` token lacks the Administration permission to create them through the API. Read back through the API, they match the design. GitHub added `require_extra_approval_for_unattributed_changes: true` on its own; its effect on the bot's draft PRs is checked in Phase 4.
 - **`CODEOWNERS`:** PR #40, merged by Ben with the admin bypass and no approval. So the bypass for pull requests works. At first GitHub rejected the line ("Unknown owner… make sure the team exists, is publicly visible, and has write access"), because the team had no access to realtalk yet, so no review was requested on #41. After Ben gave the team the Maintain role, `GET /repos/Economic/realtalk/codeowners/errors` reported no errors.
 - **A direct `git push` to `main`** of an empty commit: "push declined due to repository rule violations", naming the required `check`.
-- **The `REMINDER_MENTION` variable:** to be set by Ben in Settings, for the same token reason.
+- **No `REMINDER_MENTION` variable:** the reminder script names `@economic/realtalk-maintainers` itself (decided 2026-10-23).
 - **Not tested here:**
   - a non-maintainer's approval not counting: needs a Write user outside the team
   - a new commit dismissing an approval: the first re-draft in Phase 4 shows it
@@ -244,8 +243,8 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 ## Phase 6: new-data reminder
 
-1. **`.github/workflows/new-data-check.yml`:** `schedule` (`17 14 * * 1-5`) and `workflow_dispatch` with `dry_run`. Check job with the API keys, `contents: read`: `tar_make(names = ends_with("_raw_csv"))`, then compares the snapshots with `main`'s and writes a one-line summary as a job output. Issue job with `issues: write` and no R.
-2. **`.github/scripts/update-reminder-issue.sh`:** opens, updates, or closes the one issue labeled `new-data`, mentioning `$REMINDER_MENTION`. It stays silent when nothing is new since the last notice, which it reads from the issue body.
+1. **`.github/workflows/new-data-check.yml`:** `schedule` (`17 14 * * 5`, Fridays) and `workflow_dispatch` with `dry_run`. Check job with the API keys, `contents: read`: `tar_make(names = ends_with("_raw_csv"))`, then compares the snapshots with the open draft's branch if a draft PR is open, otherwise with `main`, and passes the title, body, and a fingerprint of the snapshots to the issue job. Issue job with `issues: write` and no R.
+2. **`.github/scripts/update-reminder-issue.sh`:** opens, updates, or closes the one issue labeled `new-data`, mentioning `@economic/realtalk-maintainers`, written in the script. It stays silent when nothing is new since the last notice, which it reads from the issue body.
 3. **Stale manual inputs:** the check job also runs the memo's stale-input function and adds its warnings to the summary.
 
 **Verification:**
@@ -253,7 +252,12 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - Local, with a stand-in `gh`: new issue; update with a comment; nothing new, no change; `main` caught up, issue closed.
 - After merging: a dry run; then the first scheduled run after new data. The mention notifies both maintainers (design, "To verify").
 
-**Results:** (to fill in)
+**Results (2026-10-24, local):**
+
+- **Built:** `.github/workflows/new-data-check.yml`, `data-raw/check_new_data.R`, `data-raw/R/reminder.R` (`new_data_notice()`), and `.github/scripts/update-reminder-issue.sh`. The mention `@economic/realtalk-maintainers` is written in the script; there is no repository variable.
+- **`check_new_data.R`:** against `origin/main`, "No new data". Against `v2026.9.11`, all six snapshots changed, with the title "New data: CPI through September 2026, PCE through August 2026".
+- **`new_data_notice()`:** 3 tests in `data-raw/tests/` (42 pipeline expectations in all).
+- **`update-reminder-issue.sh`,** with a stand-in `gh`: no new data and no issue does nothing; new data opens the issue (creating the label); the same fingerprint again is silent; a new fingerprint edits the issue and comments; no new data with an issue open closes it.
 
 ## Phase 7: documentation
 

@@ -1,0 +1,122 @@
+# The new-data reminder (Phase 6 of plans/2026-10-23-implementation-data-update-workflows.md).
+# Every Friday, fetches every source the pipeline fetches and compares it with
+# the newest proposed data: the open draft PR's branch, or main. Opens, updates,
+# or closes one issue labeled `new-data`. It never opens a PR or changes a
+# branch.
+#
+# The check job runs package code with the API keys and read-only access. The
+# issue job can write issues but runs no R.
+name: New data check
+
+on:
+  schedule:
+    # Fridays at 14:17 UTC: 10:17 a.m. EDT, 9:17 a.m. EST. Cron runs in UTC,
+    # so the Eastern time shifts by an hour in winter. The odd minute avoids the
+    # top-of-hour rush.
+    - cron: "17 14 * * 5"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Check and write the result to the run summary; don't touch the issue
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: new-data-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      changed: ${{ steps.result.outputs.changed }}
+      title: ${{ steps.result.outputs.title }}
+      hash: ${{ steps.result.outputs.hash }}
+      body: ${{ steps.result.outputs.body }}
+    env:
+      GITHUB_PAT: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # all branches, to compare with the open draft
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Choose what to compare with
+        id: ref
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -n "$(gh pr list --head data-update --state open --json number --jq '.[0].number // empty')" ]; then
+            echo "ref=origin/data-update" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          needs: pipeline
+
+      - name: Fetch and compare
+        env:
+          BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
+          BEA_API_KEY: ${{ secrets.BEA_API_KEY }}
+          REALTALK_COMPARE_REF: ${{ steps.ref.outputs.ref }}
+        run: Rscript data-raw/check_new_data.R
+
+      - name: Record the result
+        id: result
+        env:
+          REF: ${{ steps.ref.outputs.ref }}
+        run: |
+          changed=$(cat reports/reminder/changed)
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          if [ "$changed" = "true" ]; then
+            echo "title=$(head -n 1 reports/reminder/title.txt)" >> "$GITHUB_OUTPUT"
+            echo "hash=$(cat data-raw/raw/snapshots/*.csv | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+            delimiter="body_$(openssl rand -hex 8)"
+            {
+              echo "body<<$delimiter"
+              cat reports/reminder/body.md
+              echo "$delimiter"
+            } >> "$GITHUB_OUTPUT"
+            {
+              echo "## New data compared with \`$REF\`"
+              echo
+              cat reports/reminder/body.md
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No new data compared with \`$REF\`." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  issue:
+    needs: check
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Open, update, or close the reminder issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHANGED: ${{ needs.check.outputs.changed }}
+          TITLE: ${{ needs.check.outputs.title }}
+          HASH: ${{ needs.check.outputs.hash }}
+          BODY: ${{ needs.check.outputs.body }}
+        run: .github/scripts/update-reminder-issue.sh
