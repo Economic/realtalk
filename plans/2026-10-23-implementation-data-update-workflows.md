@@ -1,7 +1,7 @@
 # Implementation plan: button-driven data updates
 
 Date: 2026-10-23
-Status: simplified 2026-10-23 (see the design's "Accepted risks"); ready for review
+Status: Phases 0 to 7 built, 2026-10-24. Phase 8 is for later. A few checks wait for the first real data update; see "Still to verify" at the end.
 
 This plan builds the design in `plans/2026-10-22-gha-data-release-workflow.md` (the "design" below). The design's "Decisions so far" and "Accepted risks" are settled; this plan only orders the work and makes it concrete.
 
@@ -258,6 +258,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - **`check_new_data.R`:** against `origin/main`, "No new data". Against `v2026.9.11`, all six snapshots changed, with the title "New data: CPI through September 2026, PCE through August 2026".
 - **`new_data_notice()`:** 3 tests in `data-raw/tests/` (42 pipeline expectations in all).
 - **`update-reminder-issue.sh`,** with a stand-in `gh`: no new data and no issue does nothing; new data opens the issue (creating the label); the same fingerprint again is silent; a new fingerprint edits the issue and comments; no new data with an issue open closes it.
+- **Dry run on `main`** (run 40059172334): with no draft open, it compared with `origin/main` and reported "No new data compared with origin/main". The issue job was skipped.
 
 ## Phase 7: documentation
 
@@ -266,7 +267,11 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 3. **`.roborev.toml`:** update the guidelines if the phases changed anything they describe.
 4. Mark this plan done, with a summary of what changed from the plan as built.
 
-**Results:** (to fill in)
+**Results (2026-10-24):**
+
+- **The maintainer guide** went to `.github/MAINTAINING.md`, not the README. The README is the user-facing pkgdown home page, and `.github/` is outside the built package. The README got a one-sentence "Updates" section for users (Ben's wording), with no link to the guide.
+- **`AGENTS.md`:** a "Workflows" section, the extra commands, `FRED_API_KEY`, and the version scheme (`YYYY.M.D`, Eastern time).
+- **`.roborev.toml`:** points reviewers at the maintainer guide.
 
 ## Phase 8 (later): offline rebuild check
 
@@ -279,3 +284,25 @@ The goal is to finish within a few days, so the November update (October CPI, mi
 ## Open questions
 
 None.
+
+## Changes from the plan, as built
+
+- **Simplified on 2026-10-23,** before building: API keys as repository secrets; a two-case draft decision; a "one commit by the bot" check instead of provenance records; no up-to-date rule; no superseded check; a simpler "Tag release". The design's "Accepted risks" lists what each one gives up.
+- **The reminder:** it compares with the open draft as well as `main`, runs weekly on Fridays instead of every weekday, and names the team in its script instead of a repository variable.
+- **Pipeline tests** in `data-raw/tests/`, run by `check.yml`, cover the memo, FRED, update, and reminder functions (Phase 1).
+- **The memo** leaves check results to the draft PR's description (Phase 1).
+- **`CODEOWNERS`** requests the maintainers' review, so the draft script doesn't (Phase 4).
+- **The maintainer guide** is `.github/MAINTAINING.md` (Phase 7).
+- **Contributor names** were taken out of the plans (2026-10-23).
+
+## Still to verify
+
+These need the first real data update:
+
+- the first real draft PR: the held check and "Approve and run workflows"
+- whether `require_extra_approval_for_unattributed_changes` asks for a second approval on the bot's commit
+- an approval cancelled by a re-draft
+- the first real "Publish update": that the built-in token's merge goes through after a maintainer's approval, the tag points at the merge commit, the release is latest with the memo as notes, pkgdown deploys from the tag, and r-universe builds a release created by the bot
+- the first real reminder: that the bot's mention of `@economic/realtalk-maintainers` notifies both members
+- that `Closes #N` in the draft PR closes the reminder issue when "Publish update" merges it with the built-in token. If it doesn't, the Friday check closes the issue, so nothing breaks.
+- a non-maintainer's approval not counting (needs a Write user outside the team)

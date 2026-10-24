@@ -132,3 +132,9 @@ then you can simply
 ``` r
 install.packages("realtalk")
 ```
+
+## Updates
+
+realtalk is usually updated one-to-two times a month, after the Bureau
+of Labor Statistics publishes new CPI data and the Bureau of Economic
+Analysis publishes new PCE data.
