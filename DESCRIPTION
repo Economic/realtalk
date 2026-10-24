@@ -12,7 +12,6 @@ Encoding: UTF-8
 LazyData: true
 Depends: 
     R (>= 4.1)
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 URL: https://economic.github.io/realtalk/, https://github.com/economic/realtalk
 BugReports: https://github.com/economic/realtalk/issues
@@ -34,3 +33,4 @@ Config/Needs/pipeline:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1
