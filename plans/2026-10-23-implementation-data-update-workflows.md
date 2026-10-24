@@ -202,7 +202,13 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - The first real run, when new data is out: it opens the PR, assigned to whoever pressed it, with the memo; the held check appears, and approving the run makes `check` pass.
 - After the first draft is published (Phase 5): a run with no new data does nothing.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **Built** (PR #41): `.github/workflows/draft-update.yml`, `.github/scripts/copy-draft-files.sh`, and `.github/scripts/update-draft-pr.sh`.
+- **Copy script, locally:** a good artifact copies all 8 files. A `.git/config`, a symlink, a nested path, an unexpected file, and a newline in a file name are each rejected, with nothing copied; the newline is escaped in the message. An artifact built from the real upload paths copies 57 files.
+- **Draft script, locally,** with a bare repo standing in for `origin` and a stand-in `gh`: data equal to `main` with no draft does nothing; with a draft open it closes the draft. New data with no draft pushes one commit and opens the PR; with a draft open it edits the PR and comments. The commit's author and committer are `github-actions[bot]` even when the environment sets other git identities.
+- **Checkpoint review** (job 357): the artifact uploaded all of `man/figures/`, including `logo.png`, which the copy script rejects, so every real run would have failed. Now only `README-*.png` is uploaded.
+- **Dry run on `main`** (run 40054388646): the build job passed in about 2 minutes, including the fresh fetch, the FRED verification required, the version (2026.10.23 at 02:29 UTC on October 24, Eastern time), README, R CMD check, and the pipeline tests. The PR job was skipped.
 
 ## Phase 5: Publish update and Tag release
 
@@ -225,7 +231,14 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
   - r-universe reports the new version, and the poll job passed
 - The first real "Tag release" waits for the next hand-made change that needs publishing.
 
-**Results:** (to fill in)
+**Results (2026-10-23, local):**
+
+- **Built:** `.github/workflows/publish-update.yml`, `.github/workflows/tag-release.yml`, and `.github/scripts/` `release-guards.sh`, `publish-plan.sh`, `tag-release-plan.sh`, `tag-release.sh`, and `poll-r-universe.sh`.
+- **`publish-plan.sh`,** against a repo with a bot-authored draft on top of `main` and a stand-in `gh`: it passes when everything is in order. It refuses each of these on its own: a presser with Write; no open draft; the check failed or never ran; no approval; the version already released; a version not higher than the latest (and accepts a zero-padded older latest, `v2026.02.13`); `main` moved after the draft; a second commit pushed by hand; and a draft commit not by the bot.
+- **`tag-release-plan.sh`:** passes for `main`'s merge commit; refuses a commit inside the PR (not on the first-parent history), a value that isn't a SHA, a presser with Write, and a version already released.
+- **`tag-release.sh`:** a dry run writes the notes (the memo after a "Publish update" merge, the `NEWS.md` entry otherwise) and writes nothing. A real run creates the tag and the release; a rerun with both existing writes nothing; with only the tag existing, it creates the release; a tag on another commit stops it; a `TARGET` that isn't a full SHA stops it.
+- **Checkpoint review** (job 368): three low findings, fixed: the plan jobs check out the dispatching branch, so branch dry runs test its scripts; the "Publish update" dry run shows the release notes; the merge step writes the full merge SHA to the run summary for recovery.
+- **Mistake during testing:** a test helper ran `export` with no arguments, which printed the local shell environment, including API keys unrelated to this repo, into the session transcript. Nothing was pushed. Ben was told to rotate those keys.
 
 ## Phase 6: new-data reminder
 
