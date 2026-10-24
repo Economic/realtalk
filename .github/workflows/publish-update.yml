@@ -48,7 +48,6 @@ jobs:
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: main
           # full history and tags, for the draft and version checks
           fetch-depth: 0
           persist-credentials: false
@@ -63,11 +62,17 @@ jobs:
       - name: Dry run summary
         if: ${{ inputs.dry_run }}
         env:
+          GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.plan.outputs.pr }}
           HEAD_SHA: ${{ steps.plan.outputs.head }}
           VERSION: ${{ steps.plan.outputs.version }}
         run: |
-          echo "Dry run: every check passed. A real run would merge PR #$PR (${HEAD_SHA:0:7}) and release v$VERSION." >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "Dry run: every check passed. A real run would merge PR #$PR (${HEAD_SHA:0:7}) and release v$VERSION, with these notes:"
+            echo
+            # the same extraction tag-release.sh uses for the notes
+            gh pr view "$PR" --json body --jq .body | sed -n '/^## Data update memo/,$p'
+          } >> "$GITHUB_STEP_SUMMARY"
 
   merge:
     needs: plan
@@ -98,6 +103,8 @@ jobs:
             -f merge_method=merge -f sha="$HEAD_SHA" --jq .sha)
           echo "merge_sha=$merge_sha" >> "$GITHUB_OUTPUT"
           echo "Merged PR #$PR as ${merge_sha:0:7}."
+          # the full SHA, for "Tag release" if a later job fails
+          echo "Merged PR #$PR as merge commit \`$merge_sha\`." >> "$GITHUB_STEP_SUMMARY"
 
           git fetch --quiet origin "$merge_sha"
           if [ "$(git rev-parse "$merge_sha^{tree}")" = "$(git rev-parse "$HEAD_SHA^{tree}")" ]; then
