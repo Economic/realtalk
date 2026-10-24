@@ -1,0 +1,137 @@
+# "Draft update" (Phase 4 of plans/2026-10-23-implementation-data-update-workflows.md).
+# A button: fetches fresh data, rebuilds, verifies against FRED, sets the
+# version and NEWS entry, runs the checks, and opens or updates the draft PR on
+# the `data-update` branch. It publishes nothing; "Publish update" does that.
+#
+# The build job runs package code with the API keys and a read-only token. The
+# PR job can write but runs no R, and copies in only allowlisted files from the
+# build's artifact.
+name: Draft update
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build and write the memo to the run summary; don't touch the draft PR
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: draft-update
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    env:
+      # setup-r-dependencies installs economic/epitargets and economic/epidatatools
+      # from GitHub
+      GITHUB_PAT: ${{ github.token }}
+    steps:
+      - name: Real runs only from main
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" != "true" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::A real draft is built only from main. Use a dry run to test another branch."
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # full history and tags, for the memo's baseline and the version
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: r-lib/actions/setup-pandoc@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          extra-packages: any::rcmdcheck, any::devtools, local::.
+          needs: check, readme, pipeline
+
+      # The targets store isn't committed, so this fetches every source
+      - name: Fetch fresh data and rebuild
+        env:
+          BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
+          BEA_API_KEY: ${{ secrets.BEA_API_KEY }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          REALTALK_REQUIRE_FRED: "true"
+        run: Rscript -e 'targets::tar_make()'
+
+      - name: Set the version and the NEWS entry
+        run: Rscript data-raw/prepare_update.R
+
+      - name: Rebuild the README
+        run: Rscript -e 'devtools::build_readme()'
+
+      - uses: r-lib/actions/check-r-package@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        with:
+          upload-snapshots: false
+          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      - name: Test the pipeline's functions
+        run: Rscript data-raw/tests/run.R
+
+      - name: Write the memo to the run summary
+        run: cat reports/change_memo.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: draft
+          retention-days: 7
+          path: |
+            data/
+            data-raw/processed/
+            data-raw/raw/snapshots/
+            DESCRIPTION
+            NEWS.md
+            README.md
+            man/figures/
+            reports/change_memo.md
+
+  pr:
+    needs: build
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      # assigning the PR goes through the issues API
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # the commit the build job used, so the outputs sit on the code that
+          # built them even if main moved during the build
+          ref: ${{ github.sha }}
+          # all branches, to compare with main and the open draft
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Unpacked outside the checkout: the artifact comes from a job that ran
+      # package code, so only the expected files are copied in
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: draft
+          path: ${{ runner.temp }}/draft
+
+      - name: Copy the expected files into the checkout
+        run: .github/scripts/copy-draft-files.sh "$RUNNER_TEMP/draft"
+
+      - name: Open, update, or close the draft PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: .github/scripts/update-draft-pr.sh
