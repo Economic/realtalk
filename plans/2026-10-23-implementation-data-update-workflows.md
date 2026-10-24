@@ -269,7 +269,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 
 **Results (2026-10-24):**
 
-- **The maintainer guide** went to `.github/MAINTAINING.md`, not the README. The README is the user-facing pkgdown home page, and `.github/` is outside the built package. The README got a short "Updates" section for users, linking to the guide by full URL, so the link also works on the pkgdown site.
+- **The maintainer guide** went to `.github/MAINTAINING.md`, not the README. The README is the user-facing pkgdown home page, and `.github/` is outside the built package. The README got a one-sentence "Updates" section for users (Ben's wording), with no link to the guide.
 - **`AGENTS.md`:** a "Workflows" section, the extra commands, `FRED_API_KEY`, and the version scheme (`YYYY.M.D`, Eastern time).
 - **`.roborev.toml`:** points reviewers at the maintainer guide.
 
