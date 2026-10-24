@@ -1,0 +1,120 @@
+# "Tag release" (Phase 5 of plans/2026-10-23-implementation-data-update-workflows.md).
+# A button for maintainers: publishes a commit on main that didn't come through
+# "Publish update", such as a code fix or an update to a hand-maintained file.
+# The PR bumps the version in DESCRIPTION and adds a NEWS.md entry. It also
+# finishes a "Publish update" whose tag job failed: pass the merge commit.
+name: Tag release
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Commit on main to release (default, the current main)
+        type: string
+        default: ""
+      dry_run:
+        description: Run the checks and show the release notes; create nothing
+        type: boolean
+        default: false
+
+permissions: {}
+
+# Shared with "Publish update": one publish at a time
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      target: ${{ steps.plan.outputs.target }}
+      version: ${{ steps.plan.outputs.version }}
+    steps:
+      - name: Real runs only from main
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" != "true" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Release only from main. Use a dry run to test another branch."
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check the commit and version
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ACTOR: ${{ github.actor }}
+          COMMIT: ${{ inputs.commit }}
+        run: .github/scripts/tag-release-plan.sh
+
+  check:
+    needs: plan
+    permissions:
+      contents: read
+    uses: ./.github/workflows/check.yml
+    with:
+      ref: ${{ needs.plan.outputs.target }}
+
+  tag:
+    needs: [plan, check]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: read
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Tag and publish the release
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ needs.plan.outputs.target }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: .github/scripts/tag-release.sh
+
+  pkgdown:
+    needs: tag
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Deploy the site from the release tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.tag.outputs.tag }}
+        run: gh workflow run pkgdown.yaml --repo "$GITHUB_REPOSITORY" --ref main -f ref="$TAG"
+
+  r-universe:
+    needs: tag
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 200
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Wait for r-universe to serve the new version
+        env:
+          VERSION: ${{ needs.tag.outputs.version }}
+        run: .github/scripts/poll-r-universe.sh
