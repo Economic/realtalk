@@ -174,7 +174,16 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 - The admin bypass lets Ben merge his own PR without approval, but not with a failing `check`.
 - Requesting a review from the team notifies both members.
 
-**Results:** (to fill in)
+**Results (2026-10-23):**
+
+- **Rulesets:** created by Ben in Settings, because the local `gh` token lacks the Administration permission to create them through the API. Read back through the API, they match the design. GitHub added `require_extra_approval_for_unattributed_changes: true` on its own; its effect on the bot's draft PRs is checked in Phase 4.
+- **`CODEOWNERS`:** PR #40, merged by Ben with the admin bypass and no approval. So the bypass for pull requests works.
+- **A direct `git push` to `main`** of an empty commit: "push declined due to repository rule violations", naming the required `check`.
+- **The `REMINDER_MENTION` variable:** to be set by Ben in Settings, for the same token reason.
+- **Not tested here:**
+  - a non-maintainer's approval not counting: needs a Write user outside the team
+  - a new commit dismissing an approval: the first re-draft in Phase 4 shows it
+  - the team being notified of a review request: the first PR after #40 shows it
 
 ## Phase 4: Draft update
 
@@ -184,7 +193,7 @@ Mostly GitHub settings, recorded here and in the README's maintainer section (Ph
 2. **`.github/scripts/copy-draft-files.sh`:** copies only regular files at allowlisted paths from the artifact: `data/*.rda`, `data-raw/processed/*.csv`, `data-raw/raw/snapshots/*.csv`, `DESCRIPTION`, `NEWS.md`, `README.md`, `man/figures/README-*.png`, and `reports/change_memo.md`. Adapted from productivity_pay_gap's `copy-refresh-files.sh`.
 3. **`.github/scripts/update-draft-pr.sh`** compares the fresh `data-raw/processed/` files with `main`'s:
    - **the same:** `main` already has this data. Close any open draft PR with "`main` already has these numbers", and stop.
-   - **different:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`, review requested from `@economic/realtalk-maintainers`. This happens even if the data equals the open draft's, and the push cancels any approval.
+   - **different:** build `data-update` from the build's commit, commit as `github-actions[bot]`, force-push, and open the PR or update its title and body: title "Data update {version}: {coverage}", body the memo, assignee `github.actor`. `CODEOWNERS` requests the maintainers' review automatically, so the script doesn't. This happens even if the data equals the open draft's, and the push cancels any approval.
 
 **Verification:**
 
