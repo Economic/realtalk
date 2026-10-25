@@ -133,3 +133,26 @@ test_that("add_news_entry() folds an unreleased entry that is the whole file", {
     c("## Version 2026.10.30", entry, "* add an update check", "")
   )
 })
+
+test_that("add_news_entry() folds every unreleased entry above the last release", {
+  two <- c(
+    "## Version 2026.10.27",
+    "* fix get_price_index()",
+    "",
+    "## Version 2026.10.24",
+    "* add an update check",
+    "",
+    news
+  )
+  expect_equal(
+    add_news_entry(two, "2026.10.30", entry, released),
+    c(
+      "## Version 2026.10.30",
+      entry,
+      "* fix get_price_index()",
+      "* add an update check",
+      "",
+      news
+    )
+  )
+})
