@@ -22,7 +22,6 @@
   record_check(Sys.Date())
 
   message <- update_message(
-    latest = latest,
     installed = as.character(utils::packageVersion(pkgname)),
     available = fetch_available_version()
   )
@@ -104,7 +103,7 @@ fetch_available_version <- function(
 
 # The startup message, or NULL when updating wouldn't help: nothing newer is
 # available, or r-universe couldn't be reached
-update_message <- function(latest, installed, available) {
+update_message <- function(installed, available) {
   if (is.na(available)) {
     return(NULL)
   }
@@ -112,13 +111,11 @@ update_message <- function(latest, installed, available) {
     return(NULL)
   }
   paste0(
-    "realtalk's data runs through ",
-    month.name[latest[["month"]]],
-    " ",
-    latest[["year"]],
-    ", and version ",
+    "realtalk ",
     available,
-    " is available. Update with\n",
+    " is available; you have ",
+    installed,
+    ". Update with\n",
     "  install.packages(\"realtalk\", repos = \"https://economic.r-universe.dev\")\n",
     "Turn this message off with options(realtalk.update_check = FALSE)."
   )

@@ -27,39 +27,25 @@ test_that("months_behind() counts whole months, across a year boundary", {
   expect_equal(months_behind(september, as.Date("2027-01-02")), 4)
 })
 
-test_that("the message names the data's last month and the newer version", {
-  message <- update_message(
-    latest = c(year = 2026, month = 9),
-    installed = "2026.10.14",
-    available = "2026.11.13"
-  )
-  expect_match(message, "runs through September 2026")
-  expect_match(message, "version 2026.11.13 is available")
+test_that("the message names the available and installed versions", {
+  message <- update_message(installed = "2026.10.14", available = "2026.11.13")
+  expect_match(message, "realtalk 2026.11.13 is available; you have 2026.10.14")
   expect_match(message, "realtalk.update_check = FALSE", fixed = TRUE)
 })
 
 test_that("there is no message when nothing newer is available", {
-  september <- c(year = 2026, month = 9)
-  expect_null(update_message(september, "2026.10.14", "2026.10.14"))
+  expect_null(update_message("2026.10.14", "2026.10.14"))
   # a development version newer than r-universe's
-  expect_null(update_message(september, "2026.11.20", "2026.11.13"))
+  expect_null(update_message("2026.11.20", "2026.11.13"))
 })
 
 test_that("there is no message when r-universe can't be reached", {
-  expect_null(update_message(
-    c(year = 2026, month = 9),
-    "2026.10.14",
-    NA_character_
-  ))
+  expect_null(update_message("2026.10.14", NA_character_))
 })
 
 test_that("versions compare as versions, including zero-padded ones", {
-  message <- update_message(
-    c(year = 2026, month = 1),
-    "2026.02.13",
-    "2026.3.11"
-  )
-  expect_match(message, "version 2026.3.11 is available")
+  message <- update_message("2026.02.13", "2026.3.11")
+  expect_match(message, "realtalk 2026.3.11 is available")
 })
 
 test_that("a check recorded today skips later checks that day only", {
