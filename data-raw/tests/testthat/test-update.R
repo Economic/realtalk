@@ -84,3 +84,75 @@ test_that("news_entry() says 'revised data' when no coverage moved", {
     "* update with revised data"
   )
 })
+
+news <- c(
+  "## Version 2026.10.14",
+  "* update CPI-based data through September 2026",
+  "",
+  "## Version 2026.9.11",
+  "* update CPI-based data through August 2026"
+)
+released <- c("v2026.10.14", "v2026.9.11")
+entry <- "* update PCE through September 2026"
+
+test_that("add_news_entry() puts the new entry above a released one", {
+  expect_equal(
+    add_news_entry(news, "2026.10.30", entry, released),
+    c("## Version 2026.10.30", entry, "", news)
+  )
+})
+
+test_that("add_news_entry() folds an unreleased top entry into the new one", {
+  unreleased <- c("## Version 2026.10.24", "* add an update check", "", news)
+  expect_equal(
+    add_news_entry(unreleased, "2026.10.30", entry, released),
+    c("## Version 2026.10.30", entry, "* add an update check", "", news)
+  )
+})
+
+test_that("add_news_entry() replaces an unreleased entry with the same version", {
+  unreleased <- c("## Version 2026.10.30", "* add an update check", "", news)
+  expect_equal(
+    add_news_entry(unreleased, "2026.10.30", entry, released),
+    c("## Version 2026.10.30", entry, "* add an update check", "", news)
+  )
+})
+
+test_that("add_news_entry() treats zero-padded released tags as released", {
+  padded <- c("## Version 2026.02.13", "* update CPI", "")
+  expect_equal(
+    add_news_entry(padded, "2026.3.11", entry, "v2026.02.13"),
+    c("## Version 2026.3.11", entry, "", padded)
+  )
+})
+
+test_that("add_news_entry() folds an unreleased entry that is the whole file", {
+  only <- c("## Version 2026.10.24", "* add an update check")
+  expect_equal(
+    add_news_entry(only, "2026.10.30", entry, released),
+    c("## Version 2026.10.30", entry, "* add an update check", "")
+  )
+})
+
+test_that("add_news_entry() folds every unreleased entry above the last release", {
+  two <- c(
+    "## Version 2026.10.27",
+    "* fix get_price_index()",
+    "",
+    "## Version 2026.10.24",
+    "* add an update check",
+    "",
+    news
+  )
+  expect_equal(
+    add_news_entry(two, "2026.10.30", entry, released),
+    c(
+      "## Version 2026.10.30",
+      entry,
+      "* fix get_price_index()",
+      "* add an update check",
+      "",
+      news
+    )
+  )
+})
