@@ -63,3 +63,23 @@ news_entry <- function(baseline, current) {
   }
   paste("*", lines)
 }
+
+# NEWS.md with the new version's entry on top. If the top entry is for a
+# version that was never released (a change merged between data updates), its
+# lines are folded into the new entry rather than left under a heading no
+# release has.
+add_news_entry <- function(news, version, entry, released_tags) {
+  headings <- which(str_detect(news, "^## Version "))
+  if (length(headings) > 0) {
+    top_version <- str_remove(news[headings[1]], "^## Version ")
+    released <- package_version(str_remove(released_tags, "^v"), strict = FALSE)
+    released <- released[!is.na(released)]
+    if (!package_version(top_version, strict = FALSE) %in% released) {
+      section_end <- if (length(headings) > 1) headings[2] - 1 else length(news)
+      carried <- news[(headings[1] + 1):section_end]
+      entry <- c(entry, carried[carried != ""])
+      news <- news[-(headings[1]:section_end)]
+    }
+  }
+  c(paste("## Version", version), entry, "", news)
+}
