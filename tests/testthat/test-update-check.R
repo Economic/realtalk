@@ -61,3 +61,23 @@ test_that("versions compare as versions, including zero-padded ones", {
   )
   expect_match(message, "version 2026.3.11 is available")
 })
+
+test_that("a check recorded today skips later checks that day only", {
+  file <- tempfile()
+  expect_false(checked_today(as.Date("2026-11-20"), file))
+  record_check(as.Date("2026-11-20"), file)
+  expect_true(checked_today(as.Date("2026-11-20"), file))
+  expect_false(checked_today(as.Date("2026-11-21"), file))
+})
+
+test_that("an unreadable or unwritable record means the check runs", {
+  garbled <- tempfile()
+  writeLines("not a date", garbled)
+  expect_false(checked_today(as.Date("2026-11-20"), garbled))
+
+  # a folder where the file should be: writing fails quietly
+  blocked <- tempfile()
+  dir.create(blocked)
+  expect_silent(record_check(as.Date("2026-11-20"), blocked))
+  expect_false(checked_today(as.Date("2026-11-20"), blocked))
+})

@@ -14,6 +14,13 @@
     return()
   }
 
+  # At most once a day. The date is recorded before asking r-universe, so an
+  # offline session pays the timeout once a day, not every session.
+  if (checked_today(Sys.Date())) {
+    return()
+  }
+  record_check(Sys.Date())
+
   message <- update_message(
     latest = latest,
     installed = as.character(utils::packageVersion(pkgname)),
@@ -30,6 +37,33 @@ should_check_for_update <- function(
   renv_project = Sys.getenv("RENV_PROJECT")
 ) {
   is_interactive && !isFALSE(enabled) && renv_project == ""
+}
+
+# The date of the last check is kept in R's per-package cache folder. If it
+# can't be read or written, the check runs as if it hadn't run today.
+last_check_file <- function() {
+  file.path(tools::R_user_dir("realtalk", "cache"), "last-update-check")
+}
+
+checked_today <- function(today, file = last_check_file()) {
+  last <- tryCatch(
+    as.Date(readLines(file, n = 1, warn = FALSE)),
+    error = function(e) NA,
+    warning = function(w) NA
+  )
+  isTRUE(last == today)
+}
+
+record_check <- function(today, file = last_check_file()) {
+  tryCatch(
+    {
+      dir.create(dirname(file), recursive = TRUE, showWarnings = FALSE)
+      writeLines(format(today), file)
+    },
+    error = function(e) NULL,
+    warning = function(w) NULL
+  )
+  invisible()
 }
 
 # The year and month of the latest non-missing value

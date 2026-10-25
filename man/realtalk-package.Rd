@@ -14,10 +14,11 @@ Makes it easy to use US price index data like the CPI.
 
 When you load realtalk with \code{library(realtalk)} in an interactive session,
 it checks whether its data is two or more months behind. If so, and
-r-universe has a newer version, it says so and shows how to update. It says
-nothing otherwise, and never runs in non-interactive sessions or in renv
-projects, which pin package versions on purpose. Turn it off with
-\code{options(realtalk.update_check = FALSE)}.
+r-universe has a newer version, it says so and shows how to update. It
+checks at most once a day, recording the date in
+\code{tools::R_user_dir("realtalk", "cache")}. It says nothing otherwise, and
+never runs in non-interactive sessions or in renv projects, which pin package
+versions on purpose. Turn it off with \code{options(realtalk.update_check = FALSE)}.
 }
 
 \seealso{
