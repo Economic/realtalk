@@ -3,16 +3,19 @@
 # PR job of .github/workflows/draft-update.yml, in a checkout of the build's
 # commit with the build's files copied on top.
 #
-# One decision, comparing the fresh processed data with main's:
+# Compare the fresh processed data with main's:
 # - the same: main already has this data, so close any open draft, and stop
-# - different: force-push a new draft and open or update the PR. This happens
-#   even if the data equals the open draft's; the push cancels any approval.
+# - different: create or replace the draft with one bot commit
+# Automatic runs leave an existing draft and its approval alone when its data
+# and base commit match the new build. Manual runs deliberately replace it.
 #
-# Environment: GH_TOKEN, ACTOR (who pressed the button), RUN_URL.
+# Environment: GH_TOKEN, ACTOR (who pressed the button), RUN_URL,
+# AUTOMATIC (true for scheduled runs; defaults to false).
 set -euo pipefail
 
 branch="data-update"
 memo="reports/change_memo.md"
+automatic=${AUTOMATIC:-false}
 
 pr=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')
 
@@ -23,6 +26,13 @@ if git diff --quiet origin/main -- data-raw/processed; then
   else
     echo "No new data: the fresh data matches main."
   fi
+  exit 0
+fi
+
+if [ "$automatic" = "true" ] && [ -n "$pr" ] &&
+  [ "$(git rev-parse "origin/$branch^")" = "$(git rev-parse HEAD)" ] &&
+  git diff --quiet "origin/$branch" -- data-raw/processed; then
+  echo "The open draft already has this data and was built from this commit. Keeping it and its approval."
   exit 0
 fi
 
@@ -45,14 +55,22 @@ gh auth setup-git
 git push --quiet --force origin "$branch"
 
 body=$(mktemp)
+assignee=()
+if [ "$automatic" = "true" ]; then
+  drafted_by="Automatically drafted"
+  redrafted_by="Automatically redrafted"
+else
+  drafted_by="Drafted by $ACTOR"
+  redrafted_by="Redrafted by $ACTOR"
+  assignee=(--assignee "$ACTOR")
+fi
 {
-  echo "Drafted by $ACTOR ([run]($RUN_URL)). Merging publishes nothing; a maintainer publishes with \"Publish update\"."
+  echo "$drafted_by ([run]($RUN_URL)). Merging publishes nothing; a maintainer publishes with \"Publish update\"."
   echo
   echo "To publish: click \"Approve and run workflows\" so the check runs, have a maintainer approve the PR, then run \"Publish update\"."
   echo
   # Link the open reminder issue, if any, so publishing this draft closes it.
-  # It goes above the memo, which becomes the release notes. The Friday check
-  # closes the issue otherwise.
+  # It goes above the memo, which becomes the release notes.
   reminder=$(gh issue list --label new-data --state open --json number --jq '.[0].number // empty')
   if [ -n "$reminder" ]; then
     echo "Closes #$reminder"
@@ -67,9 +85,13 @@ body=$(mktemp)
 
 if [ -z "$pr" ]; then
   gh pr create --base main --head "$branch" --title "$title" \
-    --body-file "$body" --assignee "$ACTOR"
+    --body-file "$body" "${assignee[@]}"
 else
-  gh pr edit "$pr" --title "$title" --body-file "$body" --add-assignee "$ACTOR"
+  edit_assignee=()
+  if [ "$automatic" != "true" ]; then
+    edit_assignee=(--add-assignee "$ACTOR")
+  fi
+  gh pr edit "$pr" --title "$title" --body-file "$body" "${edit_assignee[@]}"
   # the comment notifies people following the PR that the draft changed
-  gh pr comment "$pr" --body "Redrafted by $ACTOR ([run]($RUN_URL)): $headline. Any approval was cancelled."
+  gh pr comment "$pr" --body "$redrafted_by ([run]($RUN_URL)): $headline. Any approval was cancelled."
 fi
