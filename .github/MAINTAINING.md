@@ -33,7 +33,7 @@ An automatic run leaves an existing PR and its approval alone when its processed
 - **The version** is the draft's date in Eastern time, for example `2026.11.13`, with a suffix such as `2026.11.13.1` if that version is already released.
 - **Pressing "Draft update" again** deliberately replaces the draft and cancels any approval, even if its data is unchanged. Use this to retry or rebuild immediately after a code fix reaches `main`. Automatic runs skip that replacement when both data and base commit are unchanged.
 - **Don't push to `data-update` by hand.** "Publish update" refuses a draft that isn't one commit by the bot. Fix problems in their own PR to `main`, then draft again.
-- **Dry runs:** the calendar, scheduled data, draft, and publish workflows have a `dry_run` box that reports the result without changing branches, issues, or releases. Dry runs can test calendar and drafting changes from a branch; real calendar and scheduled draft runs use `main`.
+- **Dry runs:** Calendar refresh, Scheduled data update, Draft update, Publish update, and Tag release have a `dry_run` box that reports the result without changing branches, issues, or releases. Dry runs can test calendar and drafting changes from a branch; real calendar and scheduled draft runs use `main`.
 
 ## Starting and repairing the calendar schedule
 

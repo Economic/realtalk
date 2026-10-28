@@ -1,7 +1,8 @@
 # Implementation plan: scheduled data drafts
 
 Date: 2026-10-28
-Status: implementation complete; final review and PR checks in progress.
+Status: implementation complete; PR #49 opened. Workflow startup verification
+remains for after merge.
 Issue: https://github.com/Economic/realtalk/issues/48
 Branch: `issue-48-scheduled-drafts`; one implementation PR to `main`, merged only
 after the maintainer says to merge. No tags or releases.
@@ -96,7 +97,8 @@ Both agency feeds can be downloaded locally using explicit User-Agent and
 Accept headers; no fallback source or GitHub probe workflow is needed.
 The planning checkpoint raised the old-data/no-op case. Implementation paused
 for the maintainer's decision, and the maintainer accepted that risk with no
-retry or notification mechanism.
+retry or notification mechanism. The decision was recorded on checkpoint job
+555, which was closed after the documentation update.
 
 ## Phase 2: implementation with subagents
 
@@ -179,5 +181,10 @@ the other components; both found no normal-path defects or design issues.
 - No remote calendar branch, scheduled data draft, tag, or release was created.
   Initialization and real scheduled workflow behavior remain post-merge checks.
 - GitHub `check` (run 40705916333) and `pkgdown` (run 40705916276) both passed
-  for the implementation commits. Final review and documentation commit checks
-  remain pending.
+  for the implementation commits. They passed again for the accepted-risk
+  clarification (`check`: 40706787176; `pkgdown`: 40706786840).
+- Per-commit reviews of the draft, calendar, and workflow implementation (557,
+  559, 561) passed. Final checkpoint: job 568. Its review results and the latest
+  GitHub checks are tracked on PR #49: https://github.com/Economic/realtalk/pull/49.
+- `roborev insights --branch issue-48-scheduled-drafts --since 7d` found no
+  failing reviews to analyze, so no review-guideline changes were needed.
