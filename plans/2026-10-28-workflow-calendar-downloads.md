@@ -1,7 +1,7 @@
 # Implementation plan: calendar downloads from GitHub Actions
 
 Date: 2026-10-28
-Status: implementation verified; final review pending.
+Status: implementation verified; awaiting maintainer review in PR #50.
 Branch: `fix-calendar-downloads`; prepare a PR to `main`, do not merge or publish
 without the maintainer's instruction.
 
@@ -78,4 +78,8 @@ initialized locally with 32 future events. The daily starter dry run passed
   contact, error source reporting, and preservation of the saved schedule.
   `actionlint` and `git diff --check` passed. No package or pipeline code changed.
 - Removed the temporary diagnostic workflow and documented the new secret in
-  the maintainer guide. Final checkpoint review and PR checks remain pending.
+  the maintainer guide. Checkpoint review 594 passed all four reviewers (code,
+  Claude code, design, security) with no findings. Implementation commit review
+  589 also passed.
+- PR: https://github.com/Economic/realtalk/pull/50. Its checks report the final
+  package and pkgdown verification. Await the maintainer's instruction to merge.
