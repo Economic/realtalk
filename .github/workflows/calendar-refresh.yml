@@ -1,0 +1,100 @@
+# Refreshes saved release dates; failure leaves the calendar branch unchanged.
+# Parsing runs read-only. The writer and notification jobs run no R.
+name: Calendar refresh
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+      timezone: America/New_York
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Download and validate calendars without saving or notifying
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: calendar-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Real runs only from main
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" != "true" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::A real calendar refresh runs only from main. Use a dry run to test another branch."
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download and validate release dates
+        run: python3 .github/scripts/release-calendar.py refresh --output "$RUNNER_TEMP/calendar/schedule.json"
+
+      - name: Show the proposed schedule
+        run: |
+          echo '### Refreshed release schedule' >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat "$RUNNER_TEMP/calendar/schedule.json" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: calendar
+          retention-days: 7
+          path: ${{ runner.temp }}/calendar/schedule.json
+
+  save:
+    needs: refresh
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: calendar
+          path: ${{ runner.temp }}/calendar
+
+      - name: Save only the schedule on the calendar branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: .github/scripts/update-calendar.sh "$RUNNER_TEMP/calendar/schedule.json"
+
+  notify:
+    needs: [refresh, save]
+    if: ${{ always() && !inputs.dry_run && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Notify on failure or close a previous warning after recovery
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUCCESS: ${{ needs.refresh.result == 'success' && needs.save.result == 'success' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: .github/scripts/calendar-refresh-notice.sh
