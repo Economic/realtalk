@@ -24,6 +24,9 @@ initialized locally with 32 future events. The daily starter dry run passed
   messages naming the failed URL. Keep the successful parsing and validation.
 - Remove the diagnostic workflow before opening the final PR. Verify the real
   Calendar refresh workflow with `dry_run=true` on the implementation branch.
+- Use the repository secret `BLS_DOWNLOAD_EMAIL` for the BLS calendar User-Agent,
+  passed only to the read-only download step. The user chose this secret after
+  the email User-Agent succeeded on the standard runner.
 - If a solution needs a different data source, proxy, persistent browser,
   runner architecture, or new credentials, stop and ask the maintainer. Do not
   silently add fallback chains or change the agreed scheduling design.

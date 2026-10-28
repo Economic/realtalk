@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -24,6 +25,34 @@ class ReleaseCalendarTests(unittest.TestCase):
         self.bls = (FIXTURES / "bls.ics").read_text()
         self.bea = (FIXTURES / "bea.json").read_text()
         self.schedule = calendar.build_schedule(self.bls, self.bea, NOW)
+
+    def test_bls_download_uses_contact_email_and_decodes_calendar(self):
+        with patch.dict(os.environ, {"BLS_DOWNLOAD_EMAIL": "contact@example.org"}), patch.object(calendar, "urlopen") as fetch:
+            fetch.return_value.__enter__.return_value.read.return_value = b"\xef\xbb\xbfBEGIN:VCALENDAR"
+            self.assertEqual(calendar.download(calendar.BLS_URL), "BEGIN:VCALENDAR")
+            request = fetch.call_args.args[0]
+            self.assertIn("contact@example.org", request.get_header("User-agent"))
+            self.assertEqual(request.full_url, calendar.BLS_URL)
+
+    def test_missing_bls_contact_fails_before_network_request(self):
+        for email in ("", "   "):
+            with self.subTest(email=email), patch.dict(os.environ, {"BLS_DOWNLOAD_EMAIL": email}), patch.object(calendar, "urlopen") as fetch:
+                with self.assertRaisesRegex(ValueError, "BLS_DOWNLOAD_EMAIL"):
+                    calendar.download(calendar.BLS_URL)
+                fetch.assert_not_called()
+
+    def test_bea_download_does_not_send_bls_contact(self):
+        with patch.dict(os.environ, {"BLS_DOWNLOAD_EMAIL": "contact@example.org"}), patch.object(calendar, "urlopen") as fetch:
+            fetch.return_value.__enter__.return_value.read.return_value = b"{}"
+            self.assertEqual(calendar.download(calendar.BEA_URL), "{}")
+            self.assertNotIn("contact@example.org", str(fetch.call_args.args[0].header_items()))
+
+    def test_download_failure_names_the_failed_source(self):
+        with patch.dict(os.environ, {"BLS_DOWNLOAD_EMAIL": "contact@example.org"}), patch.object(calendar, "urlopen", side_effect=OSError("HTTP Error 403")):
+            with self.assertRaises(OSError) as failure:
+                calendar.download(calendar.BLS_URL)
+            self.assertIn(calendar.BLS_URL, str(failure.exception))
+            self.assertIn("403", str(failure.exception))
 
     def test_official_formats_filter_past_unrelated_cancelled_and_duplicate_events(self):
         events = self.schedule["events"]
