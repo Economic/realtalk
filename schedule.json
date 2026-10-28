@@ -1,0 +1,165 @@
+{
+  "refreshed_at": "2026-10-28T15:07:15.274061+00:00",
+  "events": [
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2026-10-29T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2026-10-29T12:30:00+00:00"
+    },
+    {
+      "source": "bls",
+      "release": "Consumer Price Index",
+      "at": "2026-11-10T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2026-11-25T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2026-11-25T13:30:00+00:00"
+    },
+    {
+      "source": "bls",
+      "release": "Consumer Price Index",
+      "at": "2026-12-10T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2026-12-23T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2026-12-23T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-01-28T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-01-28T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-02-25T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-02-25T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-03-31T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-03-31T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-04-29T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-04-29T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-05-27T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-05-27T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-06-25T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-06-25T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-07-29T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-07-29T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-08-25T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-08-25T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-09-30T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-09-30T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-10-28T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-10-28T12:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-11-24T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-11-24T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Gross Domestic Product",
+      "at": "2027-12-22T13:30:00+00:00"
+    },
+    {
+      "source": "bea",
+      "release": "Personal Income and Outlays",
+      "at": "2027-12-22T13:30:00+00:00"
+    }
+  ]
+}
