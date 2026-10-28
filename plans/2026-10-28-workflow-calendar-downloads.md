@@ -1,7 +1,7 @@
 # Implementation plan: calendar downloads from GitHub Actions
 
 Date: 2026-10-28
-Status: investigating.
+Status: implementation verified; final review pending.
 Branch: `fix-calendar-downloads`; prepare a PR to `main`, do not merge or publish
 without the maintainer's instruction.
 
@@ -67,5 +67,15 @@ initialized locally with 32 future events. The daily starter dry run passed
 - No alternative runner is needed for this result. The uncommitted alternative
   runner probe was saved to `/tmp/realtalk-probe-before-email.patch` before
   narrowing the probe to standard Ubuntu for this comparison.
-- Production downloader changes and the real Calendar refresh dry run remain
-  pending; this establishes a successful transport for the next phase.
+- Production downloader now reads `BLS_DOWNLOAD_EMAIL` for BLS only, reports a
+  missing contact before requesting the feed, and names the URL on download
+  failure. The user configured the repository secret; the current GitHub token
+  cannot manage secrets (HTTP 403).
+- Real Calendar refresh dry run (40719025321, commit `f57aa25`) passed using the
+  secret and validated 32 upcoming events: 2 CPI, 15 GDP, and 15 Personal Income
+  and Outlays. Save and notification jobs were skipped as intended.
+- All 32 offline automation tests passed, including contact headers, a missing
+  contact, error source reporting, and preservation of the saved schedule.
+  `actionlint` and `git diff --check` passed. No package or pipeline code changed.
+- Removed the temporary diagnostic workflow and documented the new secret in
+  the maintainer guide. Final checkpoint review and PR checks remain pending.
