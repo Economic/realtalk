@@ -1,7 +1,7 @@
 # Implementation plan: scheduled data drafts
 
 Date: 2026-10-28
-Status: design review pending; implementation not started.
+Status: implementation complete; final review and PR checks in progress.
 Issue: https://github.com/Economic/realtalk/issues/48
 Branch: `issue-48-scheduled-drafts`; one implementation PR to `main`, merged only
 after the maintainer says to merge. No tags or releases.
@@ -85,7 +85,10 @@ and retain the manual Draft update button and all publish gates.
 
 ### Results
 
-Pending.
+Design panel job 550 passed with no findings. The plan commit's review (548)
+also passed. Subagents inspected the proposed interfaces before editing.
+Both agency feeds can be downloaded locally using explicit User-Agent and
+Accept headers; no fallback source or GitHub probe workflow is needed.
 
 ## Phase 2: implementation with subagents
 
@@ -110,9 +113,26 @@ Delegate separate file ownership, then inspect and integrate their work:
    check, and updates `.github/MAINTAINING.md` and `AGENTS.md`. Workflow-only
    changes need no package version bump or release.
 
+File organization refinement: keep New data check manual-only, and put the
+daily gate in `scheduled-data-update.yml`. Separate workflows avoid conditional
+reminder-versus-drafting behavior while keeping the agreed schedule and buttons.
+
 ### Results
 
-Pending.
+Three implementation subagents completed the calendar utility, draft behavior,
+and workflow integration with separate file ownership. The parent inspected
+all changes and reran their tests. Calendar and draft agents cross-reviewed
+the other components; both found no normal-path defects or design issues.
+
+- `release-calendar.py` uses Python's standard library and the two official
+  feeds; the saved file is validated before replacement.
+- `calendar-refresh.yml` saves dates in a separate job and reports refresh
+  failures through one rolling issue mentioning the maintainers.
+- `scheduled-data-update.yml` calls the reusable Draft update workflow; the
+  previous reminder remains manual-only.
+- Automatic unchanged drafts preserve their commit, PR text, and approval;
+  manual runs retain deliberate refresh behavior.
+- Documentation describes initialization, accepted risks, and manual recovery.
 
 ## Phase 3: verification and PR
 
@@ -138,4 +158,16 @@ Pending.
 
 ### Results
 
-Pending.
+- Offline automation tests: **28 passed**, including real local git branch and
+  draft history tests and a stand-in GitHub CLI for notification/PR writes.
+- Existing package tests: **90 expectations passed**; pipeline function tests:
+  **48 expectations passed**.
+- actionlint **1.7.12**, shell syntax checks, and `git diff --check` passed.
+  The downloaded actionlint binary was checked against its release checksum.
+- Live read-only calendar refresh to `/tmp`: **32 upcoming events**, including
+  CPI through December 10, 2026 and BEA releases through December 2027.
+- No `tar_make()` was run: no pipeline code changed, and no data refresh is
+  needed to verify these workflow changes. Committed data is unchanged.
+- No remote calendar branch, scheduled data draft, tag, or release was created.
+  Initialization and real scheduled workflow behavior remain post-merge checks.
+- Required final checkpoint review and PR checks: pending.

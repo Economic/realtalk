@@ -8,28 +8,38 @@
 
 ## Who does what
 
-- **Drafters:** anyone with Write access. They press "Draft update" and start the checks on its PR.
+- **Drafters:** automation prepares data PRs on release days. Anyone with Write access can also press "Draft update" and start the checks on its PR.
 - **Maintainers:** the `realtalk-maintainers` team, with the Maintain role. Only their approval lets a PR merge, and only they can press "Publish update" and "Tag release".
 
 ## A data update
 
-Every Friday morning, the **New data check** looks for BLS or BEA data that isn't in a draft yet. When it finds some, it opens an issue labeled `new-data` and mentions the maintainers. You don't have to wait for it: when you know new data is out, start at step 1.
+Every Monday at **5:17 a.m. Eastern**, **Calendar refresh** downloads the BLS and BEA calendars and saves upcoming CPI, Personal Income and Outlays, and GDP release times in `schedule.json` on the separate `calendar` branch. It replaces that file only after both calendars have been read and validated. A failed refresh notifies maintainers and keeps the previous schedule.
+
+Every day at **10:17 a.m. Eastern**, **Scheduled data update** reads that saved schedule. On release days it runs **Draft update**, which fetches all sources, builds and checks the package, then opens or refreshes the data PR. It also rebuilds an existing data PR if `main` changed since that draft was built. Times follow Eastern daylight saving changes; GitHub may start a scheduled run late.
+
+An automatic run leaves an existing PR and its approval alone when its processed data and base commit are unchanged. New values or a changed base require a new draft and review. Publishing always requires a maintainer. The manual path remains available:
 
 | # | Who | Where | What happens |
 |---|---|---|---|
-| 1 | Anyone with Write access | Actions → **Draft update** → Run workflow | Fetches the data, rebuilds, checks it against FRED, sets the version and the `NEWS.md` entry, runs R CMD check, and opens a PR from the `data-update` branch with a memo of what changed. Nothing is published. If nothing is new, it says so and stops. |
+| 1 | Automation, or anyone with Write access | Actions → **Draft update** → Run workflow | Fetches the data, rebuilds, checks it against FRED, sets the version and the `NEWS.md` entry, runs R CMD check, and opens a PR from the `data-update` branch with a memo of what changed. Nothing is published. If the data matches `main`, it stops and closes any old data PR. |
 | 2 | Anyone with Write access | The PR → **Approve and run workflows** | Starts the PR's checks, which GitHub holds because a bot opened the PR. |
 | 3 | A maintainer | The PR → Files changed → **Review changes** → **Approve** | The sign-off. Read the memo first: coverage, revisions, unexpected revisions, the FRED comparison, and stale inputs. |
 | 4 | A maintainer | Actions → **Publish update** → Run workflow | Merges the PR, checks the merge commit, tags it, and creates the release, which publishes. Then it deploys the site and waits for r-universe to serve the new version. |
 
-If a reminder issue is open, the draft PR's description says `Closes #N`, so publishing the draft closes the issue. Otherwise the next Friday check closes it once the draft or `main` has the newest data.
+**New data check** remains available as a manual diagnostic: it compares fresh snapshots with the open draft or `main` and manages the `new-data` reminder issue. If a reminder issue is open, the draft PR's description says `Closes #N`, so publishing the draft closes the issue. Running New data check also closes a reminder once the draft or `main` contains the newest data.
 
 **Notes:**
 
 - **The version** is the draft's date in Eastern time, for example `2026.11.13`, with a suffix such as `2026.11.13.1` if that version is already released.
-- **Running "Draft update" again** replaces the draft with the newest data and cancels any approval. Do that if more data comes out before you publish, or if something changed on `main`.
+- **Pressing "Draft update" again** deliberately replaces the draft and cancels any approval, even if its data is unchanged. Use this to retry or rebuild immediately after a code fix reaches `main`. Automatic runs skip that replacement when both data and base commit are unchanged.
 - **Don't push to `data-update` by hand.** "Publish update" refuses a draft that isn't one commit by the bot. Fix problems in their own PR to `main`, then draft again.
-- **Dry runs:** "Draft update", "Publish update", and "Tag release" each have a `dry_run` box that runs the checks and creates nothing.
+- **Dry runs:** the calendar, scheduled data, draft, and publish workflows have a `dry_run` box that reports the result without changing branches, issues, or releases. Dry runs can test calendar and drafting changes from a branch; real calendar and scheduled draft runs use `main`.
+
+## Starting and repairing the calendar schedule
+
+After first merging these workflows, run **Calendar refresh** with `dry_run` checked, inspect the saved dates in its summary, then run it without `dry_run` to create the `calendar` branch. The daily job needs that first saved schedule. Keep the branch: it is the persistent copy used when a later calendar download fails.
+
+Calendar changes announced after Monday are picked up on the following Monday. A release changing within its own week is an accepted risk; run Calendar refresh manually when necessary. If an agency API or FRED is not ready at 10:17, retry with Draft update. There is no automatic retry schedule.
 
 ## Other changes
 
@@ -43,6 +53,8 @@ GitHub doesn't count a PR author's own approval, so maintainers approve each oth
 
 ## When something fails
 
+- **"Calendar refresh" fails:** maintainers are notified and the previous saved schedule remains available. Inspect the failed run, then rerun Calendar refresh. The daily job continues using the old dates.
+- **"Scheduled data update" has no usable schedule:** bootstrap or rerun Calendar refresh. A missing, malformed, or exhausted calendar reports a failure. Draft update remains available manually.
 - **"Draft update" fails at the fetch:** BLS or BEA sometimes refuses a request for a moment. BEA's refusals currently show up as "Column `time_period` not found" (Economic/epidatatools#22). Run it again.
 - **"Draft update" fails the FRED comparison:** a value differs from FRED. The error names the series and month. Investigate before drafting again.
 - **"Publish update" refuses:** its message says why, for example no approval yet, the check hasn't passed, or `main` changed since the draft (draft again).
