@@ -32,9 +32,11 @@ Guidance for coding agents working in this repository.
 `.github/MAINTAINING.md` is the maintainer guide. In brief:
 
 - **`check.yml`** (`check`, the required check on every PR): R CMD check with the consistency tests, `data-raw/tests/run.R`, a stale-README check, and `data-raw/check_revisions.R`. No secrets. "Publish update" and "Tag release" call it on the commit they release.
-- **`draft-update.yml`** ("Draft update"): the build job (API keys, read-only) runs `tar_make()`, `data-raw/prepare_update.R`, the README, R CMD check, and the pipeline tests. The PR job (write, no R) copies allowlisted files with `copy-draft-files.sh` and runs `update-draft-pr.sh`.
+- **`draft-update.yml`** ("Draft update"): manual button and reusable automatic build. The build job (API keys, read-only) runs `tar_make()`, `data-raw/prepare_update.R`, the README, R CMD check, and the pipeline tests. The PR job (write, no R) copies allowlisted files with `copy-draft-files.sh` and runs `update-draft-pr.sh`. Automatic runs preserve the PR and approval when processed values and the build's base commit are unchanged; manual runs deliberately refresh it.
 - **`publish-update.yml`** ("Publish update") and **`tag-release.yml`** ("Tag release"): maintainers only. Their checks are in `publish-plan.sh`, `tag-release-plan.sh`, and `release-guards.sh`; tagging and the release are in `tag-release.sh`; then pkgdown and `poll-r-universe.sh`.
-- **`new-data-check.yml`** (Fridays): `data-raw/check_new_data.R` compares fresh snapshots with the open draft or `main`; `update-reminder-issue.sh` manages the `new-data` issue.
+- **`calendar-refresh.yml`** (Mondays, 05:17 Eastern): downloads BLS and BEA release calendars, then saves validated `schedule.json` on the separate `calendar` branch. Failure notifies maintainers and retains the saved schedule. The branch stores data only; never execute code from it.
+- **`scheduled-data-update.yml`** (daily, 10:17 Eastern): reads the saved schedule and calls Draft update automatically on release days, or when an existing data PR needs rebuilding after `main` changed. No automatic publishing.
+- **`new-data-check.yml`** (manual): `data-raw/check_new_data.R` compares fresh snapshots with the open draft or `main`; `update-reminder-issue.sh` manages the `new-data` issue.
 - **`pkgdown.yaml`**: builds on PRs; deploys only for a release or a manual run with a tag.
 
 Keep the split between jobs that run R or package code (read-only) and jobs that can write (no R). Never run a workflow that publishes without being asked; dry runs are fine.
@@ -53,6 +55,9 @@ Rscript -e 'targets::tar_make()'
 
 # Tests for the pipeline's functions in data-raw/R (no network)
 Rscript data-raw/tests/run.R
+
+# Offline calendar, branch writer, and draft automation tests
+python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
 
 # The PR check's revision check, and the version and NEWS helper
 Rscript data-raw/check_revisions.R

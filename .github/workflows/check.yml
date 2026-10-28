@@ -56,6 +56,9 @@ jobs:
       - name: Test the pipeline's functions
         run: Rscript data-raw/tests/run.R
 
+      - name: Test the calendar and draft automation offline
+        run: python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
+
       - name: Fail if README.md is stale
         run: |
           Rscript -e 'devtools::build_readme()'

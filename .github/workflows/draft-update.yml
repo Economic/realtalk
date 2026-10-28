@@ -1,5 +1,5 @@
 # "Draft update" (Phase 4 of plans/2026-10-23-implementation-data-update-workflows.md).
-# A button: fetches fresh data, rebuilds, verifies against FRED, sets the
+# A button or scheduled call: fetches fresh data, rebuilds, verifies against FRED, sets the
 # version and NEWS entry, runs the checks, and opens or updates the draft PR on
 # the `data-update` branch. It publishes nothing; "Publish update" does that.
 #
@@ -15,6 +15,23 @@ on:
         description: Build and write the memo to the run summary; don't touch the draft PR
         type: boolean
         default: false
+  workflow_call:
+    inputs:
+      dry_run:
+        description: Build and write the memo without changing the draft PR
+        type: boolean
+        default: false
+      automatic:
+        description: Preserve an existing draft when its data and base are unchanged
+        type: boolean
+        default: false
+    secrets:
+      BLS_API_KEY:
+        required: true
+      BEA_API_KEY:
+        required: true
+      FRED_API_KEY:
+        required: true
 
 permissions: {}
 
@@ -133,5 +150,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           ACTOR: ${{ github.actor }}
+          AUTOMATIC: ${{ inputs.automatic || false }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: .github/scripts/update-draft-pr.sh
