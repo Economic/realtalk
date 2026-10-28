@@ -54,4 +54,15 @@ initialized locally with 32 future events. The daily starter dry run passed
 
 ## Results
 
-Pending investigation.
+- Initial Ubuntu runner probe (40716618214) received BLS HTTP 403 across Python,
+  curl, browser headers, and URL variants. BEA returned HTTP 200.
+- Email User-Agent probe (40718667365, commit `c646e10`) compared the same Python
+  requests on `ubuntu-24.04`, keeping `Accept: */*` identical. BLS returned HTTP
+  403 with `User-Agent: Mozilla/5.0` and HTTP 200 (`text/calendar`, 80,672 bytes)
+  with `User-Agent: realtalk calendar bzipperer@epi.org`. BEA returned HTTP 200
+  with both headers. The user supplied and requested testing this email header.
+- No alternative runner is needed for this result. The uncommitted alternative
+  runner probe was saved to `/tmp/realtalk-probe-before-email.patch` before
+  narrowing the probe to standard Ubuntu for this comparison.
+- Production downloader changes and the real Calendar refresh dry run remain
+  pending; this establishes a successful transport for the next phase.
