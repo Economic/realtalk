@@ -61,6 +61,11 @@ and retain the manual Draft update button and all publish gates.
 - The agency APIs or FRED may not be ready at 10:17. A failed draft leaves the
   existing PR intact; rerun Draft update manually. No additional automatic
   retry cadence is included in this change.
+- An agency API could rarely return old data at 10:17 instead of failing.
+  That run can succeed without creating or changing a draft; there is no
+  additional notification or next-day attempt. The maintainer explicitly
+  accepted this on 2026-10-28: at that time, new data or a failure is overwhelmingly
+  more likely. Use Draft update manually if necessary.
 - A failed Monday refresh may keep old dates for several weeks; it must visibly
   notify maintainers. Save the available future horizon rather than only a week.
   If that horizon runs out, report a failure and use the manual buttons.
@@ -89,6 +94,9 @@ Design panel job 550 passed with no findings. The plan commit's review (548)
 also passed. Subagents inspected the proposed interfaces before editing.
 Both agency feeds can be downloaded locally using explicit User-Agent and
 Accept headers; no fallback source or GitHub probe workflow is needed.
+The planning checkpoint raised the old-data/no-op case. Implementation paused
+for the maintainer's decision, and the maintainer accepted that risk with no
+retry or notification mechanism.
 
 ## Phase 2: implementation with subagents
 
@@ -170,4 +178,6 @@ the other components; both found no normal-path defects or design issues.
   needed to verify these workflow changes. Committed data is unchanged.
 - No remote calendar branch, scheduled data draft, tag, or release was created.
   Initialization and real scheduled workflow behavior remain post-merge checks.
-- Required final checkpoint review and PR checks: pending.
+- GitHub `check` (run 40705916333) and `pkgdown` (run 40705916276) both passed
+  for the implementation commits. Final review and documentation commit checks
+  remain pending.

@@ -41,6 +41,8 @@ After first merging these workflows, run **Calendar refresh** with `dry_run` che
 
 Calendar changes announced after Monday are picked up on the following Monday. A release changing within its own week is an accepted risk; run Calendar refresh manually when necessary. If an agency API or FRED is not ready at 10:17, retry with Draft update. There is no automatic retry schedule.
 
+Rarely, an agency API may still return old data at 10:17. That run can succeed without creating or changing a draft, and it sends no additional notification. This is an accepted risk; use Draft update manually if the expected data is missing.
+
 ## Other changes
 
 Code fixes and updates to the hand-maintained files in `data-raw/raw/static/` (CPI-U-RS, CPI-U-X1, the minimum wage) go through an ordinary PR:
