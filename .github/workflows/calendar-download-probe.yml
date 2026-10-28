@@ -1,0 +1,67 @@
+name: Calendar download probe
+
+on:
+  push:
+    branches: [fix-calendar-downloads]
+    paths: [.github/workflows/calendar-download-probe.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Compare public calendar downloads
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+          import subprocess
+          import tempfile
+          from urllib.error import HTTPError
+          from urllib.request import Request, urlopen
+
+          urls = {
+              "BLS": "https://www.bls.gov/schedule/news_release/bls.ics",
+              "BEA": "https://apps.bea.gov/API/signup/release_dates.json",
+          }
+          basic = {"User-Agent": "Mozilla/5.0", "Accept": "*/*"}
+          browser = {
+              "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+              "Accept": "text/calendar,application/json,text/plain,*/*",
+              "Accept-Language": "en-US,en;q=0.9",
+          }
+          for agency, url in urls.items():
+              for label, headers in [("urllib basic", basic), ("urllib browser", browser)]:
+                  try:
+                      response = urlopen(Request(url, headers=headers), timeout=25)
+                  except HTTPError as error:
+                      response = error
+                  except Exception as error:
+                      print(json.dumps({"agency": agency, "client": label, "error": str(error)}))
+                      continue
+                  with response:
+                      body = response.read()
+                      print(json.dumps({"agency": agency, "client": label, "url": response.url,
+                          "status": response.code, "type": response.headers.get("Content-Type"),
+                          "bytes": len(body), "sample": body[:250].decode("utf-8", errors="replace")}))
+              for label, flags in [("curl basic", []), ("curl http1", ["--http1.1"]),
+                                   ("curl browser", ["-A", browser["User-Agent"], "-H", "Accept-Language: en-US,en;q=0.9"])]:
+                  with tempfile.TemporaryDirectory() as directory:
+                      output = Path(directory) / "body"
+                      result = subprocess.run(["curl", "-sS", "-L", "--max-time", "25",
+                          "-A", basic["User-Agent"], "-H", "Accept: */*", *flags,
+                          "-o", str(output), "-w", "%{http_code} %{content_type}", url],
+                          capture_output=True, text=True)
+                      body = output.read_bytes() if output.exists() else b""
+                      print(json.dumps({"agency": agency, "client": label, "result": result.stdout,
+                          "exit": result.returncode, "error": result.stderr[:250], "bytes": len(body),
+                          "sample": body[:250].decode("utf-8", errors="replace")}))
+          for url in ["https://www.bls.gov/schedule/news_release/bls.ics?download=1",
+                      "https://bls.gov/schedule/news_release/bls.ics"]:
+              result = subprocess.run(["curl", "-sS", "-L", "--max-time", "25", "-A", basic["User-Agent"],
+                  "-H", "Accept: */*", "-o", "/dev/null", "-w", "%{http_code} %{url_effective}", url],
+                  capture_output=True, text=True)
+              print(json.dumps({"url": url, "client": "curl URL check", "result": result.stdout, "error": result.stderr[:250]}))
