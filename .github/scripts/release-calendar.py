@@ -4,6 +4,7 @@
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -22,10 +23,19 @@ RELEASES = {
 
 
 def download(url):
-    # BLS rejects the default urllib request without these headers.
-    request = Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "*/*"})
-    with urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8-sig")
+    headers = {"User-Agent": "Mozilla/5.0", "Accept": "*/*"}
+    if url == BLS_URL:
+        email = os.environ.get("BLS_DOWNLOAD_EMAIL", "").strip()
+        if not email:
+            raise ValueError("Set BLS_DOWNLOAD_EMAIL to a contact email for BLS calendar downloads.")
+        # The browser User-Agent returns 403 on GitHub; a contact email succeeds.
+        headers["User-Agent"] = f"realtalk calendar {email}"
+    request = Request(url, headers=headers)
+    try:
+        with urlopen(request, timeout=30) as response:
+            return response.read().decode("utf-8-sig")
+    except OSError as error:
+        raise OSError(f"Could not download {url}: {error}") from error
 
 
 def parse_timestamp(value):

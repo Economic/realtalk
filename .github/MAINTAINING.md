@@ -37,6 +37,8 @@ An automatic run leaves an existing PR and its approval alone when its processed
 
 ## Starting and repairing the calendar schedule
 
+Set the repository secret `BLS_DOWNLOAD_EMAIL` to a contact email before running Calendar refresh. The BLS calendar request uses `User-Agent: realtalk calendar <email>`; local refreshes need the same environment variable.
+
 After first merging these workflows, run **Calendar refresh** with `dry_run` checked, inspect the saved dates in its summary, then run it without `dry_run` to create the `calendar` branch. The daily job needs that first saved schedule. Keep the branch: it is the persistent copy used when a later calendar download fails.
 
 Calendar changes announced after Monday are picked up on the following Monday. A release changing within its own week is an accepted risk; run Calendar refresh manually when necessary. If an agency API or FRED is not ready at 10:17, retry with Draft update. There is no automatic retry schedule.
@@ -72,5 +74,5 @@ These live in GitHub, not in the repository:
   - **"protect main"**: pull requests required; one approval from a code owner; approvals dismissed by new commits; merge commits only; no force pushes or deletion. Admins can bypass it for pull requests.
   - **"require check on main"**: the `check` workflow must pass. Nobody can bypass it.
 - **`.github/CODEOWNERS`** names `@economic/realtalk-maintainers`. The team must be visible and have the Maintain role on realtalk, or GitHub ignores the line.
-- **Repository secrets:** `BLS_API_KEY`, `BEA_API_KEY`, and `FRED_API_KEY`.
+- **Repository secrets:** `BLS_API_KEY`, `BEA_API_KEY`, `FRED_API_KEY`, and `BLS_DOWNLOAD_EMAIL` (calendar download contact email).
 - **r-universe:** realtalk's entry in `economic/economic.r-universe.dev`'s `packages.json` has `"branch": "*release"`.

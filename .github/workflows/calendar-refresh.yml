@@ -40,6 +40,8 @@ jobs:
           persist-credentials: false
 
       - name: Download and validate release dates
+        env:
+          BLS_DOWNLOAD_EMAIL: ${{ secrets.BLS_DOWNLOAD_EMAIL }}
         run: python3 .github/scripts/release-calendar.py refresh --output "$RUNNER_TEMP/calendar/schedule.json"
 
       - name: Show the proposed schedule
