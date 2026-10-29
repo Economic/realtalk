@@ -64,6 +64,6 @@ available_price_indexes
 #> 16 CPI-U-X1          annual    NA       1967     1982     cpi_u_x1_annual       
 #> 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  
 #> 18 PCE               annual    NA       1929     2025     pce_annual            
-#> 19 PCE               monthly   SA       Jan 1959 Aug 2026 pce_monthly_sa        
-#> 20 PCE               quarterly SA       1947q1   2026q2   pce_quarterly_sa      
+#> 19 PCE               monthly   SA       Jan 1959 Sep 2026 pce_monthly_sa        
+#> 20 PCE               quarterly SA       1947q1   2026q3   pce_quarterly_sa      
 ```

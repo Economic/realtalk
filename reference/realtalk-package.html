@@ -9,7 +9,7 @@ Makes it easy to use US price index data like the CPI."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">realtalk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2026.10.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2026.10.29</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,18 @@ Makes it easy to use US price index data like the CPI."><meta property="og:image
 
 
     <div class="section level2">
+    <h2 id="checking-for-updates">Checking for updates<a class="anchor" aria-label="anchor" href="#checking-for-updates"></a></h2>
+
+
+<p>When you load realtalk with <code><a href="https://economic.github.io/realtalk/">library(realtalk)</a></code> in an interactive session,
+it checks whether its data is two or more months behind. If so, and
+r-universe has a newer version, it says so and shows how to update. It
+checks at most once a day, recording the date in
+<code>tools::R_user_dir("realtalk", "cache")</code>. It says nothing otherwise, and
+never runs in non-interactive sessions or in renv projects, which pin package
+versions on purpose. Turn it off with <code>options(realtalk.update_check = FALSE)</code>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://economic.github.io/realtalk/">https://economic.github.io/realtalk/</a></p></li>
 <li><p><a href="https://github.com/economic/realtalk" class="external-link">https://github.com/economic/realtalk</a></p></li>
@@ -48,7 +60,8 @@ Makes it easy to use US price index data like the CPI."><meta property="og:image
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p><strong>Maintainer</strong>: Ben Zipperer <a href="mailto:bzipperer@epi.org">bzipperer@epi.org</a></p>
-<p>Other contributors:</p><ul><li><p>Economic Policy Institute [copyright holder, funder]</p></li>
+<p>Authors:</p><ul><li><p>Ben Zipperer <a href="mailto:bzipperer@epi.org">bzipperer@epi.org</a></p></li>
+</ul><p>Other contributors:</p><ul><li><p>Economic Policy Institute [copyright holder, funder]</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

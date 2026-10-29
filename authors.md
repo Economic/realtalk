@@ -14,12 +14,12 @@ Source:
 [`DESCRIPTION`](https://github.com/economic/realtalk/blob/main/DESCRIPTION)
 
 Zipperer B (2026). *realtalk: Price index data for the US economy*. R
-package version 2026.10.14, <https://economic.github.io/realtalk/>.
+package version 2026.10.29, <https://economic.github.io/realtalk/>.
 
     @Manual{,
       title = {realtalk: Price index data for the US economy},
       author = {Ben Zipperer},
       year = {2026},
-      note = {R package version 2026.10.14},
+      note = {R package version 2026.10.29},
       url = {https://economic.github.io/realtalk/},
     }
