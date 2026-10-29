@@ -61,8 +61,8 @@ available_price_indexes
 #> 16 CPI-U-X1          annual    <NA>     1967     1982     cpi_u_x1_annual       
 #> 17 CPI-U-X1          monthly   NSA      Jan 1967 Dec 1982 cpi_u_x1_monthly_nsa  
 #> 18 PCE               annual    <NA>     1929     2025     pce_annual            
-#> 19 PCE               monthly   SA       Jan 1959 Aug 2026 pce_monthly_sa        
-#> 20 PCE               quarterly SA       1947q1   2026q2   pce_quarterly_sa
+#> 19 PCE               monthly   SA       Jan 1959 Sep 2026 pce_monthly_sa        
+#> 20 PCE               quarterly SA       1947q1   2026q3   pce_quarterly_sa
 ```
 
 The `package_data_name` column contains the internal name of each
@@ -70,7 +70,7 @@ dataset:
 
 ``` r
 pce_monthly_sa
-#> # A tibble: 812 × 3
+#> # A tibble: 813 × 3
 #>     year month   pce
 #>    <int> <int> <dbl>
 #>  1  1959     1  15.2
@@ -83,14 +83,14 @@ pce_monthly_sa
 #>  8  1959     8  15.3
 #>  9  1959     9  15.4
 #> 10  1959    10  15.4
-#> # ℹ 802 more rows
+#> # ℹ 803 more rows
 ```
 
 You can also use `get_price_index()`:
 
 ``` r
 get_price_index("PCE", "monthly", "SA")
-#> # A tibble: 812 × 3
+#> # A tibble: 813 × 3
 #>     year month   pce
 #>    <int> <int> <dbl>
 #>  1  1959     1  15.2
@@ -103,7 +103,7 @@ get_price_index("PCE", "monthly", "SA")
 #>  8  1959     8  15.3
 #>  9  1959     9  15.4
 #> 10  1959    10  15.4
-#> # ℹ 802 more rows
+#> # ℹ 803 more rows
 ```
 
 ## Installation
