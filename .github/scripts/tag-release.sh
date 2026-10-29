@@ -41,7 +41,8 @@ if [ "$DRY_RUN" = "true" ]; then
   echo "Dry run: would release $tag on ${TARGET:0:7}."
 else
   # The tag, through the API, on the target commit
-  existing=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" --jq .object.sha 2>/dev/null || true)
+  # gh writes the error JSON to stdout for a missing tag; discard it on failure.
+  existing=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" --jq .object.sha 2>/dev/null) || existing=""
   if [ -z "$existing" ]; then
     gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/$tag" -f sha="$TARGET" > /dev/null
     echo "Created the tag $tag on ${TARGET:0:7}."
