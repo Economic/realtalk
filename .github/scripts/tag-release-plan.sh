@@ -18,8 +18,9 @@ else
 fi
 
 # Every change reaches main as a merge, so a commit to release must be on
-# main's first-parent history, never a commit inside a PR
-git rev-list --first-parent origin/main | grep -qx "$target" ||
+# main's first-parent history, never a commit inside a PR. Read all of git's
+# output: grep -q can close the pipe early and make git fail under pipefail.
+git rev-list --first-parent origin/main | grep -x "$target" > /dev/null ||
   fail "${target:0:7} isn't on main's first-parent history."
 
 version=$(git show "$target:DESCRIPTION" | sed -n 's/^Version: *//p')
