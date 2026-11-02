@@ -1,16 +1,6 @@
 {
-  "refreshed_at": "2026-10-28T15:50:00.268810+00:00",
+  "refreshed_at": "2026-11-02T10:20:20.951256+00:00",
   "events": [
-    {
-      "source": "bea",
-      "release": "Gross Domestic Product",
-      "at": "2026-10-29T12:30:00+00:00"
-    },
-    {
-      "source": "bea",
-      "release": "Personal Income and Outlays",
-      "at": "2026-10-29T12:30:00+00:00"
-    },
     {
       "source": "bls",
       "release": "Consumer Price Index",
