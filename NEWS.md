@@ -1,3 +1,6 @@
+## Version 2026.11.10
+* update CPI-based data through October 2026
+
 ## Version 2026.10.29
 * update PCE through September 2026
 * `library(realtalk)` now says when the data is two or more months old and a newer version is available on r-universe, at most once a day. Turn this off with `options(realtalk.update_check = FALSE)`.
