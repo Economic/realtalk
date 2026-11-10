@@ -81,7 +81,7 @@ monthly series.
 
 ``` r
 cpi_u_monthly_nsa
-#> # A tibble: 1,077 × 3
+#> # A tibble: 1,078 × 3
 #>     year month cpi_u
 #>    <dbl> <dbl> <dbl>
 #>  1  1937     1  14.1
@@ -94,5 +94,5 @@ cpi_u_monthly_nsa
 #>  8  1937     8  14.5
 #>  9  1937     9  14.6
 #> 10  1937    10  14.6
-#> # ℹ 1,067 more rows
+#> # ℹ 1,068 more rows
 ```
