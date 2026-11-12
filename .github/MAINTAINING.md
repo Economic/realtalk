@@ -24,7 +24,7 @@ An automatic run leaves an existing PR and its approval alone when its processed
 | 1 | Automation, or anyone with Write access | Actions → **Draft update** → Run workflow | Fetches the data, rebuilds, checks it against FRED, sets the version and the `NEWS.md` entry, runs R CMD check, and opens a PR from the `data-update` branch with a memo of what changed. Nothing is published. If the data matches `main`, it stops and closes any old data PR. |
 | 2 | Anyone with Write access | The PR → **Approve and run workflows** | Starts the PR's checks, which GitHub holds because a bot opened the PR. |
 | 3 | A maintainer | The PR → Files changed → **Review changes** → **Approve** | The sign-off. Read the memo first: coverage, revisions, unexpected revisions, the FRED comparison, and stale inputs. |
-| 4 | A maintainer | Actions → **Publish update** → Run workflow | Merges the PR, checks the merge commit, tags it, and creates the release, which publishes. Then it deploys the site and waits for r-universe to serve the new version. |
+| 4 | A maintainer | Actions → **Publish update** → Run workflow | Merges the PR, checks the merge commit, tags it, and creates the release, which publishes. Then it deploys the site, asks r-universe to sync, and waits for it to serve the new version, typically 10 to 15 minutes. |
 
 **New data check** remains available as a manual diagnostic: it compares fresh snapshots with the open draft or `main` and manages the `new-data` reminder issue. If a reminder issue is open, the draft PR's description says `Closes #N`, so publishing the draft closes the issue. Running New data check also closes a reminder once the draft or `main` contains the newest data.
 
@@ -63,6 +63,7 @@ GitHub doesn't count a PR author's own approval, so maintainers approve each oth
 - **"Draft update" fails the FRED comparison:** a value differs from FRED. The error names the series and month. Investigate before drafting again.
 - **"Publish update" refuses:** its message says why, for example no approval yet, the check hasn't passed, or `main` changed since the draft (draft again).
 - **"Publish update" fails after the merge:** the data is on `main` but not published until the release exists. In the failed run, click **Re-run failed jobs**. If that's not possible, run **Tag release** with the merge commit shown in the failed run's summary.
+- **The r-universe wait warns that it couldn't ask for a sync:** nothing is wrong with the release. r-universe finds it on its own schedule, which can take a few hours. To skip the wait, click the sync button at https://economic.r-universe.dev/packages.
 - **The r-universe wait fails after 3 hours:** the release exists but r-universe hasn't built it. Check https://github.com/r-universe/economic/actions.
 - **Slow runs:** setting up R on GitHub's runners sometimes takes 15 minutes or more. That's GitHub, not realtalk.
 
