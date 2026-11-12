@@ -114,7 +114,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Wait for r-universe to serve the new version
+      - name: Ask r-universe to sync and wait for it to serve the new version
         env:
           VERSION: ${{ needs.tag.outputs.version }}
         run: .github/scripts/poll-r-universe.sh
