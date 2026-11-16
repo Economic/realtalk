@@ -1,93 +1,39 @@
 # Maintaining realtalk
 
-1. Open the automatic data update PR. To create one manually, run **Actions → Draft update** on `main`.
-2. Click **Approve and run workflows** if asked. Wait for passing checks.
-3. Read the memo. If correct, select **Files changed → Review changes → Approve**.
-4. Run **Actions → Publish update** on `main`. Wait for it to finish.
+1. Open the automatic data update PR. If needed, create one with **Actions → Draft update**.
+2. Click **Approve and run workflows** if GitHub asks. Wait for passing checks.
+3. Read the memo. Check new data, revisions, FRED results, and stale sources. Approve if correct.
+4. Run **Actions → Publish update**. It merges the PR, checks it, and publishes the package and website.
 
-## Review and publish
+For manual workflows, select `main`, then **Run workflow**. Only maintainers
+can publish. Allow about 10 to 15 minutes for r-universe to update.
 
-Check the memo's data coverage, revisions, unexpected revisions, FRED comparison,
-and stale inputs. Investigate anything unexpected before approving.
+## Data updates
 
-The `realtalk-maintainers` team approves PRs and runs releases. Anyone with
-Write access can draft updates and start PR checks. Authors cannot approve
-their own PRs.
+Drafts are created automatically on BLS and BEA release days. You can also run
+**Draft update** yourself. It sets the version and release notes.
 
-**Publish update** merges the data PR, checks the merge commit, and creates a
-release. The release publishes to r-universe and updates the website. Merging
-alone publishes nothing. Do not create releases by hand; that skips checks.
-
-The workflow asks r-universe to sync. Allow about 10 to 15 minutes.
-
-## How data drafts work
-
-- **Calendar refresh:** Mondays, 5:17 a.m. Eastern. Saves BLS and BEA release
-  dates on the `calendar` branch.
-- **Scheduled data update:** daily, 10:17 a.m. Eastern. Drafts on release days
-  and rebuilds open drafts after `main` changes. GitHub can start runs late.
-- **Draft update:** fetches data, compares with FRED, sets the version and
-  `NEWS.md`, checks the package, and updates the `data-update` PR. If data
-  matches `main`, it closes any old data PR.
-
-Automatic runs keep approval if processed data and the base commit are unchanged.
-Manual drafts always replace the draft and remove approval.
-
-Do not edit `data-update` by hand. Merge fixes through a separate PR to `main`,
-then run **Draft update** again.
-
-Versions use the draft date in Eastern time, `YYYY.M.D`, plus `.1`, `.2`, etc.
-if needed.
-
-**New data check** manually checks for newer data and manages the `new-data`
-reminder issue. Merging the data PR also closes the reminder.
-
-For previews, select `dry_run` in **Draft update**, **Calendar refresh**,
-**Scheduled data update**, or either release workflow. This leaves branches,
-issues, and releases unchanged. Real runs use `main`.
+A manual draft removes the previous approval. Review and approve it again.
+Do not edit the `data-update` branch. Merge fixes through a separate PR, then
+draft again.
 
 ## Other changes
 
-Use an ordinary PR for code fixes and hand-maintained data in
-`data-raw/raw/static/` (CPI-U-RS, CPI-U-X1, and the minimum wage).
+1. Open a PR. Rebuild affected outputs. If publishing, update `Version` in
+   `DESCRIPTION` (`YYYY.M.D`) and add a `NEWS.md` entry.
+2. Get approval and passing checks, then merge with a merge commit.
+3. To publish, run **Actions → Tag release** on `main`.
 
-1. Make the change on a branch and rebuild the affected outputs. To publish it,
-   update `Version` in `DESCRIPTION` and add a `NEWS.md` entry.
-2. Get maintainer approval and passing checks. Merge with a merge commit.
-3. To publish, run **Actions → Tag release** on `main`. It checks and releases
-   the current `main` by default.
+Merging alone does not publish anything. Do not create releases by hand.
+Admins can merge their own PRs, but checks must pass.
 
-Admins can merge their own PR without another approval, but the required check
-must pass.
+## Problems
 
-## If an update fails
-
-| Problem | Action |
-|---|---|
-| Calendar or schedule fails | Rerun **Calendar refresh**, or use **Draft update** manually. Failed refreshes notify maintainers and keep the old schedule. |
-| Download fails or expected data is missing | Retry **Draft update** later. Old source data can produce no PR or notification. There is no automatic retry. |
-| FRED comparison fails | Investigate the named series and month. |
-| Publish update refuses | Follow the error. If `main` changed, draft again and review again. |
-| Publish update fails after merging | Select **Re-run failed jobs**. Alternatively, run **Tag release** with the merge commit from the failed run's summary. |
-| r-universe sync warns or times out | The release exists. Try the [sync button](https://economic.r-universe.dev/packages) or inspect [builds](https://github.com/r-universe/economic/actions). |
-
-If the sync request fails, r-universe can take a few hours to find the release.
-
-## Setup and settings
-
-- **Secrets:** set `BLS_API_KEY`, `BEA_API_KEY`, `FRED_API_KEY`, and
-  `BLS_DOWNLOAD_EMAIL` in repository settings. The email is the BLS calendar
-  download contact. Local calendar refreshes need the same environment variable.
-- **First calendar run:** run **Calendar refresh** with `dry_run`, check the
-  dates in the summary, then run it without `dry_run`. Keep the `calendar`
-  branch. Run Calendar refresh manually if an agency changes a date before the
-  next Monday.
-- **Code owners:** `.github/CODEOWNERS` must name
-  `@economic/realtalk-maintainers`. The team must be visible and have Maintain
-  access.
-- **Rulesets** (Settings → Rules): “protect main” requires a PR, one code-owner
-  approval, dismissal of approvals after new commits, and merge commits only.
-  It blocks force pushes and deletion; admins can bypass it for PRs.
-  “require check on main” requires `check` to pass, with no bypass.
-- **r-universe:** keep `"branch": "*release"` for realtalk in
-  `economic/economic.r-universe.dev`'s `packages.json`.
+- **Missing data or failed download:** retry **Draft update** later.
+- **FRED mismatch or unexpected values:** investigate before approving.
+- **Calendar failure:** run **Calendar refresh**, or draft manually.
+- **Publish refused:** follow the error. If `main` changed, draft and review again.
+- **Publish failed after merging:** select **Re-run failed jobs**. If needed,
+  run **Tag release** with the merge commit from the failed run's summary.
+- **r-universe delayed:** check its [builds](https://github.com/r-universe/economic/actions)
+  or try the [sync button](https://economic.r-universe.dev/packages).
